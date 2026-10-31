@@ -1,0 +1,324 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// -------------------------------------------------------------
+// ENUMS
+// -------------------------------------------------------------
+
+enum RubroIndustria {
+  SOFTWARE
+  VETERINARIA
+  CONSTRUCCION
+  OTRO
+}
+
+enum RolUsuario {
+  SUPERADMIN
+  ADMINISTRADOR
+  APROBADOR
+  SOLICITANTE
+}
+
+enum EstadoProyecto {
+  DIAGNOSTICO
+  PLANIFICACION
+  EN_EJECUCION
+  CONGELADO
+  CERRADO
+}
+
+enum TipoEcs {
+  DOCUMENTO
+  CODIGO_FUENTE
+  DISENO
+  BASE_DATOS
+  CASO_PRUEBA
+  OTRO
+}
+
+enum EstadoEcs {
+  ACTIVO
+  DEPRECADO
+}
+
+enum EstadoVersion {
+  PENDIENTE
+  APROBADA
+  RECHAZADA
+}
+
+enum EstadoLineaBase {
+  VIGENTE
+  OBSOLETA
+}
+
+enum EstadoCambio {
+  PENDIENTE_EVALUACION
+  EN_EVALUACION
+  APROBADA
+  RECHAZADA
+  IMPLEMENTADA
+}
+
+enum NivelImpacto {
+  BAJO
+  MEDIO
+  ALTO
+  CRITICO
+}
+
+// -------------------------------------------------------------
+// MODELOS PRINCIPALES
+// -------------------------------------------------------------
+
+model Organizacion {
+  id                        String         @id @default(uuid())
+  nombre                    String         @db.VarChar(150)
+  rubro                     RubroIndustria @default(SOFTWARE)
+  configuracion_terminologia Json           @default("{}")
+  activo                    Boolean        @default(true)
+  created_at                DateTime       @default(now())
+  updated_at                DateTime       @updatedAt
+
+  usuarios                  Usuario[]
+  proyectos                 ProyectoCaso[]
+
+  @@map("organizaciones")
+}
+
+model Usuario {
+  id              String       @id @default(uuid())
+  organizacion_id String
+  nombre_completo String       @db.VarChar(150)
+  email           String       @db.VarChar(150)
+  password_hash   String       @db.VarChar(255)
+  rol             RolUsuario   @default(SOLICITANTE)
+  activo          Boolean      @default(true)
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+
+  organizacion    Organizacion @relation(fields: [organizacion_id], references: [id], onDelete: Cascade)
+
+  // Relaciones inversas
+  ecs_responsable        Ecs[]              @relation("EcsResponsable")
+  versiones_autor        VersionEcs[]       @relation("VersionAutor")
+  versiones_aprobador    VersionEcs[]       @relation("VersionAprobador")
+  lineas_base_autor      LineaBase[]        @relation("LineaBaseAutor")
+  solicitudes_creadas    SolicitudCambio[]  @relation("Solicitante")
+  solicitudes_resueltas  SolicitudCambio[]  @relation("Resolutor")
+  evaluaciones_realizadas EvaluacionCambio[] @relation("Evaluador")
+  reportes_diarios       ReporteDiario[]    @relation("ReporteAutor")
+  auditorias             AuditoriaLog[]     @relation("AuditoriaUsuario")
+
+  @@unique([organizacion_id, email])
+  @@index([email])
+  @@map("usuarios")
+}
+
+model ProyectoCaso {
+  id                 String         @id @default(uuid())
+  organizacion_id    String
+  codigo             String         @db.VarChar(50)
+  nombre             String         @db.VarChar(200)
+  cliente_nombre     String         @db.VarChar(150)
+  fecha_inicio       DateTime       @db.Date
+  fecha_estimada_fin DateTime?      @db.Date
+  estado             EstadoProyecto @default(DIAGNOSTICO)
+  created_at         DateTime       @default(now())
+  updated_at         DateTime       @updatedAt
+
+  organizacion       Organizacion   @relation(fields: [organizacion_id], references: [id], onDelete: Cascade)
+  elementos_config   Ecs[]
+  lineas_base        LineaBase[]
+  reportes_diarios   ReporteDiario[]
+
+  @@unique([organizacion_id, codigo])
+  @@index([organizacion_id, estado])
+  @@map("proyectos_casos")
+}
+
+model Ecs {
+  id                      String     @id @default(uuid())
+  proyecto_id             String
+  codigo                  String     @db.VarChar(50)
+  nombre                  String     @db.VarChar(200)
+  tipo                    TipoEcs    @default(DOCUMENTO)
+  descripcion             String?    @db.Text
+  ubicacion               String     @db.VarChar(500)
+  responsable_id          String
+  atributos_personalizados Json       @default("{}")
+  estado                  EstadoEcs  @default(ACTIVO)
+  created_at              DateTime   @default(now())
+  updated_at              DateTime   @updatedAt
+
+  proyecto                ProyectoCaso @relation(fields: [proyecto_id], references: [id], onDelete: Cascade)
+  responsable             Usuario      @relation("EcsResponsable", fields: [responsable_id], references: [id])
+
+  versiones               VersionEcs[]
+  solicitudes_cambio      SolicitudCambio[]
+  cambios_afectados       CambioEcsAfectado[]
+
+  @@unique([proyecto_id, codigo])
+  @@index([codigo])
+  @@index([nombre])
+  @@index([tipo])
+  @@map("ecs")
+}
+
+model VersionEcs {
+  id               String        @id @default(uuid())
+  ecs_id           String
+  numero_version   String        @db.VarChar(30)
+  descripcion      String        @db.Text
+  archivo_url      String?       @db.VarChar(500)
+  estado           EstadoVersion @default(PENDIENTE)
+  autor_id         String
+  aprobador_id     String?
+  fecha_aprobacion DateTime?
+  created_at       DateTime      @default(now())
+
+  ecs              Ecs           @relation(fields: [ecs_id], references: [id], onDelete: Cascade)
+  autor            Usuario       @relation("VersionAutor", fields: [autor_id], references: [id])
+  aprobador        Usuario?      @relation("VersionAprobador", fields: [aprobador_id], references: [id])
+
+  lineas_base      LineaBaseVersion[]
+  solicitudes_base SolicitudCambio[]  @relation("VersionBase")
+  solicitudes_res  SolicitudCambio[]  @relation("VersionResultante")
+
+  @@unique([ecs_id, numero_version])
+  @@index([ecs_id, estado])
+  @@map("versiones_ecs")
+}
+
+model LineaBase {
+  id          String          @id @default(uuid())
+  proyecto_id String
+  codigo      String          @db.VarChar(50)
+  nombre      String          @db.VarChar(200)
+  descripcion String?         @db.Text
+  autor_id    String
+  estado      EstadoLineaBase @default(VIGENTE)
+  created_at  DateTime        @default(now())
+
+  proyecto    ProyectoCaso    @relation(fields: [proyecto_id], references: [id], onDelete: Cascade)
+  autor       Usuario         @relation("LineaBaseAutor", fields: [autor_id], references: [id])
+
+  versiones   LineaBaseVersion[]
+
+  @@unique([proyecto_id, codigo])
+  @@index([codigo])
+  @@map("lineas_base")
+}
+
+model LineaBaseVersion {
+  linea_base_id  String
+  version_ecs_id String
+
+  linea_base     LineaBase  @relation(fields: [linea_base_id], references: [id], onDelete: Cascade)
+  version_ecs    VersionEcs @relation(fields: [version_ecs_id], references: [id], onDelete: Restrict)
+
+  @@id([linea_base_id, version_ecs_id])
+  @@map("linea_base_versiones")
+}
+
+model SolicitudCambio {
+  id                      String          @id @default(uuid())
+  codigo                  String          @unique @db.VarChar(50)
+  ecs_id                  String
+  version_base_id         String
+  version_resultante_id   String?
+  descripcion             String          @db.Text
+  justificacion           String          @db.Text
+  estado                  EstadoCambio    @default(PENDIENTE_EVALUACION)
+  solicitante_id          String
+  resolutor_id            String?
+  resolucion_justificacion String?        @db.Text
+  fecha_resolucion        DateTime?
+  fecha_implementacion    DateTime?
+  created_at              DateTime        @default(now())
+  updated_at              DateTime        @updatedAt
+
+  ecs                     Ecs             @relation(fields: [ecs_id], references: [id], onDelete: Cascade)
+  version_base            VersionEcs      @relation("VersionBase", fields: [version_base_id], references: [id], onDelete: Restrict)
+  version_resultante      VersionEcs?     @relation("VersionResultante", fields: [version_resultante_id], references: [id], onDelete: SetNull)
+  solicitante             Usuario         @relation("Solicitante", fields: [solicitante_id], references: [id])
+  resolutor               Usuario?        @relation("Resolutor", fields: [resolutor_id], references: [id])
+
+  evaluacion              EvaluacionCambio?
+  ecs_afectados           CambioEcsAfectado[]
+
+  @@index([codigo])
+  @@index([estado])
+  @@index([created_at])
+  @@map("solicitudes_cambio")
+}
+
+model EvaluacionCambio {
+  id            String          @id @default(uuid())
+  solicitud_id  String          @unique
+  impacto       NivelImpacto    @default(MEDIO)
+  observaciones String          @db.Text
+  evaluador_id  String
+  created_at    DateTime        @default(now())
+
+  solicitud     SolicitudCambio @relation(fields: [solicitud_id], references: [id], onDelete: Cascade)
+  evaluador     Usuario         @relation("Evaluador", fields: [evaluador_id], references: [id])
+
+  @@map("evaluaciones_cambio")
+}
+
+model CambioEcsAfectado {
+  solicitud_id String
+  ecs_id       String
+
+  solicitud    SolicitudCambio @relation(fields: [solicitud_id], references: [id], onDelete: Cascade)
+  ecs          Ecs             @relation(fields: [ecs_id], references: [id], onDelete: Cascade)
+
+  @@id([solicitud_id, ecs_id])
+  @@map("cambio_ecs_afectados")
+}
+
+model ReporteDiario {
+  id                  String       @id @default(uuid())
+  proyecto_id         String
+  usuario_id          String
+  fecha               DateTime     @default(now()) @db.Date
+  resumen_actividades String       @db.Text
+  metricas_avance     Json         @default("{}")
+  tiene_bloqueo       Boolean      @default(false)
+  detalle_bloqueo     String?      @db.Text
+  evidencias_urls     String[]
+  created_at          DateTime     @default(now())
+
+  proyecto            ProyectoCaso @relation(fields: [proyecto_id], references: [id], onDelete: Cascade)
+  usuario             Usuario      @relation("ReporteAutor", fields: [usuario_id], references: [id])
+
+  @@index([proyecto_id, fecha])
+  @@index([tiene_bloqueo])
+  @@map("reportes_diarios")
+}
+
+model AuditoriaLog {
+  id               BigInt   @id @default(autoincrement())
+  usuario_id       String?
+  accion           String   @db.VarChar(100)
+  entidad          String   @db.VarChar(50)
+  entidad_id       String   @db.VarChar(100)
+  datos_anteriores Json?
+  datos_nuevos     Json?
+  ip_address       String?  @db.VarChar(45)
+  user_agent       String?  @db.VarChar(255)
+  created_at       DateTime @default(now())
+
+  usuario          Usuario? @relation("AuditoriaUsuario", fields: [usuario_id], references: [id], onDelete: SetNull)
+
+  @@index([entidad, entidad_id])
+  @@index([created_at])
+  @@map("auditoria_logs")
+}
