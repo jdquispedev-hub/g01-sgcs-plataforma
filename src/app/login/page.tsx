@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ShieldCheck, Lock, Mail, AlertCircle, Loader2, ArrowRight } from 'lucide-react';
+import { ShieldCheck, Lock, Mail, AlertCircle, Loader2, ArrowRight, GraduationCap } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -32,7 +32,6 @@ export default function LoginPage() {
         return;
       }
 
-      // Redirigir según la respuesta del backend
       router.push(data.data.redirectUrl || '/dashboard');
       router.refresh();
     } catch {
@@ -41,7 +40,6 @@ export default function LoginPage() {
     }
   };
 
-  // Helper para rellenar credenciales demo rápidamente
   const fillCredentials = (demoEmail: string, demoPass: string) => {
     setEmail(demoEmail);
     setPassword(demoPass);
@@ -49,39 +47,50 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Detalle visual superior institucional */}
+      <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-upt-navy-600 via-upt-gold to-upt-navy-600"></div>
+
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <Link href="/" className="flex items-center justify-center gap-2 mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/25">
-            <ShieldCheck className="w-7 h-7" />
+        <Link href="/" className="flex items-center justify-center gap-3 mb-4 group">
+          <div className="w-13 h-13 p-3 rounded-2xl bg-upt-navy-600 flex items-center justify-center text-upt-gold shadow-xl shadow-upt-navy-600/20 border border-upt-gold/30 group-hover:scale-105 transition-transform">
+            <ShieldCheck className="w-8 h-8 text-upt-gold" />
           </div>
-          <span className="font-extrabold text-2xl text-slate-900 tracking-tight">SGCS Platform</span>
+          <div>
+            <span className="block font-black text-2xl text-upt-navy-700 tracking-tight leading-none">
+              SGCS <span className="text-upt-gold-600">UPT</span>
+            </span>
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+              Gestión de Configuración
+            </span>
+          </div>
         </Link>
-        <h2 className="text-center text-2xl font-bold tracking-tight text-slate-900">
-          Iniciar Sesión en el Sistema
+        <h2 className="text-center text-xl font-extrabold tracking-tight text-slate-900 mt-2">
+          Portal de Control Operativo
         </h2>
-        <p className="mt-2 text-center text-sm text-slate-600">
-          Control de Requerimientos y Eliminación del Teléfono Descompuesto
+        <p className="mt-1 text-center text-xs text-slate-500">
+          Eliminación del Teléfono Descompuesto y Validación Técnica Previa
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-white py-8 px-6 shadow-xl shadow-slate-200/50 rounded-2xl border border-slate-200/80 sm:px-10">
+      <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md px-4">
+        <div className="bg-white py-8 px-6 shadow-xl shadow-slate-200/60 rounded-3xl border border-slate-200/90 sm:px-10 relative">
+          
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+            <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-3 animate-shake">
+              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-red-600" />
               <span>{error}</span>
             </div>
           )}
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-1.5">
-                Correo Electrónico <span className="text-red-500">*</span>
+              <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                Correo Institucional / Cuenta <span className="text-upt-garnet-500">*</span>
               </label>
               <div className="relative rounded-xl shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <Mail className="w-5 h-5" />
+                  <Mail className="w-4 h-4 text-slate-400" />
                 </div>
                 <input
                   id="email"
@@ -89,19 +98,19 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="ejemplo@organizacion.com"
-                  className="block w-full pl-11 pr-4 py-2.5 text-slate-900 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-blue-600 text-sm transition"
+                  placeholder="usuario@upt.pe o demo"
+                  className="block w-full pl-10 pr-4 py-2.5 text-slate-900 bg-slate-50/50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-upt-navy-500 focus:border-upt-navy-500 focus:bg-white text-sm transition"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-1.5">
-                Contraseña <span className="text-red-500">*</span>
+              <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                Contraseña <span className="text-upt-garnet-500">*</span>
               </label>
               <div className="relative rounded-xl shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <Lock className="w-5 h-5" />
+                  <Lock className="w-4 h-4 text-slate-400" />
                 </div>
                 <input
                   id="password"
@@ -110,7 +119,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="block w-full pl-11 pr-4 py-2.5 text-slate-900 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-blue-600 text-sm transition"
+                  className="block w-full pl-10 pr-4 py-2.5 text-slate-900 bg-slate-50/50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-upt-navy-500 focus:border-upt-navy-500 focus:bg-white text-sm transition"
                 />
               </div>
             </div>
@@ -118,41 +127,45 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-md text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-60 transition"
+              className="w-full mt-2 flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-upt-navy-600 hover:bg-upt-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-upt-gold active:scale-[0.99] disabled:opacity-60 transition"
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" /> Verificando...
+                  <Loader2 className="w-5 h-5 animate-spin text-upt-gold" /> Autenticando...
                 </>
               ) : (
                 <>
-                  Ingresar al Sistema <ArrowRight className="w-4 h-4" />
+                  Ingresar al Sistema <ArrowRight className="w-4 h-4 text-upt-gold" />
                 </>
               )}
             </button>
           </form>
 
-          {/* Cuentas Demo para Pruebas Rápidas */}
-          <div className="mt-8 pt-6 border-t border-slate-100">
-            <span className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 text-center">
-              Cuentas Demo de Prueba (Semilla)
+          {/* Selector de Acceso Demo */}
+          <div className="mt-6 pt-5 border-t border-slate-100">
+            <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5 text-center">
+              Acceso Rápido de Demostración
             </span>
-            <div className="space-y-2">
-              <button
-                type="button"
-                onClick={() => fillCredentials('superadmin@sgcs.com', 'Admin123!')}
-                className="w-full text-left px-3 py-2 rounded-lg text-xs bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 transition flex justify-between items-center"
-              >
+            <button
+              type="button"
+              onClick={() => fillCredentials('superadmin@sgcs.com', 'Admin123!')}
+              className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs bg-slate-50 hover:bg-upt-navy-50 text-slate-700 hover:text-upt-navy-700 border border-slate-200 transition flex justify-between items-center group"
+            >
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-upt-gold"></span>
                 <span><strong>SuperAdmin:</strong> superadmin@sgcs.com</span>
-                <span className="font-mono text-slate-400">Admin123!</span>
-              </button>
-            </div>
+              </span>
+              <span className="font-mono text-[11px] px-1.5 py-0.5 rounded bg-white text-slate-600 border border-slate-200 group-hover:border-upt-gold/50">
+                Admin123!
+              </span>
+            </button>
           </div>
         </div>
 
-        <p className="mt-6 text-center text-xs text-slate-500">
-          Cifrado Bcrypt (RNF-01) • Cookie HttpOnly Segura (RNF-02) • HTTPS TLS (RNF-03)
-        </p>
+        <div className="mt-6 text-center text-xs text-slate-500 flex items-center justify-center gap-1.5">
+          <GraduationCap className="w-4 h-4 text-upt-navy-600" />
+          <span>Inspirado en la Identidad Visual de la Universidad Privada de Tacna</span>
+        </div>
       </div>
     </div>
   );
