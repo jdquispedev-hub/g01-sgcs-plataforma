@@ -1,4 +1,4 @@
-import { PrismaClient, RubroIndustria, RolUsuario } from '@prisma/client';
+import { PrismaClient, RubroIndustria, RolUsuario, TipoEcs } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -71,56 +71,123 @@ async function main() {
     },
   });
 
-  // 4. Crear Organización Demo: Clínica Veterinaria
-  const orgVet = await prisma.organizacion.upsert({
-    where: { id: '00000000-0000-0000-0000-000000000003' },
+  // Usuarios para la Empresa de Software
+  const adminSoftware = await prisma.usuario.upsert({
+    where: {
+      organizacion_id_email: {
+        organizacion_id: orgSoftware.id,
+        email: 'admin.software@sgcs.com',
+      },
+    },
     update: {},
     create: {
-      id: '00000000-0000-0000-0000-000000000003',
-      nombre: 'Clínica Veterinaria San Francisco',
-      rubro: RubroIndustria.VETERINARIA,
-      configuracion_terminologia: {
-        terminos: {
-          proyecto: 'Caso Clínico / Paciente',
-          ecs: 'Ficha / Examen Médico',
-          version: 'Resultado / Dosis Actualizada',
-          linea_base: 'Estado Pre-Operatorio Aprobado',
-          solicitud_cambio: 'Modificación de Tratamiento',
-          reporte_diario: 'Evolución Médica del Turno',
-        },
-        campos_reporte: [
-          { clave: 'temperatura', etiqueta: 'Temperatura (°C)', tipo: 'numero' },
-          { clave: 'dosis_suministrada', etiqueta: 'Dosis y Medicación', tipo: 'texto' },
-        ],
-      },
+      organizacion_id: orgSoftware.id,
+      nombre_completo: 'Carlos Mendoza (Gerente TI)',
+      email: 'admin.software@sgcs.com',
+      password_hash: passwordHash,
+      rol: RolUsuario.ADMINISTRADOR,
+      activo: true,
     },
   });
 
-  // 5. Crear Organización Demo: Empresa de Construcción
-  const orgConst = await prisma.organizacion.upsert({
-    where: { id: '00000000-0000-0000-0000-000000000004' },
+  const aprobadorSoftware = await prisma.usuario.upsert({
+    where: {
+      organizacion_id_email: {
+        organizacion_id: orgSoftware.id,
+        email: 'aprobador.software@sgcs.com',
+      },
+    },
     update: {},
     create: {
-      id: '00000000-0000-0000-0000-000000000004',
-      nombre: 'Constructora & Proyectos Los Andes',
-      rubro: RubroIndustria.CONSTRUCCION,
-      configuracion_terminologia: {
-        terminos: {
-          proyecto: 'Obra / Proyecto',
-          ecs: 'Plano / Partida de Obra',
-          version: 'Revisión de Plano (Rev A, B)',
-          linea_base: 'Línea Base Contractual',
-          solicitud_cambio: 'Orden de Modificación de Obra',
-          reporte_diario: 'Parte Diario de Faena',
-        },
-        campos_reporte: [
-          { clave: 'm2_avanzados', etiqueta: 'Metros Cuadrados Avanzados', tipo: 'numero' },
-          { clave: 'sacos_cemento', etiqueta: 'Sacos de Cemento Consumidos', tipo: 'numero' },
-        ],
-      },
+      organizacion_id: orgSoftware.id,
+      nombre_completo: 'Ing. Rodrigo Paredes (Tech Lead)',
+      email: 'aprobador.software@sgcs.com',
+      password_hash: passwordHash,
+      rol: RolUsuario.APROBADOR,
+      activo: true,
     },
   });
 
+  // Proyecto inicial para Software
+  const proyectoSoftware = await prisma.proyectoCaso.upsert({
+    where: {
+      organizacion_id_codigo: {
+        organizacion_id: orgSoftware.id,
+        codigo: 'PRY-CURSOS-01',
+      },
+    },
+    update: {},
+    create: {
+      organizacion_id: orgSoftware.id,
+      codigo: 'PRY-CURSOS-01',
+      nombre: 'Plataforma Web E-Learning y Pagos',
+      cliente_nombre: 'Instituto Continental',
+      fecha_inicio: new Date('2026-10-01'),
+      estado: 'EN_EJECUCION',
+    },
+  });
+
+  // ECS Inicial con 2 versiones
+  const ecsSoftware = await prisma.ecs.upsert({
+    where: {
+      proyecto_id_codigo: {
+        proyecto_id: proyectoSoftware.id,
+        codigo: 'ECS-MOD-PAGOS',
+      },
+    },
+    update: {},
+    create: {
+      proyecto_id: proyectoSoftware.id,
+      codigo: 'ECS-MOD-PAGOS',
+      nombre: 'Módulo de Pasarela de Pagos Stripe & PayPal',
+      tipo: TipoEcs.CODIGO_FUENTE,
+      descripcion: 'Controladores y webhooks para procesamiento seguro de tarjetas y suscripciones.',
+      ubicacion: 'https://github.com/ClaraBQuispeChileno/G01/src/modules/payments',
+      responsable_id: aprobadorSoftware.id,
+    },
+  });
+
+  // Versión 1.0.0 Aprobada
+  await prisma.versionEcs.upsert({
+    where: {
+      ecs_id_numero_version: {
+        ecs_id: ecsSoftware.id,
+        numero_version: '1.0.0',
+      },
+    },
+    update: {},
+    create: {
+      ecs_id: ecsSoftware.id,
+      numero_version: '1.0.0',
+      descripcion: 'Integración inicial de Stripe Checkout con webhooks de confirmación.',
+      archivo_url: 'https://github.com/ClaraBQuispeChileno/G01/commit/v1.0.0',
+      estado: 'APROBADA',
+      autor_id: adminSoftware.id,
+      aprobador_id: aprobadorSoftware.id,
+      fecha_aprobacion: new Date('2026-10-15'),
+    },
+  });
+
+  // Versión 1.1.0 Pendiente para pruebas de dictamen (RF-08)
+  await prisma.versionEcs.upsert({
+    where: {
+      ecs_id_numero_version: {
+        ecs_id: ecsSoftware.id,
+        numero_version: '1.1.0',
+      },
+    },
+    update: {},
+    create: {
+      ecs_id: ecsSoftware.id,
+      numero_version: '1.1.0',
+      descripcion: 'Soporte adicional para pagos locales con Yape y Plin mediante código QR.',
+      archivo_url: 'https://github.com/ClaraBQuispeChileno/G01/commit/v1.1.0-qr',
+      estado: 'PENDIENTE',
+      autor_id: adminSoftware.id,
+    },
+  });
+
+  console.log('✅ Proyecto y ECS demo con versiones creado para Software.');
   console.log('✅ Organizaciones y plantillas de industria sembradas exitosamente.');
 }
 
