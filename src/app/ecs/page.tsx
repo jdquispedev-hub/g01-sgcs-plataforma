@@ -18,7 +18,8 @@ import {
   User,
   FolderGit2,
   AlertCircle,
-  Loader2
+  Loader2,
+  Lock
 } from 'lucide-react';
 
 interface EcsItem {
@@ -189,12 +190,20 @@ export default function EcsPage() {
             </div>
           </div>
 
-          <button
-            onClick={() => setModalOpen(true)}
-            className="px-4 py-2 rounded-xl bg-upt-gold hover:bg-upt-gold-600 text-upt-navy-900 font-bold text-xs sm:text-sm shadow-md transition flex items-center gap-1.5"
-          >
-            <Plus className="w-4 h-4" /> Nuevo ECS
-          </button>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/lineas-base"
+              className="hidden sm:inline-flex px-3 py-1.5 text-xs font-semibold rounded-xl text-slate-300 hover:text-white hover:bg-upt-navy-600 transition items-center gap-1.5"
+            >
+              <Lock className="w-4 h-4 text-upt-gold" /> Líneas Base
+            </Link>
+            <button
+              onClick={() => setModalOpen(true)}
+              className="px-4 py-2 rounded-xl bg-upt-gold hover:bg-upt-gold-600 text-upt-navy-900 font-bold text-xs sm:text-sm shadow-md transition flex items-center gap-1.5"
+            >
+              <Plus className="w-4 h-4" /> Nuevo ECS
+            </button>
+          </div>
         </div>
       </header>
 
