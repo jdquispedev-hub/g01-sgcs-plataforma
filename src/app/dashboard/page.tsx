@@ -42,14 +42,17 @@ export default function DashboardPage() {
   const [totalEcs, setTotalEcs] = useState<number>(0);
   const [totalLineasBase, setTotalLineasBase] = useState<number>(0);
   const [lineasVigentes, setLineasVigentes] = useState<number>(0);
+  const [totalRfc, setTotalRfc] = useState<number>(0);
+  const [rfcPendientes, setRfcPendientes] = useState<number>(0);
 
   useEffect(() => {
     async function loadDashboard() {
       try {
-        const [resMe, resEcs, resLb] = await Promise.all([
+        const [resMe, resEcs, resLb, resRfc] = await Promise.all([
           fetch('/api/auth/me'),
           fetch('/api/ecs'),
           fetch('/api/lineas-base'),
+          fetch('/api/cambios'),
         ]);
 
         const dataMe = await resMe.json();
@@ -70,6 +73,15 @@ export default function DashboardPage() {
           setTotalLineasBase(dataLb.data.length);
           const vigentes = dataLb.data.filter((lb: any) => lb.estado === 'VIGENTE').length;
           setLineasVigentes(vigentes);
+        }
+
+        const dataRfc = await resRfc.json();
+        if (dataRfc.success) {
+          setTotalRfc(dataRfc.data.length);
+          const pendientes = dataRfc.data.filter(
+            (r: any) => r.estado === 'PENDIENTE_EVALUACION' || r.estado === 'EN_EVALUACION'
+          ).length;
+          setRfcPendientes(pendientes);
         }
       } catch {
         router.push('/login');
@@ -145,6 +157,13 @@ export default function DashboardPage() {
             >
               <Lock className="w-4 h-4 text-slate-400" />
               <span>Líneas Base</span>
+            </Link>
+            <Link
+              href="/cambios"
+              className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
+            >
+              <AlertTriangle className="w-4 h-4 text-slate-400" />
+              <span>Cambios (RFC)</span>
             </Link>
           </nav>
 
@@ -375,19 +394,19 @@ export default function DashboardPage() {
             <div className="bg-white rounded-3xl p-6 border-2 border-slate-200 shadow-md hover:border-amber-500 hover:shadow-xl transition-all duration-200 flex flex-col justify-between group">
               <div className="space-y-4">
                 <div className="flex items-start justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-red-50 text-upt-garnet border border-red-200 flex items-center justify-center group-hover:bg-upt-garnet group-hover:text-white transition">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 border border-amber-300 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition">
                     <AlertTriangle className="w-6 h-6" />
                   </div>
-                  <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-red-50 text-upt-garnet border border-red-200">
+                  <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-300">
                     RF-11 al RF-15
                   </span>
                 </div>
 
                 <div>
-                  <span className="text-[11px] font-black text-upt-garnet uppercase tracking-wider block">
+                  <span className="text-[11px] font-black text-amber-700 uppercase tracking-wider block">
                     3. Control de Impacto
                   </span>
-                  <h3 className="text-xl font-black text-slate-900 group-hover:text-upt-garnet transition">
+                  <h3 className="text-xl font-black text-slate-900 group-hover:text-amber-700 transition">
                     Gestión de Cambios (RFC)
                   </h3>
                   <p className="text-xs text-slate-600 mt-2 leading-relaxed">
@@ -395,23 +414,31 @@ export default function DashboardPage() {
                   </p>
                 </div>
 
-                {/* Métrica */}
+                {/* Métrica viva */}
                 <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 flex items-center justify-between text-xs">
-                  <span className="font-bold text-slate-600">Regla de Negocio:</span>
-                  <span className="font-bold text-[11px] text-slate-700 bg-white px-2 py-0.5 rounded-md border border-slate-200">
-                    Comité Técnico Requerido
+                  <span className="font-bold text-slate-600">Por Evaluar / Resolver:</span>
+                  <span className="font-black text-sm text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-lg border border-amber-300 shadow-sm flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5 text-amber-700" />
+                    {rfcPendientes} de {totalRfc}
                   </span>
                 </div>
               </div>
 
-              <div className="pt-5 mt-5 border-t border-slate-100">
-                <button
-                  disabled
-                  className="w-full py-2.5 px-4 rounded-xl bg-slate-100 text-slate-400 font-bold text-xs flex items-center justify-center gap-2 cursor-not-allowed border border-slate-200"
+              <div className="pt-5 mt-5 border-t border-slate-100 flex items-center gap-2">
+                <Link
+                  href="/cambios"
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow transition flex items-center justify-center gap-1.5"
                 >
-                  <Lock className="w-3.5 h-3.5" />
-                  <span>Siguiente Módulo en Roadmap</span>
-                </button>
+                  <span>Bandeja de Cambios (RFC)</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href="/cambios/nueva"
+                  className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold transition border border-slate-200"
+                  title="Radicar nueva solicitud de cambio"
+                >
+                  <Plus className="w-4 h-4" />
+                </Link>
               </div>
             </div>
 
