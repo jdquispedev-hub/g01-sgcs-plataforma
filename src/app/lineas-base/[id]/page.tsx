@@ -204,10 +204,7 @@ export default function DetalleLineaBasePage() {
       {/* Main Container */}
       <main className="max-w-6xl mx-auto px-3 sm:px-6 py-6 sm:py-8 flex-1 w-full space-y-6 print:max-w-none print:p-0 print:space-y-4">
         {/* Encabezado del Acta Oficial */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+        <div
           className="bg-white rounded-3xl p-5 sm:p-8 border-2 border-slate-300 shadow-md print:shadow-none print:border-none print:p-4 space-y-6"
         >
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-200/80 pb-6">
@@ -281,7 +278,7 @@ export default function DetalleLineaBasePage() {
               </span>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Tabla Detallada de Especificaciones y Versiones Congeladas */}
         <div className="bg-white rounded-3xl border-2 border-slate-300 shadow-md overflow-hidden print:shadow-none print:border">

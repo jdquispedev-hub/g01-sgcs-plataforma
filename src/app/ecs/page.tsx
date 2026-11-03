@@ -55,6 +55,7 @@ export default function EcsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [tipoFiltro, setTipoFiltro] = useState('');
+  const [tabEstado, setTabEstado] = useState<'TODOS' | 'PENDIENTE' | 'APROBADA'>('TODOS');
 
   // Modal nuevo ECS
   const [modalOpen, setModalOpen] = useState(false);
@@ -206,31 +207,37 @@ export default function EcsPage() {
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-black text-sm sm:text-base text-white tracking-tight truncate">
-                  Elementos de Configuración (ECS)
+                  Entregables y Componentes (ECS)
                 </span>
                 <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase tracking-wider shrink-0 shadow-sm">
-                  RF-04 a RF-08
+                  Paso 2: Artefactos
                 </span>
               </div>
               <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
-                Inventario de artefactos, control de versiones y dictamen técnico
+                Código fuente, planos y documentos bajo control de versiones
               </p>
             </div>
           </div>
 
           <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0 border-t border-white/10 sm:border-t-0">
             <Link
+              href="/aprobaciones"
+              className="px-2.5 py-1.5 text-xs font-bold rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5 text-upt-gold" /> Dictaminar
+            </Link>
+            <Link
               href="/lineas-base"
               className="px-2.5 py-1.5 text-xs font-bold rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
             >
-              <Lock className="w-3.5 h-3.5 text-upt-gold" /> Líneas Base
+              <Lock className="w-3.5 h-3.5 text-upt-gold" /> Hitos Congelados
             </Link>
             <button
               onClick={() => setModalOpen(true)}
               className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-500 hover:from-amber-400 hover:to-upt-gold text-upt-navy-950 font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition flex items-center gap-1.5 shrink-0 active:scale-95"
             >
               <Plus className="w-4 h-4 stroke-[3]" />
-              <span className="hidden sm:inline">Nuevo ECS</span>
+              <span className="hidden sm:inline">Nuevo Entregable</span>
               <span className="sm:hidden font-bold">Nuevo</span>
             </button>
           </div>
@@ -245,19 +252,19 @@ export default function EcsPage() {
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-upt-gold text-xs font-bold uppercase tracking-wider">
               <Layers className="w-4 h-4" />
-              <span>Etapa 2: Pre-Factibilidad y Control Técnico</span>
+              <span>Paso 2 del Proceso Oficial</span>
             </div>
             <h2 className="text-xl font-black text-white">
-              ¿Qué representa cada Elemento de Configuración (ECS)?
+              ¿Qué es un Entregable o Componente (ECS)?
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Es un entregable clave del proyecto (un módulo de software, un plano o una especificación). 
-              Cada versión propuesta por un desarrollador debe ser <strong className="text-emerald-400">APROBADA</strong> por el especialista antes de poder congelarse en una Línea Base.
+              Es cualquier pieza clave del proyecto (un módulo de código, una base de datos o un documento de requisitos).
+              Cada versión propuesta debe ser revisada y <strong className="text-emerald-400">APROBADA</strong> por el especialista antes de poder incluirse en un Hito Congelado (Línea Base).
             </p>
           </div>
           <div className="bg-white/10 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/10 text-center shrink-0">
-            <span className="text-[10px] text-slate-300 uppercase font-black block">Total Artefactos</span>
-            <span className="text-2xl font-black text-upt-gold">{ecsList.length} ECS</span>
+            <span className="text-[10px] text-slate-300 uppercase font-black block">Entregables Activos</span>
+            <span className="text-2xl font-black text-upt-gold">{ecsList.length}</span>
           </div>
         </div>
 
@@ -311,6 +318,46 @@ export default function EcsPage() {
               <span>Buscar</span>
             </button>
           </form>
+
+          {/* Filtros Rápidos por Estado de Aprobación */}
+          <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-200">
+            <span className="text-xs font-bold text-slate-500 mr-1">Filtrar por estado:</span>
+            <button
+              type="button"
+              onClick={() => setTabEstado('TODOS')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                tabEstado === 'TODOS'
+                  ? 'bg-upt-navy-900 text-upt-gold shadow'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              Todos ({ecsList.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setTabEstado('PENDIENTE')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                tabEstado === 'PENDIENTE'
+                  ? 'bg-amber-500 text-slate-950 font-black shadow'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              <Clock className="w-3.5 h-3.5" />
+              Esperando Aprobación ({ecsList.filter((e) => e.versiones[0]?.estado === 'PENDIENTE').length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setTabEstado('APROBADA')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                tabEstado === 'APROBADA'
+                  ? 'bg-emerald-600 text-white font-black shadow'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              Aprobados / Listos ({ecsList.filter((e) => e.versiones[0]?.estado === 'APROBADA').length})
+            </button>
+          </div>
         </div>
 
         {/* Grilla de Elementos de Configuración (ECS) */}
@@ -318,53 +365,63 @@ export default function EcsPage() {
           <div className="p-16 text-center bg-white rounded-3xl border-2 border-slate-200 shadow-sm">
             <Loader2 className="w-10 h-10 animate-spin text-upt-navy-700 mx-auto mb-3" />
             <p className="text-xs font-black text-slate-700 uppercase tracking-wider">
-              Consultando catálogo oficial de ECS...
+              Consultando catálogo oficial de entregables...
             </p>
           </div>
-        ) : ecsList.length === 0 ? (
+        ) : ecsList.filter((item) => {
+            if (tabEstado === 'TODOS') return true;
+            const u = item.versiones[0];
+            if (tabEstado === 'PENDIENTE') return u?.estado === 'PENDIENTE';
+            if (tabEstado === 'APROBADA') return u?.estado === 'APROBADA';
+            return true;
+          }).length === 0 ? (
           <div className="bg-white rounded-3xl border-2 border-dashed border-slate-300 p-12 text-center shadow-sm">
             <div className="w-14 h-14 rounded-2xl bg-upt-navy-50 text-upt-navy-700 flex items-center justify-center mx-auto mb-3 border border-upt-navy-200">
               <Layers className="w-7 h-7" />
             </div>
             <h3 className="font-black text-slate-900 text-base">
-              No se encontraron Elementos de Configuración
+              No se encontraron entregables con este filtro
             </h3>
             <p className="text-xs text-slate-600 mt-1 max-w-md mx-auto leading-relaxed">
-              No hay artefactos que coincidan con la búsqueda. Puedes registrar un nuevo ECS o limpiar los filtros.
+              No hay artefactos en esta categoría. Puedes cambiar de pestaña o registrar uno nuevo.
             </p>
             <button
               onClick={() => {
+                setTabEstado('TODOS');
                 setSearch('');
                 setTipoFiltro('');
               }}
               className="mt-4 px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs transition mr-2"
             >
-              Limpiar Búsqueda
+              Ver Todos los Entregables
             </button>
             <button
               onClick={() => setModalOpen(true)}
               className="mt-4 px-5 py-2 rounded-xl bg-upt-navy-700 hover:bg-upt-navy-800 text-upt-gold font-black text-xs shadow-md transition"
             >
-              + Registrar Nuevo ECS
+              + Registrar Nuevo Entregable
             </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-            <AnimatePresence>
-              {ecsList.map((item, index) => {
-                const tipoInfo = getTipoStyle(item.tipo);
-                const TipoIcon = tipoInfo.icon;
-                const ultimaVersion = item.versiones[0];
+            {ecsList
+              .filter((item) => {
+                if (tabEstado === 'TODOS') return true;
+                const u = item.versiones[0];
+                if (tabEstado === 'PENDIENTE') return u?.estado === 'PENDIENTE';
+                if (tabEstado === 'APROBADA') return u?.estado === 'APROBADA';
+                return true;
+              })
+              .map((item) => {
+              const tipoInfo = getTipoStyle(item.tipo);
+              const TipoIcon = tipoInfo.icon;
+              const ultimaVersion = item.versiones[0];
 
-                return (
-                  <motion.div
-                    key={item.id}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.04 }}
-                    whileHover={{ y: -4, transition: { duration: 0.15 } }}
-                    className="bg-white rounded-3xl border-2 border-slate-300 border-l-[6px] border-l-upt-navy-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.12)] hover:shadow-2xl hover:border-upt-gold/80 transition-all duration-200 flex flex-col justify-between overflow-hidden group"
-                  >
+              return (
+                <div
+                  key={item.id}
+                  className="bg-white rounded-3xl border-2 border-slate-300 border-l-[6px] border-l-upt-navy-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.12)] hover:shadow-2xl hover:border-upt-gold/80 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between overflow-hidden group"
+                >
                     <div>
                       {/* Header de la Tarjeta */}
                       <div className="p-4 sm:p-5 pb-3 border-b border-slate-200/80 bg-gradient-to-br from-slate-50 to-white flex items-start justify-between gap-2.5">
@@ -435,10 +492,9 @@ export default function EcsPage() {
                         <ChevronRight className="w-4 h-4 text-upt-gold group-hover/btn:translate-x-1.5 transition-transform" />
                       </Link>
                     </div>
-                  </motion.div>
+                  </div>
                 );
               })}
-            </AnimatePresence>
           </div>
         )}
 
@@ -455,9 +511,9 @@ export default function EcsPage() {
                 </div>
                 <div>
                   <h3 className="text-base font-black text-slate-900">
-                    Registrar Nuevo Elemento de Configuración
+                    Registrar Nuevo Entregable (ECS)
                   </h3>
-                  <span className="text-[11px] text-slate-500 font-medium">RF-04 • Alta de artefacto bajo control de versiones</span>
+                  <span className="text-[11px] text-slate-500 font-medium">Paso 2 • Alta de artefacto bajo control de versiones</span>
                 </div>
               </div>
               <button

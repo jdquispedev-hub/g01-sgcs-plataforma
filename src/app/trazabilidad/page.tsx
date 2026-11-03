@@ -357,15 +357,11 @@ export default function TrazabilidadPage() {
         ) : vistaModo === 'MAPA' ? (
           /* MODO MAPA DE FLUJO (Horizontal Chain por cada ECS) */
           <div className="space-y-6">
-            <AnimatePresence>
-              {ecsFiltrados.map((ecs, idx) => (
-                <motion.div
-                  key={ecs.id}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: idx * 0.04 }}
-                  className="bg-white rounded-3xl border-2 border-slate-300 border-l-[6px] border-l-upt-navy-700 shadow-md hover:shadow-xl transition-all p-5 sm:p-6 space-y-4"
-                >
+            {ecsFiltrados.map((ecs) => (
+              <div
+                key={ecs.id}
+                className="bg-white rounded-3xl border-2 border-slate-300 border-l-[6px] border-l-upt-navy-700 shadow-md hover:shadow-xl transition-all duration-200 p-5 sm:p-6 space-y-4"
+              >
                   {/* Encabezado del ECS */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -506,9 +502,8 @@ export default function TrazabilidadPage() {
                       })
                     )}
                   </div>
-                </motion.div>
+                </div>
               ))}
-            </AnimatePresence>
           </div>
         ) : (
           /* MODO MATRIZ TABULAR (Formal para Auditorías) */

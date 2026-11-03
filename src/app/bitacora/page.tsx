@@ -265,21 +265,16 @@ export default function BitacoraPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <AnimatePresence>
-              {reportes.map((rep, index) => {
-                const tieneBloqueo = rep.tiene_bloqueo;
+            {reportes.map((rep) => {
+              const tieneBloqueo = rep.tiene_bloqueo;
 
-                return (
-                  <motion.div
-                    key={rep.id}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.04 }}
-                    whileHover={{ y: -4, transition: { duration: 0.15 } }}
-                    className={`bg-white rounded-3xl border-2 border-slate-300 border-l-[6px] ${
-                      tieneBloqueo ? 'border-l-red-600' : 'border-l-emerald-600'
-                    } shadow-[0_4px_20px_-4px_rgba(0,0,0,0.12)] hover:shadow-2xl transition-all p-5 flex flex-col justify-between space-y-4`}
-                  >
+              return (
+                <div
+                  key={rep.id}
+                  className={`bg-white rounded-3xl border-2 border-slate-300 border-l-[6px] ${
+                    tieneBloqueo ? 'border-l-red-600' : 'border-l-emerald-600'
+                  } shadow-[0_4px_20px_-4px_rgba(0,0,0,0.12)] hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 p-5 flex flex-col justify-between space-y-4`}
+                >
                     <div className="space-y-3">
                       {/* Cabecera de la tarjeta con Semáforo Visual */}
                       <div className="flex items-start justify-between gap-2 border-b border-slate-200/80 pb-3">
@@ -342,10 +337,9 @@ export default function BitacoraPage() {
                         </span>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 );
               })}
-            </AnimatePresence>
           </div>
         )}
 

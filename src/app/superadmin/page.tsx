@@ -511,10 +511,9 @@ export default function SuperAdminPage() {
               const isActing = actionLoadingId === org.id;
 
               return (
-                <motion.div
+                <div
                   key={org.id}
-                  layout
-                  className={`bg-white rounded-3xl border p-6 flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-md ${
+                  className={`bg-white rounded-3xl border p-6 flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-1 ${
                     org.activo
                       ? 'border-slate-200/90 border-l-[6px] border-l-upt-navy-600'
                       : 'border-rose-200 bg-rose-50/20 border-l-[6px] border-l-rose-500'
@@ -631,7 +630,7 @@ export default function SuperAdminPage() {
                       </button>
                     )}
                   </div>
-                </motion.div>
+                </div>
               );
             })}
           </div>

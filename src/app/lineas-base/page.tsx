@@ -117,14 +117,14 @@ export default function LineasBasePage() {
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-black text-sm sm:text-base text-white tracking-tight truncate">
-                  Líneas Base (Baselines)
+                  Hitos Oficiales Congelados (Líneas Base)
                 </span>
                 <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase tracking-wider shrink-0 shadow-sm">
-                  RF-09 & RF-10
+                  Paso 4: Congelamiento
                 </span>
               </div>
               <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
-                Congelamiento atómico e inmutable de especificaciones aprobadas
+                Garantía de que nadie modificará el alcance pactado a ciegas
               </p>
             </div>
           </div>
@@ -135,15 +135,15 @@ export default function LineasBasePage() {
               className="px-2.5 py-1.5 text-xs font-bold rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
             >
               <Layers className="w-3.5 h-3.5 text-upt-gold" />
-              <span>Catálogo ECS</span>
+              <span>Entregables</span>
             </Link>
             <Link
               href="/lineas-base/nueva"
               className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-500 hover:from-amber-400 hover:to-upt-gold text-upt-navy-950 font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition flex items-center gap-1.5 shrink-0 active:scale-95"
             >
               <Plus className="w-4 h-4 stroke-[3]" />
-              <span className="hidden sm:inline">Establecer Línea Base</span>
-              <span className="sm:hidden font-bold">Nueva LB</span>
+              <span className="hidden sm:inline">Congelar Nuevo Hito</span>
+              <span className="sm:hidden font-bold">Nuevo Hito</span>
             </Link>
           </div>
 
@@ -154,10 +154,7 @@ export default function LineasBasePage() {
       <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
         
         {/* Banner Explicativo */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+        <div
           className="bg-gradient-to-br from-upt-navy-900 via-slate-900 to-upt-navy-800 rounded-3xl p-5 sm:p-7 text-white shadow-2xl border-2 border-upt-navy-700/80 relative overflow-hidden"
         >
           <div className="absolute right-0 top-0 w-80 h-full bg-gradient-to-l from-upt-gold/15 to-transparent pointer-events-none" />
@@ -166,14 +163,14 @@ export default function LineasBasePage() {
             <div className="space-y-2 max-w-3xl">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-upt-gold/20 text-upt-gold border border-upt-gold/40 text-[11px] font-black uppercase tracking-wider">
                 <Lock className="w-3.5 h-3.5" />
-                <span>Etapa 3: Inmutabilidad Transaccional (RNF-08)</span>
+                <span>Paso 4 del Proceso Oficial</span>
               </div>
               <h2 className="text-lg sm:text-2xl font-black text-white tracking-tight">
-                ¿Qué hace una Línea Base en este Sistema?
+                ¿Qué es un Hito Congelado (Línea Base)?
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Toma una <strong className="text-white font-bold">«fotografía congelada»</strong> de todos los artefactos aprobados por el especialista técnico. 
-                Una vez establecida, nadie en ventas ni en gerencia puede alterar el alcance sin abrir formalmente una 
+                Toma una <strong className="text-white font-bold">«fotografía congelada e inmutable»</strong> de todos los entregables aprobados formalmente. 
+                Una vez establecida, nadie en el equipo, ventas ni gerencia puede alterar los requerimientos o código sin abrir formalmente una 
                 <strong className="text-upt-gold"> Solicitud de Cambio (RFC)</strong>.
               </p>
             </div>
@@ -189,13 +186,10 @@ export default function LineasBasePage() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Consola de Búsqueda y Filtros de Alto Contraste */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, delay: 0.05 }}
+        <div
           className="bg-white p-4 sm:p-5 rounded-3xl border-2 border-slate-300 shadow-lg space-y-3 sm:space-y-4"
         >
           <div className="flex items-center justify-between">
@@ -255,7 +249,7 @@ export default function LineasBasePage() {
               <span>Buscar</span>
             </button>
           </form>
-        </motion.div>
+        </div>
 
         {/* Grilla de Líneas Base con Borde y Sombras de Alta Visibilidad */}
         {loading ? (
@@ -285,21 +279,16 @@ export default function LineasBasePage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-            <AnimatePresence>
-              {lineasBase.map((lb, index) => {
-                const esVigente = lb.estado === 'VIGENTE';
+            {lineasBase.map((lb) => {
+              const esVigente = lb.estado === 'VIGENTE';
 
-                return (
-                  <motion.div
-                    key={lb.id}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.04 }}
-                    whileHover={{ y: -4, transition: { duration: 0.15 } }}
-                    className={`bg-white rounded-3xl border-2 border-slate-300 border-l-[6px] ${
-                      esVigente ? 'border-l-emerald-500' : 'border-l-slate-400'
-                    } shadow-[0_4px_20px_-4px_rgba(0,0,0,0.12)] hover:shadow-2xl hover:border-upt-gold/80 transition-all duration-200 flex flex-col justify-between overflow-hidden group`}
-                  >
+              return (
+                <div
+                  key={lb.id}
+                  className={`bg-white rounded-3xl border-2 border-slate-300 border-l-[6px] ${
+                    esVigente ? 'border-l-emerald-500' : 'border-l-slate-400'
+                  } shadow-[0_4px_20px_-4px_rgba(0,0,0,0.12)] hover:shadow-2xl hover:border-upt-gold/80 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between overflow-hidden group`}
+                >
                     <div>
                       {/* Header de la Tarjeta */}
                       <div className="p-4 sm:p-5 pb-3 border-b border-slate-200/80 bg-gradient-to-br from-slate-50 to-white flex items-start justify-between gap-2.5">
@@ -384,10 +373,9 @@ export default function LineasBasePage() {
                         <ChevronRight className="w-4 h-4 text-upt-gold group-hover/btn:translate-x-1.5 transition-transform" />
                       </Link>
                     </div>
-                  </motion.div>
+                  </div>
                 );
               })}
-            </AnimatePresence>
           </div>
         )}
       </main>

@@ -1,3 +1,6 @@
+# TypeScript build info
+*.tsbuildinfo
+
 # Node dependencies
 node_modules/
 npm-debug.log*
