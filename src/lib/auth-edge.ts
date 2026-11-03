@@ -11,6 +11,9 @@ export interface UserSessionPayload {
   organizacionId: string;
   organizacionNombre: string;
   rubro: RubroIndustria;
+  isSupervising?: boolean;
+  originalOrgId?: string;
+  originalOrgNombre?: string;
 }
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key-change-in-production-min-32-chars-utp-clara';

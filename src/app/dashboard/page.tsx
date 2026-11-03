@@ -29,6 +29,8 @@ import {
   Printer,
   Terminal,
   ShieldAlert,
+  Eye,
+  ArrowLeft,
 } from 'lucide-react';
 
 interface UserData {
@@ -38,6 +40,8 @@ interface UserData {
   rol: string;
   organizacionNombre: string;
   rubro: string;
+  isSupervising?: boolean;
+  originalOrgNombre?: string;
 }
 
 interface BloqueoActivo {
@@ -119,6 +123,19 @@ export default function DashboardPage() {
     router.refresh();
   };
 
+  const handleRevertSuperadmin = async () => {
+    try {
+      const res = await fetch('/api/superadmin/impersonate/revert', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        router.push(data.redirectUrl || '/superadmin');
+        router.refresh();
+      }
+    } catch {
+      alert('Error al volver al panel SuperAdmin');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-900 text-white gap-3 p-4">
@@ -136,6 +153,25 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
+      {/* Banner de Modo Supervisión SuperAdmin */}
+      {user?.isSupervising && (
+        <div className="bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 px-4 py-2 font-bold text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-between gap-2 shadow-inner border-b-2 border-amber-600 z-50">
+          <div className="flex items-center gap-2">
+            <Eye className="w-4 h-4 text-slate-950 animate-pulse shrink-0" />
+            <span>
+              <strong>Modo Supervisión Global:</strong> Estás auditando el entorno de{' '}
+              <strong className="underline underline-offset-2">{user.organizacionNombre}</strong> como SuperAdministrador.
+            </span>
+          </div>
+          <button
+            onClick={handleRevertSuperadmin}
+            className="px-3 py-1.5 rounded-xl bg-slate-950 text-amber-300 font-extrabold text-xs hover:bg-slate-800 transition shadow flex items-center gap-1.5 shrink-0 active:scale-95"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" /> Volver al Panel SuperAdmin
+          </button>
+        </div>
+      )}
+
       {/* Top Navbar Institucional Unificada y Mobile-First */}
       <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-xl sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-0 sm:h-16 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">

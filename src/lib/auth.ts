@@ -14,6 +14,9 @@ export interface UserSessionPayload {
   organizacionId: string;
   organizacionNombre: string;
   rubro: RubroIndustria;
+  isSupervising?: boolean;
+  originalOrgId?: string;
+  originalOrgNombre?: string;
 }
 
 // -------------------------------------------------------------

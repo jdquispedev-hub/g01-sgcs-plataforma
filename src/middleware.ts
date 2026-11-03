@@ -11,6 +11,9 @@ const ROUTE_PERMISSIONS: { pattern: RegExp; roles: string[] }[] = [
   { pattern: /^\/lineas-base(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR'] },
   { pattern: /^\/cambios(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
   { pattern: /^\/trazabilidad(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
+  { pattern: /^\/usuarios(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR'] },
+  { pattern: /^\/auditoria(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR'] },
+  { pattern: /^\/reportes(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR'] },
 ];
 
 export async function middleware(request: NextRequest) {
