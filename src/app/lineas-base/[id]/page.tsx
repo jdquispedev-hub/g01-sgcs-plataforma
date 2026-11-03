@@ -157,31 +157,32 @@ export default function DetalleLineaBasePage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col print:bg-white print:p-0">
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col print:bg-white print:p-0">
       {/* Top Navbar (oculta al imprimir) */}
-      <header className="bg-upt-navy-700 text-white border-b-2 border-upt-gold shadow-md sticky top-0 z-30 print:hidden">
+      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-lg sticky top-0 z-30 print:hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
               href="/lineas-base"
-              className="p-2 rounded-xl bg-upt-navy-600 hover:bg-upt-navy-500 text-upt-gold transition"
+              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30"
+              title="Volver a Líneas Base"
             >
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-base tracking-tight">{lineaBase.codigo}</span>
+                <span className="font-black text-base text-white tracking-tight">{lineaBase.codigo}</span>
                 {lineaBase.estado === 'VIGENTE' ? (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-black border border-emerald-500/40 uppercase">
                     Vigente
                   </span>
                 ) : (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-400/20 text-slate-300 font-bold border border-slate-400/40">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-400/20 text-slate-300 font-black border border-slate-400/40 uppercase">
                     Obsoleta
                   </span>
                 )}
               </div>
-              <span className="text-[11px] text-slate-300">Acta Oficial de Configuración Inmutable (RF-10)</span>
+              <span className="text-[11px] text-slate-400">Acta Oficial de Configuración Inmutable (RF-10)</span>
             </div>
           </div>
 
@@ -198,7 +199,7 @@ export default function DetalleLineaBasePage() {
       {/* Main Container */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-6 print:max-w-none print:p-0 print:space-y-4">
         {/* Encabezado del Acta Oficial */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm print:shadow-none print:border-none print:p-4 space-y-6">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-slate-300 shadow-md print:shadow-none print:border-none print:p-4 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-100 pb-6">
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -273,7 +274,7 @@ export default function DetalleLineaBasePage() {
         </div>
 
         {/* Tabla Detallada de Especificaciones y Versiones Congeladas */}
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden print:shadow-none print:border">
+        <div className="bg-white rounded-3xl border-2 border-slate-300 shadow-md overflow-hidden print:shadow-none print:border">
           <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
             <div className="flex items-center gap-2">
               <FileCheck2 className="w-5 h-5 text-upt-gold" />

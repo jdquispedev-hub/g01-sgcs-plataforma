@@ -19,7 +19,14 @@ import {
   FolderGit2,
   AlertCircle,
   Loader2,
-  Lock
+  Lock,
+  Code2,
+  FileSpreadsheet,
+  Compass,
+  Check,
+  Tag,
+  Info,
+  Sparkles,
 } from 'lucide-react';
 
 interface EcsItem {
@@ -105,8 +112,8 @@ export default function EcsPage() {
 
   const handleCreateEcs = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormError(null);
     setSaving(true);
+    setFormError(null);
 
     try {
       const res = await fetch('/api/ecs', {
@@ -114,11 +121,11 @@ export default function EcsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           proyecto_id: proyectoId,
-          codigo,
-          nombre,
+          codigo: codigo.trim().toUpperCase(),
+          nombre: nombre.trim(),
           tipo,
-          descripcion,
-          ubicacion,
+          descripcion: descripcion.trim() || undefined,
+          ubicacion: ubicacion.trim(),
           responsable_id: responsableId,
         }),
       });
@@ -130,7 +137,6 @@ export default function EcsPage() {
         return;
       }
 
-      // Éxito: cerrar modal y recargar lista
       setModalOpen(false);
       setCodigo('');
       setNombre('');
@@ -148,58 +154,77 @@ export default function EcsPage() {
     switch (estado) {
       case 'APROBADA':
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <CheckCircle2 className="w-3 h-3" /> Aprobada
+          <span className="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Aprobada
           </span>
         );
       case 'RECHAZADA':
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200">
-            <XCircle className="w-3 h-3" /> Rechazada
+          <span className="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-300">
+            <XCircle className="w-3.5 h-3.5 text-red-600" /> Rechazada
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
-            <Clock className="w-3 h-3" /> Pendiente
+          <span className="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
+            <Clock className="w-3.5 h-3.5 text-amber-600" /> Pendiente
           </span>
         );
     }
   };
 
+  const getTipoStyle = (tipo: string) => {
+    switch (tipo) {
+      case 'CODIGO_FUENTE':
+        return { label: 'Código Fuente', color: 'bg-blue-100 text-blue-900 border-blue-300', icon: Code2 };
+      case 'DISENO':
+        return { label: 'Diseño / Planos', color: 'bg-purple-100 text-purple-900 border-purple-300', icon: Layers };
+      case 'BASE_DATOS':
+        return { label: 'Base de Datos', color: 'bg-amber-100 text-amber-900 border-amber-300', icon: FileSpreadsheet };
+      case 'DOCUMENTO':
+      default:
+        return { label: 'Documento / Req.', color: 'bg-slate-100 text-slate-800 border-slate-300', icon: FileText };
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/* Top Navbar */}
-      <header className="bg-upt-navy-700 text-white border-b-2 border-upt-gold shadow-md sticky top-0 z-30">
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col">
+      {/* Top Navbar Unificada */}
+      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-lg sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
               href="/dashboard"
-              className="p-2 rounded-xl bg-upt-navy-600 hover:bg-upt-navy-500 text-upt-gold transition"
+              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30"
+              title="Volver al Dashboard"
             >
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-base tracking-tight">Elementos de Configuración (ECS)</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-upt-gold/20 text-upt-gold font-bold border border-upt-gold/40">
+                <span className="font-black text-base text-white tracking-tight">
+                  Elementos de Configuración (ECS)
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase">
                   RF-04 a RF-08
                 </span>
               </div>
-              <span className="text-[11px] text-slate-300">Catálogo oficial de artefactos, planos y versiones</span>
+              <span className="text-[11px] text-slate-400">
+                Inventario de artefactos, control de versiones y dictamen técnico
+              </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Link
               href="/lineas-base"
-              className="hidden sm:inline-flex px-3 py-1.5 text-xs font-semibold rounded-xl text-slate-300 hover:text-white hover:bg-upt-navy-600 transition items-center gap-1.5"
+              className="hidden sm:inline-flex px-3.5 py-1.5 text-xs font-semibold rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition items-center gap-1.5"
             >
               <Lock className="w-4 h-4 text-upt-gold" /> Líneas Base
             </Link>
             <button
               onClick={() => setModalOpen(true)}
-              className="px-4 py-2 rounded-xl bg-upt-gold hover:bg-upt-gold-600 text-upt-navy-900 font-bold text-xs sm:text-sm shadow-md transition flex items-center gap-1.5"
+              className="px-4 py-2 rounded-xl bg-upt-gold hover:bg-upt-gold-600 text-upt-navy-950 font-black text-xs sm:text-sm shadow-md transition flex items-center gap-1.5"
             >
               <Plus className="w-4 h-4" /> Nuevo ECS
             </button>
@@ -208,294 +233,373 @@ export default function EcsPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
-        {/* Barra de Filtros y Búsqueda (RNF-04, RF-05) */}
-        <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
-          <form onSubmit={handleSearchSubmit} className="relative flex-1 w-full">
-            <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Buscar por código (ej. ECS-001) o nombre del artefacto..."
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500 transition"
-            />
-          </form>
-
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <Filter className="w-4 h-4 text-slate-400 shrink-0" />
-            <select
-              value={tipoFiltro}
-              onChange={(e) => setTipoFiltro(e.target.value)}
-              className="w-full md:w-auto px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm font-medium text-slate-700 focus:bg-white focus:ring-2 focus:ring-upt-navy-500 transition"
-            >
-              <option value="">Todos los tipos</option>
-              <option value="DOCUMENTO">Documentos / Requisitos</option>
-              <option value="CODIGO_FUENTE">Código Fuente / Endpoints</option>
-              <option value="DISENO">Diseño / UI / Planos</option>
-              <option value="BASE_DATOS">Base de Datos / Esquemas</option>
-              <option value="CASO_PRUEBA">Casos de Prueba / Analítica</option>
-            </select>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
+        
+        {/* Banner de Contexto: ¿Qué es un ECS? */}
+        <div className="bg-gradient-to-r from-upt-navy-900 to-slate-800 rounded-3xl p-6 text-white border border-upt-navy-700 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-upt-gold text-xs font-bold uppercase tracking-wider">
+              <Layers className="w-4 h-4" />
+              <span>Etapa 2: Pre-Factibilidad y Control Técnico</span>
+            </div>
+            <h2 className="text-xl font-black text-white">
+              ¿Qué representa cada Elemento de Configuración (ECS)?
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+              Es un entregable clave del proyecto (un módulo de software, un plano o una especificación). 
+              Cada versión propuesta por un desarrollador debe ser <strong className="text-emerald-400">APROBADA</strong> por el especialista antes de poder congelarse en una Línea Base.
+            </p>
+          </div>
+          <div className="bg-white/10 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/10 text-center shrink-0">
+            <span className="text-[10px] text-slate-300 uppercase font-black block">Total Artefactos</span>
+            <span className="text-2xl font-black text-upt-gold">{ecsList.length} ECS</span>
           </div>
         </div>
 
-        {/* Tabla / Lista de ECS (RNF-06 Responsive) */}
+        {/* Consola de Búsqueda y Filtros de Alto Contraste */}
+        <div className="bg-white p-5 rounded-3xl border-2 border-slate-300 shadow-md space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <Search className="w-4 h-4 text-upt-gold-600" />
+              <span>Buscador y Filtros de Artefactos</span>
+            </span>
+            <span className="text-xs font-bold text-slate-500">
+              Mostrando {ecsList.length} elementos encontrados
+            </span>
+          </div>
+
+          <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-3">
+            {/* Input de Búsqueda con Alto Contraste */}
+            <div className="relative flex-1">
+              <Search className="w-5 h-5 absolute left-3.5 top-3 text-upt-gold-600" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Escribe el código (ej. ECS-MOD-PAGOS) o nombre del artefacto..."
+                className="w-full pl-11 pr-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition"
+              />
+            </div>
+
+            {/* Selector de Tipo */}
+            <div className="sm:w-60">
+              <select
+                value={tipoFiltro}
+                onChange={(e) => setTipoFiltro(e.target.value)}
+                className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition cursor-pointer"
+              >
+                <option value="">Todos los Tipos de ECS</option>
+                <option value="DOCUMENTO">Documentos / Requisitos</option>
+                <option value="CODIGO_FUENTE">Código Fuente / Módulos</option>
+                <option value="DISENO">Diseño / UI / Planos</option>
+                <option value="BASE_DATOS">Base de Datos / Tablas</option>
+                <option value="CASO_PRUEBA">Casos de Prueba</option>
+              </select>
+            </div>
+
+            {/* Botón Buscar */}
+            <button
+              type="submit"
+              className="px-6 py-2.5 rounded-2xl bg-upt-navy-700 hover:bg-upt-navy-800 text-upt-gold font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 shrink-0"
+            >
+              <Search className="w-4 h-4" />
+              <span>Buscar</span>
+            </button>
+          </form>
+        </div>
+
+        {/* Grilla de Elementos de Configuración (ECS) */}
         {loading ? (
-          <div className="py-20 flex flex-col items-center justify-center text-slate-400">
-            <Loader2 className="w-8 h-8 animate-spin text-upt-navy-600 mb-3" />
-            <p className="text-sm font-semibold">Consultando catálogo de ECS...</p>
+          <div className="p-16 text-center bg-white rounded-3xl border-2 border-slate-200 shadow-sm">
+            <Loader2 className="w-10 h-10 animate-spin text-upt-navy-700 mx-auto mb-3" />
+            <p className="text-xs font-black text-slate-700 uppercase tracking-wider">
+              Consultando catálogo oficial de ECS...
+            </p>
           </div>
         ) : ecsList.length === 0 ? (
-          <div className="bg-white rounded-3xl border border-dashed border-slate-300 p-12 text-center">
-            <div className="w-12 h-12 rounded-2xl bg-upt-navy-50 text-upt-navy-600 flex items-center justify-center mx-auto mb-3">
-              <Layers className="w-6 h-6" />
+          <div className="bg-white rounded-3xl border-2 border-dashed border-slate-300 p-12 text-center shadow-sm">
+            <div className="w-14 h-14 rounded-2xl bg-upt-navy-50 text-upt-navy-700 flex items-center justify-center mx-auto mb-3 border border-upt-navy-200">
+              <Layers className="w-7 h-7" />
             </div>
-            <h3 className="font-bold text-slate-800 text-base">No se encontraron Elementos de Configuración</h3>
-            <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">
-              Comienza registrando el primer ECS (documento, módulo o plano) para iniciar el control de versiones formal.
+            <h3 className="font-black text-slate-900 text-base">
+              No se encontraron Elementos de Configuración
+            </h3>
+            <p className="text-xs text-slate-600 mt-1 max-w-md mx-auto leading-relaxed">
+              No hay artefactos que coincidan con la búsqueda. Puedes registrar un nuevo ECS o limpiar los filtros.
             </p>
             <button
-              onClick={() => setModalOpen(true)}
-              className="mt-4 px-4 py-2 rounded-xl bg-upt-navy-600 hover:bg-upt-navy-700 text-white font-bold text-xs shadow-md transition"
+              onClick={() => {
+                setSearch('');
+                setTipoFiltro('');
+              }}
+              className="mt-4 px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs transition mr-2"
             >
-              Registrar Primer ECS
+              Limpiar Búsqueda
+            </button>
+            <button
+              onClick={() => setModalOpen(true)}
+              className="mt-4 px-5 py-2 rounded-xl bg-upt-navy-700 hover:bg-upt-navy-800 text-upt-gold font-black text-xs shadow-md transition"
+            >
+              + Registrar Nuevo ECS
             </button>
           </div>
         ) : (
-          <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs sm:text-sm">
-                <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-600 text-[11px] font-bold uppercase tracking-wider">
-                  <tr>
-                    <th className="py-3.5 px-4 sm:px-6">Código / Artefacto</th>
-                    <th className="py-3.5 px-4">Tipo</th>
-                    <th className="py-3.5 px-4">Proyecto / Caso</th>
-                    <th className="py-3.5 px-4">Responsable</th>
-                    <th className="py-3.5 px-4">Última Versión</th>
-                    <th className="py-3.5 px-4 text-right">Acción</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {ecsList.map((item) => {
-                    const ultimaVersion = item.versiones[0];
-                    return (
-                      <tr key={item.id} className="hover:bg-slate-50/60 transition group">
-                        <td className="py-4 px-4 sm:px-6">
-                          <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-upt-navy-50 text-upt-navy-600 flex items-center justify-center shrink-0 border border-upt-navy-100">
-                              <FileText className="w-4 h-4" />
-                            </div>
-                            <div>
-                              <span className="font-mono text-xs font-bold text-upt-navy-700 bg-upt-navy-50 px-2 py-0.5 rounded border border-upt-navy-100">
-                                {item.codigo}
-                              </span>
-                              <p className="font-bold text-slate-900 mt-1 text-xs sm:text-sm">{item.nombre}</p>
-                              {item.descripcion && (
-                                <p className="text-[11px] text-slate-500 line-clamp-1">{item.descripcion}</p>
-                              )}
-                            </div>
-                          </div>
-                        </td>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {ecsList.map((item) => {
+              const tipoInfo = getTipoStyle(item.tipo);
+              const TipoIcon = tipoInfo.icon;
+              const ultimaVersion = item.versiones[0];
 
-                        <td className="py-4 px-4">
-                          <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
-                            {item.tipo}
+              return (
+                <div
+                  key={item.id}
+                  className="bg-white rounded-3xl border-2 border-slate-200 shadow-md hover:border-upt-navy-600 hover:shadow-xl transition-all duration-200 flex flex-col justify-between overflow-hidden group"
+                >
+                  <div>
+                    {/* Header de la Tarjeta */}
+                    <div className="p-5 pb-3 border-b border-slate-100 flex items-start justify-between gap-3 bg-gradient-to-br from-slate-50 to-white">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                          <span className="font-mono text-xs font-black text-upt-navy-800 bg-upt-navy-50 px-2.5 py-1 rounded-xl border border-upt-navy-200">
+                            {item.codigo}
                           </span>
-                        </td>
+                          <span className="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
+                            {item.proyecto.codigo}
+                          </span>
+                        </div>
+                        <h3 className="font-black text-slate-900 text-sm group-hover:text-upt-navy-700 transition leading-snug">
+                          {item.nombre}
+                        </h3>
+                      </div>
 
-                        <td className="py-4 px-4">
-                          <p className="font-semibold text-slate-800 text-xs">{item.proyecto.nombre}</p>
-                          <span className="font-mono text-[10px] text-slate-400">{item.proyecto.codigo}</span>
-                        </td>
+                      {/* Pill de Tipo */}
+                      <span className={`inline-flex items-center gap-1 text-[10px] font-black px-2 py-1 rounded-xl border uppercase shrink-0 ${tipoInfo.color}`}>
+                        <TipoIcon className="w-3 h-3" />
+                        <span>{tipoInfo.label}</span>
+                      </span>
+                    </div>
 
-                        <td className="py-4 px-4">
-                          <div className="flex items-center gap-1.5 text-xs text-slate-700 font-medium">
-                            <User className="w-3.5 h-3.5 text-slate-400" />
-                            <span>{item.responsable.nombre_completo}</span>
-                          </div>
-                        </td>
+                    {/* Contenido de la Tarjeta */}
+                    <div className="p-5 py-4 space-y-3">
+                      <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                        {item.descripcion || 'Sin descripción descriptiva registrada.'}
+                      </p>
 
-                        <td className="py-4 px-4">
+                      <div className="text-[11px] text-slate-500 font-mono bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200 truncate">
+                        📍 {item.ubicacion}
+                      </div>
+
+                      {/* Estado de la última versión */}
+                      <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-bold text-slate-700">Última Versión:</span>
                           {ultimaVersion ? (
-                            <div className="flex items-center gap-2">
-                              <span className="font-mono font-bold text-xs bg-slate-100 px-1.5 py-0.5 rounded text-slate-800">
-                                v{ultimaVersion.numero_version}
-                              </span>
-                              {renderBadgeEstado(ultimaVersion.estado)}
-                            </div>
+                            <span className="font-mono font-black text-upt-navy-800 bg-white px-2 py-0.5 rounded-md border border-slate-200">
+                              v{ultimaVersion.numero_version}
+                            </span>
                           ) : (
-                            <span className="text-[11px] text-slate-400 italic">Sin versiones</span>
+                            <span className="text-slate-400 italic">Sin versiones</span>
                           )}
-                        </td>
+                        </div>
+                        {ultimaVersion && renderBadgeEstado(ultimaVersion.estado)}
+                      </div>
 
-                        <td className="py-4 px-4 text-right">
-                          <Link
-                            href={`/ecs/${item.id}`}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-upt-navy-600 hover:text-white text-slate-700 font-bold text-xs transition"
-                          >
-                            <span>Detalle & Versiones</span>
-                            <ChevronRight className="w-3.5 h-3.5" />
-                          </Link>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                      {/* Responsable */}
+                      <div className="flex items-center gap-1.5 text-[11px] text-slate-600 pt-1">
+                        <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        <span className="truncate">
+                          Responsable: <strong className="text-slate-800 font-bold">{item.responsable.nombre_completo}</strong>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer con Enlace a la Ficha y Versiones */}
+                  <div className="p-4 pt-0">
+                    <Link
+                      href={`/ecs/${item.id}`}
+                      className="w-full py-2.5 px-4 rounded-xl bg-upt-navy-50 hover:bg-upt-navy-700 text-upt-navy-800 hover:text-upt-gold font-black text-xs transition flex items-center justify-center gap-1.5 group/btn border border-upt-navy-100"
+                    >
+                      <span>Ver Ficha, Versiones y Dictamen</span>
+                      <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
+
       </main>
 
-      {/* Modal Nuevo ECS (RF-04, RNF-05) */}
+      {/* Modal Nuevo ECS (RF-04) */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-start mb-5">
-              <div>
-                <h3 className="text-lg font-black text-slate-900">Registrar Elemento de Configuración</h3>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Alta de artefacto, documento o módulo con código único (RF-04)
-                </p>
+        <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border-2 border-slate-200 space-y-5 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-upt-navy-50 text-upt-navy-700 flex items-center justify-center border border-upt-navy-200">
+                  <Plus className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-slate-900">
+                    Registrar Nuevo Elemento de Configuración
+                  </h3>
+                  <span className="text-[11px] text-slate-500 font-medium">RF-04 • Alta de artefacto bajo control de versiones</span>
+                </div>
               </div>
               <button
                 onClick={() => setModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 text-sm font-bold p-1"
+                className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center"
               >
                 ✕
               </button>
             </div>
 
             {formError && (
-              <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-600" />
+              <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs font-bold flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
                 <span>{formError}</span>
               </div>
             )}
 
             <form onSubmit={handleCreateEcs} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Proyecto / Caso Asociado <span className="text-upt-garnet-500">*</span>
-                </label>
-                <select
-                  required
-                  value={proyectoId}
-                  onChange={(e) => setProyectoId(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500"
-                >
-                  {auxData.proyectos.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.codigo} - {p.nombre}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Proyecto */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Código Único <span className="text-upt-garnet-500">*</span>
+                  <label className="block text-xs font-black text-slate-700 mb-1">
+                    Proyecto / Caso <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={proyectoId}
+                    onChange={(e) => setProyectoId(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 transition"
+                  >
+                    {auxData.proyectos.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.codigo} - {p.nombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Código */}
+                <div>
+                  <label className="block text-xs font-black text-slate-700 mb-1">
+                    Código Identificador <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
-                    required
                     value={codigo}
                     onChange={(e) => setCodigo(e.target.value.toUpperCase())}
-                    placeholder="Ej. ECS-REQ-001"
-                    className="w-full px-3 py-2 font-mono uppercase bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500"
+                    placeholder="Ej. ECS-MOD-AUTH"
+                    className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-mono font-black uppercase text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
                   />
                 </div>
+
+                {/* Nombre */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-black text-slate-700 mb-1">
+                    Nombre del Artefacto <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={nombre}
+                    onChange={(e) => setNombre(e.target.value)}
+                    placeholder="Ej. Módulo de Autenticación JWT y Roles RBAC"
+                    className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
+                  />
+                </div>
+
+                {/* Tipo */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Tipo de Elemento <span className="text-upt-garnet-500">*</span>
+                  <label className="block text-xs font-black text-slate-700 mb-1">
+                    Tipo de Artefacto <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={tipo}
                     onChange={(e) => setTipo(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500"
+                    className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 transition"
                   >
-                    <option value="DOCUMENTO">Documento / Especificación</option>
-                    <option value="CODIGO_FUENTE">Código Fuente / Módulo</option>
+                    <option value="DOCUMENTO">Documento / Requisito</option>
+                    <option value="CODIGO_FUENTE">Código Fuente</option>
                     <option value="DISENO">Diseño / Plano Arquitectónico</option>
-                    <option value="BASE_DATOS">Base de Datos / Script</option>
-                    <option value="CASO_PRUEBA">Casos de Prueba / Protocolo</option>
+                    <option value="BASE_DATOS">Base de Datos / Esquema</option>
+                    <option value="CASO_PRUEBA">Caso de Prueba</option>
                   </select>
+                </div>
+
+                {/* Responsable */}
+                <div>
+                  <label className="block text-xs font-black text-slate-700 mb-1">
+                    Especialista Responsable <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={responsableId}
+                    onChange={(e) => setResponsableId(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 transition"
+                  >
+                    {auxData.usuarios.map((u) => (
+                      <option key={u.id} value={u.id}>
+                        {u.nombre_completo}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Ubicación */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-black text-slate-700 mb-1">
+                    Ubicación Física o Enlace de Repositorio <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={ubicacion}
+                    onChange={(e) => setUbicacion(e.target.value)}
+                    placeholder="Ej. git://github.com/org/repo o Carpeta Servidor /docs/planos"
+                    className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-mono font-semibold text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
+                  />
+                </div>
+
+                {/* Descripción */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-black text-slate-700 mb-1">
+                    Descripción Técnica
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={descripcion}
+                    onChange={(e) => setDescripcion(e.target.value)}
+                    placeholder="Especificaciones o alcance de este artefacto..."
+                    className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-medium text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
+                  />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Nombre del Elemento <span className="text-upt-garnet-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={nombre}
-                  onChange={(e) => setNombre(e.target.value)}
-                  placeholder="Ej. Especificación de Requerimientos de Pagos"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Ubicación Física o Repositorio <span className="text-upt-garnet-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={ubicacion}
-                  onChange={(e) => setUbicacion(e.target.value)}
-                  placeholder="Ej. https://github.com/... o /docs/planos/piso1.dwg"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Responsable Asignado <span className="text-upt-garnet-500">*</span>
-                </label>
-                <select
-                  required
-                  value={responsableId}
-                  onChange={(e) => setResponsableId(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500"
-                >
-                  {auxData.usuarios.map((u) => (
-                    <option key={u.id} value={u.id}>
-                      {u.nombre_completo} ({u.email})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Descripción Detallada</label>
-                <textarea
-                  rows={2}
-                  value={descripcion}
-                  onChange={(e) => setDescripcion(e.target.value)}
-                  placeholder="Alcance, objetivo e insumos de este elemento de configuración..."
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500"
-                ></textarea>
-              </div>
-
-              <div className="pt-3 flex gap-3 justify-end">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition"
+                  className="px-4 py-2 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-100 transition"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-5 py-2 rounded-xl bg-upt-navy-600 hover:bg-upt-navy-700 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5 disabled:opacity-60"
+                  className="px-5 py-2.5 rounded-xl bg-upt-navy-700 hover:bg-upt-navy-800 text-upt-gold font-black text-xs shadow-md transition flex items-center gap-2"
                 >
-                  {saving ? <Loader2 className="w-4 h-4 animate-spin text-upt-gold" /> : <Plus className="w-4 h-4" />}
-                  <span>Registrar ECS</span>
+                  {saving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Registrando...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-4 h-4" />
+                      <span>Registrar Artefacto (ECS)</span>
+                    </>
+                  )}
                 </button>
               </div>
             </form>

@@ -205,38 +205,39 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col">
       {/* Top Navbar */}
-      <header className="bg-upt-navy-700 text-white border-b-2 border-upt-gold shadow-md sticky top-0 z-30">
+      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-lg sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
               href="/ecs"
-              className="p-2 rounded-xl bg-upt-navy-600 hover:bg-upt-navy-500 text-upt-gold transition"
+              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30"
+              title="Volver al Catálogo ECS"
             >
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-mono text-xs font-bold text-upt-gold bg-upt-navy-600 px-2 py-0.5 rounded border border-upt-gold/30">
+                <span className="font-mono text-xs font-black text-upt-gold bg-upt-navy-800 px-2 py-0.5 rounded border border-upt-gold/30">
                   {ecs.codigo}
                 </span>
-                <span className="font-bold text-base tracking-tight truncate max-w-xs sm:max-w-md">{ecs.nombre}</span>
+                <span className="font-black text-base tracking-tight truncate max-w-xs sm:max-w-md text-white">{ecs.nombre}</span>
               </div>
-              <span className="text-[11px] text-slate-300">Gestión de versiones y ciclo de vida (RF-07, RF-08)</span>
+              <span className="text-[11px] text-slate-400">Gestión de versiones y ciclo de vida (RF-07, RF-08)</span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={() => setModalEditOpen(true)}
-              className="px-3.5 py-2 rounded-xl bg-upt-navy-600 hover:bg-upt-navy-500 text-white font-bold text-xs transition flex items-center gap-1.5 border border-white/10"
+              className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition flex items-center gap-1.5 border border-white/10"
             >
               <Edit3 className="w-4 h-4 text-upt-gold" /> Editar ECS
             </button>
             <button
               onClick={() => setModalVersionOpen(true)}
-              className="px-4 py-2 rounded-xl bg-upt-gold hover:bg-upt-gold-600 text-upt-navy-900 font-bold text-xs shadow-md transition flex items-center gap-1.5"
+              className="px-4 py-2 rounded-xl bg-upt-gold hover:bg-upt-gold-600 text-upt-navy-950 font-black text-xs shadow-md transition flex items-center gap-1.5"
             >
               <Plus className="w-4 h-4" /> Nueva Versión
             </button>
@@ -247,7 +248,7 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
         {/* Ficha Resumen del ECS */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-slate-300 shadow-md">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Tipo de Elemento</p>
@@ -315,7 +316,7 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
               {ecs.versiones.map((v) => (
                 <div
                   key={v.id}
-                  className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-md transition flex flex-col md:flex-row justify-between gap-4 items-start md:items-center"
+                  className="bg-white rounded-3xl p-6 border-2 border-slate-300 shadow-md hover:shadow-xl transition flex flex-col md:flex-row justify-between gap-4 items-start md:items-center"
                 >
                   <div className="space-y-2 flex-1">
                     <div className="flex items-center gap-3">

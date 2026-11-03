@@ -20,6 +20,8 @@ import {
   Calendar,
   AlertCircle,
   FileCheck2,
+  Loader2,
+  Sparkles,
 } from 'lucide-react';
 
 interface LineaBaseItem {
@@ -97,38 +99,43 @@ export default function LineasBasePage() {
   const totalObsoletas = lineasBase.filter((lb) => lb.estado === 'OBSOLETA').length;
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/* Top Navbar */}
-      <header className="bg-upt-navy-700 text-white border-b-2 border-upt-gold shadow-md sticky top-0 z-30">
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col">
+      {/* Top Navbar Unificada */}
+      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-lg sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
               href="/dashboard"
-              className="p-2 rounded-xl bg-upt-navy-600 hover:bg-upt-navy-500 text-upt-gold transition"
+              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30"
+              title="Volver al Dashboard"
             >
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-base tracking-tight">Líneas Base (Baselines)</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-upt-gold/20 text-upt-gold font-bold border border-upt-gold/40">
+                <span className="font-black text-base text-white tracking-tight">
+                  Líneas Base (Baselines)
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase">
                   RF-09 & RF-10
                 </span>
               </div>
-              <span className="text-[11px] text-slate-300">Congelamiento formal e inmutable de versiones aprobadas</span>
+              <span className="text-[11px] text-slate-400">
+                Congelamiento atómico e inmutable de especificaciones técnicas aprobadas
+              </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Link
               href="/ecs"
-              className="hidden sm:inline-flex px-3 py-1.5 text-xs font-semibold rounded-xl text-slate-300 hover:text-white hover:bg-upt-navy-600 transition items-center gap-1.5"
+              className="hidden sm:inline-flex px-3.5 py-1.5 text-xs font-semibold rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition items-center gap-1.5"
             >
-              <Layers className="w-4 h-4" /> Catálogo ECS
+              <Layers className="w-4 h-4 text-upt-gold" /> Catálogo ECS
             </Link>
             <Link
               href="/lineas-base/nueva"
-              className="px-4 py-2 rounded-xl bg-upt-gold hover:bg-upt-gold-600 text-upt-navy-900 font-bold text-xs sm:text-sm shadow-md transition flex items-center gap-1.5"
+              className="px-4 py-2 rounded-xl bg-upt-gold hover:bg-upt-gold-600 text-upt-navy-950 font-black text-xs sm:text-sm shadow-md transition flex items-center gap-1.5"
             >
               <Plus className="w-4 h-4" /> Establecer Línea Base
             </Link>
@@ -137,57 +144,72 @@ export default function LineasBasePage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
-        {/* Banner de Concepto Anti-Teléfono Descompuesto */}
-        <div className="bg-gradient-to-r from-upt-navy-700 to-upt-navy-900 rounded-3xl p-6 text-white mb-8 border border-upt-navy-500/30 shadow-lg relative overflow-hidden">
-          <div className="absolute right-0 top-0 w-80 h-full bg-gradient-to-l from-upt-gold/10 to-transparent pointer-events-none" />
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-upt-gold text-xs font-bold uppercase tracking-wider mb-1">
-                <Lock className="w-4 h-4" /> Principio de Inmutabilidad Técnica
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
+        
+        {/* Banner Explicativo: ¿Por qué la Línea Base erradica el teléfono descompuesto? */}
+        <div className="bg-gradient-to-r from-upt-navy-900 via-upt-navy-800 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-upt-navy-700 relative overflow-hidden">
+          <div className="absolute right-0 top-0 w-80 h-full bg-gradient-to-l from-upt-gold/15 to-transparent pointer-events-none" />
+          
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-2 max-w-3xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-upt-gold/20 text-upt-gold border border-upt-gold/40 text-xs font-bold uppercase tracking-wider">
+                <Lock className="w-3.5 h-3.5" />
+                <span>Etapa 3: Inmutabilidad Transaccional (RNF-08)</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-black text-white">
-                Líneas Base Formales del Sistema
+                ¿Qué hace una Línea Base en este Sistema?
               </h2>
-              <p className="text-slate-300 text-xs sm:text-sm max-w-2xl mt-1 leading-relaxed">
-                Una Línea Base congela de forma atómica y permanente un conjunto de especificaciones técnicas que cuentan con dictamen técnico formal 
-                (<span className="text-emerald-400 font-semibold">APROBADA</span>). Ninguna promesa o cambio posterior puede alterar esta base sin un proceso formal de RFC.
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                Toma una <strong className="text-white font-bold">«fotografía congelada»</strong> de todos los artefactos aprobados por el especialista técnico. 
+                Una vez establecida, nadie en ventas ni en gerencia puede alterar el alcance sin abrir formalmente una 
+                <strong className="text-upt-gold"> Solicitud de Cambio (RFC)</strong>.
               </p>
             </div>
+
             <div className="flex sm:flex-col gap-2 shrink-0">
-              <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-2xl border border-white/10 text-center">
-                <span className="text-[10px] text-slate-300 uppercase font-semibold">Líneas Vigentes</span>
-                <p className="text-xl font-black text-upt-gold">{totalVigentes}</p>
+              <div className="bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-white/10 text-center">
+                <span className="text-[10px] text-slate-300 uppercase font-black block">Líneas Vigentes</span>
+                <span className="text-2xl font-black text-emerald-400">{totalVigentes}</span>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-2xl border border-white/10 text-center">
-                <span className="text-[10px] text-slate-300 uppercase font-semibold">Históricas</span>
-                <p className="text-xl font-black text-slate-300">{totalObsoletas}</p>
+              <div className="bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-white/10 text-center">
+                <span className="text-[10px] text-slate-300 uppercase font-black block">Históricas / Obsoletas</span>
+                <span className="text-2xl font-black text-slate-300">{totalObsoletas}</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Filtros y Búsqueda */}
-        <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
-          <form onSubmit={handleSearchSubmit} className="relative flex-1 w-full">
-            <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Buscar por código (ej. LB-PRJ01-v1.0) o nombre de la línea base..."
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500 transition"
-            />
-          </form>
+        {/* Consola de Búsqueda y Filtros de Alto Contraste */}
+        <div className="bg-white p-5 rounded-3xl border-2 border-slate-300 shadow-md space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <Search className="w-4 h-4 text-upt-gold-600" />
+              <span>Buscador y Filtros de Líneas Base</span>
+            </span>
+            <span className="text-xs font-bold text-slate-500">
+              {lineasBase.length} líneas base registradas
+            </span>
+          </div>
 
-          <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full md:w-auto">
+          <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-3">
+            {/* Input de Búsqueda */}
+            <div className="relative flex-1">
+              <Search className="w-5 h-5 absolute left-3.5 top-3 text-upt-gold-600" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Buscar por código (ej. LB-PRJ-01) o título de la línea base..."
+                className="w-full pl-11 pr-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition"
+              />
+            </div>
+
             {/* Filtro Proyecto */}
-            <div className="flex items-center gap-2 flex-1 sm:flex-initial">
-              <FolderGit2 className="w-4 h-4 text-slate-400 shrink-0" />
+            <div className="sm:w-56">
               <select
                 value={proyectoFiltro}
                 onChange={(e) => setProyectoFiltro(e.target.value)}
-                className="w-full sm:w-48 px-3 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold focus:bg-white focus:ring-2 focus:ring-upt-navy-500 transition"
+                className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition cursor-pointer"
               >
                 <option value="">Todos los Proyectos</option>
                 {proyectos.map((p) => (
@@ -199,39 +221,53 @@ export default function LineasBasePage() {
             </div>
 
             {/* Filtro Estado */}
-            <div className="flex items-center gap-2 flex-1 sm:flex-initial">
-              <Filter className="w-4 h-4 text-slate-400 shrink-0" />
+            <div className="sm:w-44">
               <select
                 value={estadoFiltro}
                 onChange={(e) => setEstadoFiltro(e.target.value)}
-                className="w-full sm:w-36 px-3 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold focus:bg-white focus:ring-2 focus:ring-upt-navy-500 transition"
+                className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition cursor-pointer"
               >
                 <option value="">Todos los Estados</option>
-                <option value="VIGENTE">Vigente</option>
-                <option value="OBSOLETA">Obsoleta</option>
+                <option value="VIGENTE">Vigente (Activa)</option>
+                <option value="OBSOLETA">Obsoleta (Histórica)</option>
               </select>
             </div>
-          </div>
+
+            {/* Botón Buscar */}
+            <button
+              type="submit"
+              className="px-6 py-2.5 rounded-2xl bg-upt-navy-700 hover:bg-upt-navy-800 text-upt-gold font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 shrink-0"
+            >
+              <Search className="w-4 h-4" />
+              <span>Buscar</span>
+            </button>
+          </form>
         </div>
 
-        {/* Lista de Líneas Base */}
+        {/* Grilla de Líneas Base */}
         {loading ? (
-          <div className="p-12 text-center bg-white rounded-3xl border border-slate-200">
-            <div className="w-8 h-8 border-4 border-upt-navy-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-xs text-slate-500 font-semibold">Cargando catálogo de Líneas Base...</p>
+          <div className="p-16 text-center bg-white rounded-3xl border-2 border-slate-200 shadow-sm">
+            <Loader2 className="w-10 h-10 animate-spin text-upt-navy-700 mx-auto mb-3" />
+            <p className="text-xs font-black text-slate-700 uppercase tracking-wider">
+              Consultando registro de Líneas Base...
+            </p>
           </div>
         ) : lineasBase.length === 0 ? (
-          <div className="p-12 text-center bg-white rounded-3xl border border-dashed border-slate-300">
-            <ShieldCheck className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <h3 className="font-bold text-slate-700 text-base">No se encontraron Líneas Base</h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-6">
-              Aún no se ha establecido ninguna línea base para el criterio de búsqueda o proyecto seleccionado.
+          <div className="bg-white rounded-3xl border-2 border-dashed border-slate-300 p-12 text-center shadow-sm">
+            <div className="w-14 h-14 rounded-2xl bg-amber-50 text-upt-gold-600 flex items-center justify-center mx-auto mb-3 border border-upt-gold/30">
+              <Lock className="w-7 h-7" />
+            </div>
+            <h3 className="font-black text-slate-900 text-base">
+              No se encontraron Líneas Base
+            </h3>
+            <p className="text-xs text-slate-600 mt-1 max-w-md mx-auto leading-relaxed">
+              Aún no se ha establecido ninguna línea base. Para crear una, los artefactos del proyecto deben tener al menos una versión aprobada.
             </p>
             <Link
               href="/lineas-base/nueva"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-upt-navy-700 hover:bg-upt-navy-600 text-upt-gold font-bold text-xs shadow-md transition"
+              className="mt-4 inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-upt-navy-700 hover:bg-upt-navy-800 text-upt-gold font-black text-xs shadow-md transition"
             >
-              <Plus className="w-4 h-4" /> Establecer la primera Línea Base
+              <Plus className="w-4 h-4" /> Establecer la Primera Línea Base
             </Link>
           </div>
         ) : (
@@ -239,33 +275,33 @@ export default function LineasBasePage() {
             {lineasBase.map((lb) => (
               <div
                 key={lb.id}
-                className="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md hover:border-upt-gold/50 transition-all flex flex-col justify-between overflow-hidden group"
+                className="bg-white rounded-3xl border-2 border-slate-200 shadow-md hover:border-upt-gold hover:shadow-xl transition-all duration-200 flex flex-col justify-between overflow-hidden group"
               >
                 <div>
-                  {/* Encabezado de la Card */}
-                  <div className="p-5 pb-3 border-b border-slate-100 flex items-start justify-between gap-3 bg-gradient-to-br from-slate-50/50 to-white">
+                  {/* Header de la Tarjeta */}
+                  <div className="p-5 pb-3 border-b border-slate-100 flex items-start justify-between gap-3 bg-gradient-to-br from-slate-50 to-white">
                     <div>
-                      <div className="flex items-center gap-1.5 mb-1.5">
-                        <span className="font-mono text-xs font-black text-upt-navy-700 bg-upt-navy-50 px-2.5 py-1 rounded-xl border border-upt-navy-200 flex items-center gap-1">
-                          <Lock className="w-3 h-3 text-upt-gold" />
+                      <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                        <span className="font-mono text-xs font-black text-upt-navy-900 bg-upt-navy-50 px-2.5 py-1 rounded-xl border border-upt-navy-200 flex items-center gap-1.5">
+                          <Lock className="w-3.5 h-3.5 text-upt-gold-600" />
                           {lb.codigo}
                         </span>
-                        <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-lg">
+                        <span className="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
                           {lb.proyecto.codigo}
                         </span>
                       </div>
-                      <h3 className="font-bold text-slate-900 text-sm group-hover:text-upt-navy-700 transition leading-snug">
+                      <h3 className="font-black text-slate-900 text-sm group-hover:text-upt-gold-700 transition leading-snug">
                         {lb.nombre}
                       </h3>
                     </div>
 
                     {lb.estado === 'VIGENTE' ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
-                        <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Vigente
+                      <span className="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 shrink-0">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Vigente
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200 shrink-0">
-                        <Archive className="w-3 h-3 text-slate-400" /> Obsoleta
+                      <span className="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-1 rounded-full bg-slate-200 text-slate-700 border border-slate-300 shrink-0">
+                        <Archive className="w-3.5 h-3.5 text-slate-500" /> Obsoleta
                       </span>
                     )}
                   </div>
@@ -273,25 +309,25 @@ export default function LineasBasePage() {
                   {/* Cuerpo */}
                   <div className="p-5 py-4 space-y-3">
                     <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                      {lb.descripcion || 'Sin descripción o justificación técnica registrada.'}
+                      {lb.descripcion || 'Sin justificación técnica o notas descriptivas registradas.'}
                     </p>
 
                     {/* Resumen de Contenido Congelado */}
-                    <div className="bg-slate-50 rounded-2xl p-3 border border-slate-100 flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2 text-slate-600">
-                        <FileCheck2 className="w-4 h-4 text-upt-gold" />
-                        <span className="font-medium">Versiones Congeladas:</span>
+                    <div className="bg-slate-50 rounded-2xl p-3 border border-slate-200 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2 text-slate-700 font-bold">
+                        <FileCheck2 className="w-4 h-4 text-upt-gold-600" />
+                        <span>Artefactos Congelados:</span>
                       </div>
-                      <span className="font-bold text-upt-navy-700 bg-white px-2.5 py-0.5 rounded-lg border border-slate-200">
+                      <span className="font-black text-upt-navy-900 bg-white px-2.5 py-0.5 rounded-lg border border-slate-300 shadow-sm">
                         {lb._count.versiones} {lb._count.versiones === 1 ? 'ECS' : 'ECSs'}
                       </span>
                     </div>
 
-                    <div className="flex flex-col gap-1.5 pt-1 text-[11px] text-slate-500">
+                    <div className="flex flex-col gap-1.5 pt-1 text-[11px] text-slate-600">
                       <div className="flex items-center gap-1.5">
                         <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                         <span className="truncate">
-                          Establecida por <strong className="text-slate-700 font-semibold">{lb.autor.nombre_completo}</strong>
+                          Establecida por: <strong className="text-slate-800 font-bold">{lb.autor.nombre_completo}</strong>
                         </span>
                       </div>
                       <div className="flex items-center gap-1.5">
@@ -310,13 +346,13 @@ export default function LineasBasePage() {
                   </div>
                 </div>
 
-                {/* Footer de la Card con enlace al detalle inmutable */}
+                {/* Footer con Enlace al Acta Inmutable */}
                 <div className="p-4 pt-0">
                   <Link
                     href={`/lineas-base/${lb.id}`}
-                    className="w-full py-2.5 px-4 rounded-2xl bg-upt-navy-50 hover:bg-upt-navy-700 text-upt-navy-700 hover:text-upt-gold font-bold text-xs transition flex items-center justify-center gap-1.5 group/btn"
+                    className="w-full py-2.5 px-4 rounded-xl bg-upt-navy-50 hover:bg-upt-navy-700 text-upt-navy-900 hover:text-upt-gold font-black text-xs transition flex items-center justify-center gap-1.5 group/btn border border-upt-navy-200"
                   >
-                    <span>Inspeccionar Acta Inmutable</span>
+                    <span>Inspeccionar Acta Oficial Inmutable</span>
                     <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                   </Link>
                 </div>

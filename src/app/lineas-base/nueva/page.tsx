@@ -216,25 +216,26 @@ export default function NuevaLineaBasePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col">
       {/* Top Navbar */}
-      <header className="bg-upt-navy-700 text-white border-b-2 border-upt-gold shadow-md sticky top-0 z-30">
+      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-lg sticky top-0 z-30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
               href="/lineas-base"
-              className="p-2 rounded-xl bg-upt-navy-600 hover:bg-upt-navy-500 text-upt-gold transition"
+              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30"
+              title="Volver a Líneas Base"
             >
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-base tracking-tight">Establecer Nueva Línea Base</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-upt-gold/20 text-upt-gold font-bold border border-upt-gold/40">
+                <span className="font-black text-base text-white tracking-tight">Establecer Nueva Línea Base</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase">
                   Transacción ACID (RNF-08)
                 </span>
               </div>
-              <span className="text-[11px] text-slate-300">Congelamiento estricto de especificaciones técnicas aprobadas</span>
+              <span className="text-[11px] text-slate-400">Congelamiento estricto de especificaciones técnicas aprobadas</span>
             </div>
           </div>
         </div>
@@ -243,17 +244,17 @@ export default function NuevaLineaBasePage() {
       {/* Main Form Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
         {errorMsg && (
-          <div className="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm flex items-start gap-3 shadow-sm">
-            <AlertTriangle className="w-5 h-5 shrink-0 text-red-500 mt-0.5" />
-            <div className="flex-1 font-medium">{errorMsg}</div>
+          <div className="mb-6 p-4 rounded-2xl bg-red-100 border-2 border-red-300 text-red-900 text-xs sm:text-sm flex items-start gap-3 shadow-md">
+            <AlertTriangle className="w-5 h-5 shrink-0 text-red-600 mt-0.5" />
+            <div className="flex-1 font-bold">{errorMsg}</div>
           </div>
         )}
 
         <form onSubmit={handlePreSubmit} className="space-y-6">
           {/* Card 1: Selección del Proyecto y Metadatos */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-            <div className="flex items-center gap-2 text-upt-navy-700 font-bold text-sm sm:text-base border-b border-slate-100 pb-3">
-              <FolderGit2 className="w-5 h-5 text-upt-gold" />
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-slate-300 shadow-md space-y-6">
+            <div className="flex items-center gap-2 text-upt-navy-800 font-black text-base border-b border-slate-200 pb-3">
+              <FolderGit2 className="w-5 h-5 text-upt-gold-600" />
               <span>1. Proyecto y Datos Generales de la Línea Base</span>
             </div>
 
@@ -269,7 +270,7 @@ export default function NuevaLineaBasePage() {
                   <select
                     value={proyectoId}
                     onChange={(e) => setProyectoId(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm font-semibold focus:bg-white focus:ring-2 focus:ring-upt-navy-500 transition"
+                    className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition cursor-pointer"
                   >
                     {proyectos.map((p) => (
                       <option key={p.id} value={p.id}>
@@ -285,17 +286,17 @@ export default function NuevaLineaBasePage() {
 
               {/* Código */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-xs font-black text-slate-700 mb-1.5">
                   Código Identificador <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
+                  <Lock className="w-4 h-4 absolute left-3.5 top-3.5 text-upt-gold-600" />
                   <input
                     type="text"
                     value={codigo}
                     onChange={(e) => setCodigo(e.target.value.toUpperCase())}
                     placeholder="Ej. LB-PRJ01-v1.0"
-                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm font-mono font-bold uppercase focus:bg-white focus:ring-2 focus:ring-upt-navy-500 transition"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-mono font-black uppercase text-slate-900 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition"
                   />
                 </div>
                 <span className="text-[11px] text-slate-500 mt-1 block">
@@ -305,7 +306,7 @@ export default function NuevaLineaBasePage() {
 
               {/* Nombre descriptivo */}
               <div className="md:col-span-2">
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-xs font-black text-slate-700 mb-1.5">
                   Nombre Descriptivo de la Línea Base <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -313,13 +314,13 @@ export default function NuevaLineaBasePage() {
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
                   placeholder="Ej. Línea Base de Requerimientos y Arquitectura de Software v1"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500 transition"
+                  className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-semibold text-slate-900 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition"
                 />
               </div>
 
               {/* Justificación / Descripción */}
               <div className="md:col-span-2">
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-xs font-black text-slate-700 mb-1.5">
                   Justificación Técnica / Alcance del Congelamiento
                 </label>
                 <textarea
@@ -327,13 +328,13 @@ export default function NuevaLineaBasePage() {
                   value={descripcion}
                   onChange={(e) => setDescripcion(e.target.value)}
                   placeholder="Detalle el motivo del congelamiento (ej. Hito formal de pase a fase de construcción, aprobación unánime de planos estructurales, etc.)..."
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500 transition"
+                  className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-medium text-slate-900 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition"
                 />
               </div>
             </div>
 
             {/* Opción de Obsolescencia */}
-            <div className="pt-2 border-t border-slate-100">
+            <div className="pt-2 border-t border-slate-200">
               <label className="flex items-start gap-3 cursor-pointer select-none">
                 <input
                   type="checkbox"
@@ -342,11 +343,11 @@ export default function NuevaLineaBasePage() {
                   className="mt-1 w-4 h-4 text-upt-navy-700 rounded border-slate-300 focus:ring-upt-navy-500"
                 />
                 <div>
-                  <span className="text-xs sm:text-sm font-bold text-slate-800">
-                    Marcar líneas base anteriores de este proyecto como <span className="text-slate-500">OBSOLETAS</span>
+                  <span className="text-xs sm:text-sm font-black text-slate-900">
+                    Marcar líneas base anteriores de este proyecto como <span className="text-slate-500 font-bold">OBSOLETAS</span>
                   </span>
-                  <p className="text-[11px] text-slate-500 mt-0.5">
-                    Recomendado para mantener únicamente una Línea Base <strong className="text-emerald-600">VIGENTE</strong> activa a la vez por proyecto.
+                  <p className="text-[11px] text-slate-600 mt-0.5">
+                    Recomendado para mantener únicamente una Línea Base <strong className="text-emerald-700 font-bold">VIGENTE</strong> activa a la vez por proyecto.
                   </p>
                 </div>
               </label>
@@ -354,15 +355,15 @@ export default function NuevaLineaBasePage() {
           </div>
 
           {/* Card 2: Selección de Versiones Aprobadas (RF-09) */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-              <div className="flex items-center gap-2 text-upt-navy-700 font-bold text-sm sm:text-base">
-                <FileCheck2 className="w-5 h-5 text-upt-gold" />
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-slate-300 shadow-md space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
+              <div className="flex items-center gap-2 text-upt-navy-800 font-black text-base">
+                <FileCheck2 className="w-5 h-5 text-upt-gold-600" />
                 <span>2. Versiones Aprobadas para Congelar (RF-09)</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-600">Seleccionadas:</span>
-                <span className="text-xs font-black px-2.5 py-0.5 rounded-full bg-upt-gold text-upt-navy-900">
+                <span className="text-xs font-bold text-slate-700">Seleccionadas:</span>
+                <span className="text-xs font-black px-3 py-1 rounded-full bg-upt-gold text-upt-navy-950 shadow-sm">
                   {totalSeleccionadas} de {elementos.filter((e) => e.versiones.length > 0).length} disponibles
                 </span>
               </div>
