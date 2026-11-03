@@ -25,6 +25,9 @@ import {
   GitCommit,
   Clock,
   ExternalLink,
+  Network,
+  Printer,
+  Terminal,
 } from 'lucide-react';
 
 interface UserData {
@@ -155,34 +158,55 @@ export default function DashboardPage() {
           </div>
 
           {/* Navegación Principal para Desktop */}
-          <nav className="hidden md:flex items-center gap-1.5 bg-upt-navy-950/70 p-1.5 rounded-2xl border border-white/10">
+          <nav className="hidden lg:flex items-center gap-1 bg-upt-navy-950/70 p-1.5 rounded-2xl border border-white/10">
             <Link
               href="/dashboard"
-              className="px-3 py-1.5 rounded-xl text-xs font-black bg-upt-navy-700 text-upt-gold shadow-sm border border-upt-gold/30 flex items-center gap-1.5"
+              className="px-2.5 py-1.5 rounded-xl text-xs font-black bg-upt-navy-700 text-upt-gold shadow-sm border border-upt-gold/30 flex items-center gap-1.5"
             >
               <Compass className="w-4 h-4" />
               <span>Dashboard</span>
             </Link>
             <Link
               href="/ecs"
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
+              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
             >
               <Layers className="w-4 h-4 text-slate-400" />
-              <span>Elementos (ECS)</span>
+              <span>ECS</span>
             </Link>
             <Link
               href="/lineas-base"
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
+              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
             >
               <Lock className="w-4 h-4 text-slate-400" />
               <span>Líneas Base</span>
             </Link>
             <Link
               href="/cambios"
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
+              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
             >
               <AlertTriangle className="w-4 h-4 text-slate-400" />
-              <span>Cambios (RFC)</span>
+              <span>Cambios</span>
+            </Link>
+            <Link
+              href="/trazabilidad"
+              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
+            >
+              <Network className="w-4 h-4 text-slate-400" />
+              <span>Trazabilidad</span>
+            </Link>
+            <Link
+              href="/reportes"
+              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
+            >
+              <Printer className="w-4 h-4 text-slate-400" />
+              <span>Reportes</span>
+            </Link>
+            <Link
+              href="/auditoria"
+              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
+            >
+              <Terminal className="w-4 h-4 text-slate-400" />
+              <span>Auditoría</span>
             </Link>
           </nav>
 
@@ -206,7 +230,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Barra de Navegación Rápida Móvil (Horizontal Scrollable) */}
-        <div className="md:hidden border-t border-white/10 px-3 py-2 bg-upt-navy-950/90 overflow-x-auto">
+        <div className="lg:hidden border-t border-white/10 px-3 py-2 bg-upt-navy-950/90 overflow-x-auto">
           <div className="flex items-center gap-2 min-w-max text-xs">
             <Link
               href="/dashboard"
@@ -234,7 +258,28 @@ export default function DashboardPage() {
               className="px-3 py-1 rounded-xl font-bold text-slate-300 hover:text-white bg-white/5 border border-white/10 flex items-center gap-1.5 shrink-0"
             >
               <AlertTriangle className="w-3.5 h-3.5" />
-              <span>Cambios (RFC)</span>
+              <span>Cambios</span>
+            </Link>
+            <Link
+              href="/trazabilidad"
+              className="px-3 py-1 rounded-xl font-bold text-slate-300 hover:text-white bg-white/5 border border-white/10 flex items-center gap-1.5 shrink-0"
+            >
+              <Network className="w-3.5 h-3.5" />
+              <span>Trazabilidad</span>
+            </Link>
+            <Link
+              href="/reportes"
+              className="px-3 py-1 rounded-xl font-bold text-slate-300 hover:text-white bg-white/5 border border-white/10 flex items-center gap-1.5 shrink-0"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>Reportes</span>
+            </Link>
+            <Link
+              href="/auditoria"
+              className="px-3 py-1 rounded-xl font-bold text-slate-300 hover:text-white bg-white/5 border border-white/10 flex items-center gap-1.5 shrink-0"
+            >
+              <Terminal className="w-3.5 h-3.5" />
+              <span>Auditoría</span>
             </Link>
           </div>
         </div>
@@ -509,6 +554,167 @@ export default function DashboardPage() {
                   title="Radicar nueva solicitud de cambio"
                 >
                   <Plus className="w-4 h-4" />
+                </Link>
+              </div>
+            </motion.div>
+
+          </div>
+        </section>
+
+        {/* Sección 2: Módulos de Trazabilidad, Reportes y Auditoría (ISO 10007 / CMMI) */}
+        <section className="space-y-4 pt-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-black text-slate-900 tracking-tight">
+                Supervisión, Trazabilidad y Calidad Formal
+              </h2>
+              <p className="text-xs text-slate-600">
+                Herramientas avanzadas de auditoría, trazabilidad end-to-end e informes de configuración (CSA).
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            {/* Card 4: Matriz de Trazabilidad End-to-End */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+              whileHover={{ y: -4, transition: { duration: 0.15 } }}
+              className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-sky-600 shadow-md hover:shadow-2xl transition-all flex flex-col justify-between group"
+            >
+              <div className="space-y-4">
+                <div className="flex items-start justify-between">
+                  <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-700 border border-sky-200 flex items-center justify-center group-hover:bg-sky-600 group-hover:text-white transition shadow-sm">
+                    <Network className="w-6 h-6" />
+                  </div>
+                  <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-sky-50 text-sky-800 border border-sky-300">
+                    RF-17
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-[11px] font-black text-sky-700 uppercase tracking-wider block">
+                    Cadena de Custodia
+                  </span>
+                  <h3 className="text-xl font-black text-slate-950 group-hover:text-sky-700 transition">
+                    Matriz de Trazabilidad
+                  </h3>
+                  <p className="text-xs text-slate-700 mt-2 leading-relaxed">
+                    Visualiza el árbol interconectado completo: Requerimiento ➔ ECS ➔ Versión Aprobada ➔ Línea Base ➔ Solicitud de Cambio.
+                  </p>
+                </div>
+
+                <div className="bg-slate-100/90 p-3 rounded-2xl border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between">
+                  <span>Modo Dual:</span>
+                  <span className="text-sky-800 bg-sky-100 px-2 py-0.5 rounded-md">Mapa de Flujo & Matriz</span>
+                </div>
+              </div>
+
+              <div className="pt-5 mt-5 border-t border-slate-200/80">
+                <Link
+                  href="/trazabilidad"
+                  className="w-full py-2.5 px-4 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-white hover:text-upt-gold font-black text-xs shadow-md transition flex items-center justify-between group/btn"
+                >
+                  <span>Explorar Trazabilidad</span>
+                  <ChevronRight className="w-4 h-4 text-upt-gold group-hover/btn:translate-x-1.5 transition-transform" />
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Card 5: Centro de Reportes CSA */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.25 }}
+              whileHover={{ y: -4, transition: { duration: 0.15 } }}
+              className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-upt-gold shadow-md hover:shadow-2xl transition-all flex flex-col justify-between group"
+            >
+              <div className="space-y-4">
+                <div className="flex items-start justify-between">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-50 text-upt-gold-600 border border-upt-gold/30 flex items-center justify-center group-hover:bg-upt-gold group-hover:text-upt-navy-950 transition shadow-sm">
+                    <Printer className="w-6 h-6" />
+                  </div>
+                  <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-amber-50 text-upt-gold-800 border border-upt-gold/40">
+                    RF-18
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-[11px] font-black text-upt-gold-800 uppercase tracking-wider block">
+                    Informes Oficiales
+                  </span>
+                  <h3 className="text-xl font-black text-slate-950 group-hover:text-upt-gold-700 transition">
+                    Reportes CSA & Actas
+                  </h3>
+                  <p className="text-xs text-slate-700 mt-2 leading-relaxed">
+                    Generación de informes de contabilidad de configuración (CSA) según ISO 10007, exportación a CSV e impresión con firmas.
+                  </p>
+                </div>
+
+                <div className="bg-slate-100/90 p-3 rounded-2xl border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between">
+                  <span>Formato:</span>
+                  <span className="text-upt-navy-900 bg-amber-100 px-2 py-0.5 rounded-md">Imprimible & CSV</span>
+                </div>
+              </div>
+
+              <div className="pt-5 mt-5 border-t border-slate-200/80">
+                <Link
+                  href="/reportes"
+                  className="w-full py-2.5 px-4 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-white hover:text-upt-gold font-black text-xs shadow-md transition flex items-center justify-between group/btn"
+                >
+                  <span>Generar Reportes</span>
+                  <ChevronRight className="w-4 h-4 text-upt-gold group-hover/btn:translate-x-1.5 transition-transform" />
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Card 6: Historial Inmutable de Auditoría */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.3 }}
+              whileHover={{ y: -4, transition: { duration: 0.15 } }}
+              className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-emerald-600 shadow-md hover:shadow-2xl transition-all flex flex-col justify-between group"
+            >
+              <div className="space-y-4">
+                <div className="flex items-start justify-between">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition shadow-sm">
+                    <Terminal className="w-6 h-6" />
+                  </div>
+                  <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300">
+                    RF-16 • RNF-10
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-[11px] font-black text-emerald-800 uppercase tracking-wider block">
+                    Seguridad & Logs
+                  </span>
+                  <h3 className="text-xl font-black text-slate-950 group-hover:text-emerald-700 transition">
+                    Auditoría Inmutable
+                  </h3>
+                  <p className="text-xs text-slate-700 mt-2 leading-relaxed">
+                    Registro de solo inserción (append-only) de cada acción del sistema: usuario, fecha, IPs y payloads JSON con diff de datos.
+                  </p>
+                </div>
+
+                <div className="bg-slate-100/90 p-3 rounded-2xl border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between">
+                  <span>Protección:</span>
+                  <span className="text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5" /> Append-Only
+                  </span>
+                </div>
+              </div>
+
+              <div className="pt-5 mt-5 border-t border-slate-200/80">
+                <Link
+                  href="/auditoria"
+                  className="w-full py-2.5 px-4 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-white hover:text-upt-gold font-black text-xs shadow-md transition flex items-center justify-between group/btn"
+                >
+                  <span>Consultar Auditoría</span>
+                  <ChevronRight className="w-4 h-4 text-upt-gold group-hover/btn:translate-x-1.5 transition-transform" />
                 </Link>
               </div>
             </motion.div>
