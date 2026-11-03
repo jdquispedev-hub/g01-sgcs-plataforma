@@ -205,41 +205,47 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col">
-      {/* Top Navbar */}
-      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-lg sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
+      {/* Top Navbar Mobile-First */}
+      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-xl sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-0 sm:h-16 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
+          <div className="flex items-center gap-2.5 min-w-0">
             <Link
               href="/ecs"
-              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30"
+              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30 shrink-0 shadow-sm"
               title="Volver al Catálogo ECS"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-xs font-black text-upt-gold bg-upt-navy-800 px-2 py-0.5 rounded border border-upt-gold/30">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="font-mono text-xs font-black text-upt-gold bg-upt-navy-800 px-2 py-0.5 rounded border border-upt-gold/30 shrink-0">
                   {ecs.codigo}
                 </span>
-                <span className="font-black text-base tracking-tight truncate max-w-xs sm:max-w-md text-white">{ecs.nombre}</span>
+                <span className="font-black text-xs sm:text-base tracking-tight truncate text-white">
+                  {ecs.nombre}
+                </span>
               </div>
-              <span className="text-[11px] text-slate-400">Gestión de versiones y ciclo de vida (RF-07, RF-08)</span>
+              <span className="text-[10px] sm:text-[11px] text-slate-300 block truncate">
+                Gestión de versiones y dictamen técnico (RF-07, RF-08)
+              </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0 border-t border-white/10 sm:border-t-0">
             <button
               onClick={() => setModalEditOpen(true)}
-              className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition flex items-center gap-1.5 border border-white/10"
+              className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition flex items-center gap-1.5 border border-white/10"
             >
-              <Edit3 className="w-4 h-4 text-upt-gold" /> Editar ECS
+              <Edit3 className="w-3.5 h-3.5 text-upt-gold" />
+              <span>Editar</span>
             </button>
             <button
               onClick={() => setModalVersionOpen(true)}
-              className="px-4 py-2 rounded-xl bg-upt-gold hover:bg-upt-gold-600 text-upt-navy-950 font-black text-xs shadow-md transition flex items-center gap-1.5"
+              className="px-3.5 py-1.5 rounded-xl bg-upt-gold hover:bg-upt-gold-500 text-upt-navy-950 font-black text-xs shadow-md transition flex items-center gap-1.5"
             >
-              <Plus className="w-4 h-4" /> Nueva Versión
+              <Plus className="w-3.5 h-3.5 stroke-[3]" />
+              <span>Nueva Versión</span>
             </button>
           </div>
         </div>

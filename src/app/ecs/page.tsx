@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShieldCheck, 
   Layers, 
@@ -27,6 +28,7 @@ import {
   Tag,
   Info,
   Sparkles,
+  GitPullRequest,
 } from 'lucide-react';
 
 interface EcsItem {
@@ -188,45 +190,48 @@ export default function EcsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col">
-      {/* Top Navbar Unificada */}
-      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-lg sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
+      {/* Top Navbar Mobile-First */}
+      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-xl sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-0 sm:h-16 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
+          
+          <div className="flex items-center gap-2.5 min-w-0">
             <Link
               href="/dashboard"
-              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30"
+              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30 shrink-0 shadow-sm"
               title="Volver al Dashboard"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-black text-base text-white tracking-tight">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-black text-sm sm:text-base text-white tracking-tight truncate">
                   Elementos de Configuración (ECS)
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase">
+                <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase tracking-wider shrink-0 shadow-sm">
                   RF-04 a RF-08
                 </span>
               </div>
-              <span className="text-[11px] text-slate-400">
+              <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
                 Inventario de artefactos, control de versiones y dictamen técnico
-              </span>
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0 border-t border-white/10 sm:border-t-0">
             <Link
               href="/lineas-base"
-              className="hidden sm:inline-flex px-3.5 py-1.5 text-xs font-semibold rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition items-center gap-1.5"
+              className="px-2.5 py-1.5 text-xs font-bold rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
             >
-              <Lock className="w-4 h-4 text-upt-gold" /> Líneas Base
+              <Lock className="w-3.5 h-3.5 text-upt-gold" /> Líneas Base
             </Link>
             <button
               onClick={() => setModalOpen(true)}
-              className="px-4 py-2 rounded-xl bg-upt-gold hover:bg-upt-gold-600 text-upt-navy-950 font-black text-xs sm:text-sm shadow-md transition flex items-center gap-1.5"
+              className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-500 hover:from-amber-400 hover:to-upt-gold text-upt-navy-950 font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition flex items-center gap-1.5 shrink-0 active:scale-95"
             >
-              <Plus className="w-4 h-4" /> Nuevo ECS
+              <Plus className="w-4 h-4 stroke-[3]" />
+              <span className="hidden sm:inline">Nuevo ECS</span>
+              <span className="sm:hidden font-bold">Nuevo</span>
             </button>
           </div>
         </div>
@@ -344,89 +349,96 @@ export default function EcsPage() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {ecsList.map((item) => {
-              const tipoInfo = getTipoStyle(item.tipo);
-              const TipoIcon = tipoInfo.icon;
-              const ultimaVersion = item.versiones[0];
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            <AnimatePresence>
+              {ecsList.map((item, index) => {
+                const tipoInfo = getTipoStyle(item.tipo);
+                const TipoIcon = tipoInfo.icon;
+                const ultimaVersion = item.versiones[0];
 
-              return (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-3xl border-2 border-slate-200 shadow-md hover:border-upt-navy-600 hover:shadow-xl transition-all duration-200 flex flex-col justify-between overflow-hidden group"
-                >
-                  <div>
-                    {/* Header de la Tarjeta */}
-                    <div className="p-5 pb-3 border-b border-slate-100 flex items-start justify-between gap-3 bg-gradient-to-br from-slate-50 to-white">
-                      <div>
-                        <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
-                          <span className="font-mono text-xs font-black text-upt-navy-800 bg-upt-navy-50 px-2.5 py-1 rounded-xl border border-upt-navy-200">
-                            {item.codigo}
-                          </span>
-                          <span className="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
-                            {item.proyecto.codigo}
-                          </span>
-                        </div>
-                        <h3 className="font-black text-slate-900 text-sm group-hover:text-upt-navy-700 transition leading-snug">
-                          {item.nombre}
-                        </h3>
-                      </div>
-
-                      {/* Pill de Tipo */}
-                      <span className={`inline-flex items-center gap-1 text-[10px] font-black px-2 py-1 rounded-xl border uppercase shrink-0 ${tipoInfo.color}`}>
-                        <TipoIcon className="w-3 h-3" />
-                        <span>{tipoInfo.label}</span>
-                      </span>
-                    </div>
-
-                    {/* Contenido de la Tarjeta */}
-                    <div className="p-5 py-4 space-y-3">
-                      <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                        {item.descripcion || 'Sin descripción descriptiva registrada.'}
-                      </p>
-
-                      <div className="text-[11px] text-slate-500 font-mono bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200 truncate">
-                        📍 {item.ubicacion}
-                      </div>
-
-                      {/* Estado de la última versión */}
-                      <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-slate-700">Última Versión:</span>
-                          {ultimaVersion ? (
-                            <span className="font-mono font-black text-upt-navy-800 bg-white px-2 py-0.5 rounded-md border border-slate-200">
-                              v{ultimaVersion.numero_version}
+                return (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.04 }}
+                    whileHover={{ y: -4, transition: { duration: 0.15 } }}
+                    className="bg-white rounded-3xl border-2 border-slate-300 border-l-[6px] border-l-upt-navy-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.12)] hover:shadow-2xl hover:border-upt-gold/80 transition-all duration-200 flex flex-col justify-between overflow-hidden group"
+                  >
+                    <div>
+                      {/* Header de la Tarjeta */}
+                      <div className="p-4 sm:p-5 pb-3 border-b border-slate-200/80 bg-gradient-to-br from-slate-50 to-white flex items-start justify-between gap-2.5">
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                            <span className="font-mono text-xs font-black text-upt-navy-950 bg-upt-gold/25 px-2.5 py-0.5 rounded-lg border border-upt-gold/50 flex items-center gap-1">
+                              <Layers className="w-3.5 h-3.5 text-upt-navy-900" />
+                              {item.codigo}
                             </span>
-                          ) : (
-                            <span className="text-slate-400 italic">Sin versiones</span>
-                          )}
+                            <span className="text-[10px] font-black text-slate-700 bg-slate-200 px-2 py-0.5 rounded-md">
+                              {item.proyecto.codigo}
+                            </span>
+                          </div>
+                          <h3 className="font-black text-slate-950 text-sm sm:text-base group-hover:text-upt-navy-800 transition leading-snug">
+                            {item.nombre}
+                          </h3>
                         </div>
-                        {ultimaVersion && renderBadgeEstado(ultimaVersion.estado)}
-                      </div>
 
-                      {/* Responsable */}
-                      <div className="flex items-center gap-1.5 text-[11px] text-slate-600 pt-1">
-                        <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span className="truncate">
-                          Responsable: <strong className="text-slate-800 font-bold">{item.responsable.nombre_completo}</strong>
+                        {/* Pill de Tipo */}
+                        <span className={`inline-flex items-center gap-1 text-[10px] font-black px-2 py-1 rounded-xl border uppercase shrink-0 shadow-sm ${tipoInfo.color}`}>
+                          <TipoIcon className="w-3 h-3" />
+                          <span>{tipoInfo.label}</span>
                         </span>
                       </div>
-                    </div>
-                  </div>
 
-                  {/* Footer con Enlace a la Ficha y Versiones */}
-                  <div className="p-4 pt-0">
-                    <Link
-                      href={`/ecs/${item.id}`}
-                      className="w-full py-2.5 px-4 rounded-xl bg-upt-navy-50 hover:bg-upt-navy-700 text-upt-navy-800 hover:text-upt-gold font-black text-xs transition flex items-center justify-center gap-1.5 group/btn border border-upt-navy-100"
-                    >
-                      <span>Ver Ficha, Versiones y Dictamen</span>
-                      <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
+                      {/* Contenido de la Tarjeta */}
+                      <div className="p-4 sm:p-5 py-4 space-y-3.5">
+                        <p className="text-xs text-slate-800 line-clamp-2 leading-relaxed">
+                          {item.descripcion || 'Sin descripción descriptiva registrada.'}
+                        </p>
+
+                        <div className="text-[11px] text-slate-600 font-mono bg-slate-100 px-2.5 py-1.5 rounded-xl border border-slate-200 truncate">
+                          📍 {item.ubicacion}
+                        </div>
+
+                        {/* Estado de la última versión */}
+                        <div className="bg-slate-100/90 rounded-2xl p-3 border border-slate-300 flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-bold text-slate-800">Última Versión:</span>
+                            {ultimaVersion ? (
+                              <span className="font-mono font-black text-upt-navy-950 bg-white px-2 py-0.5 rounded-md border border-slate-300 shadow-sm">
+                                v{ultimaVersion.numero_version}
+                              </span>
+                            ) : (
+                              <span className="text-slate-400 italic">Sin versiones</span>
+                            )}
+                          </div>
+                          {ultimaVersion && renderBadgeEstado(ultimaVersion.estado)}
+                        </div>
+
+                        {/* Responsable */}
+                        <div className="flex items-center gap-1.5 text-[11px] text-slate-600 font-medium pt-1">
+                          <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span className="truncate">
+                            Responsable: <strong className="text-slate-900 font-bold">{item.responsable.nombre_completo}</strong>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Footer con Enlace a la Ficha y Versiones */}
+                    <div className="p-4 pt-0">
+                      <Link
+                        href={`/ecs/${item.id}`}
+                        className="w-full py-2.5 px-4 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-white hover:text-upt-gold font-black text-xs transition flex items-center justify-between group/btn shadow-md active:scale-98"
+                      >
+                        <span>Ver Ficha, Versiones y Dictamen</span>
+                        <ChevronRight className="w-4 h-4 text-upt-gold group-hover/btn:translate-x-1.5 transition-transform" />
+                      </Link>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
           </div>
         )}
 

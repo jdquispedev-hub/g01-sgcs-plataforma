@@ -216,26 +216,30 @@ export default function NuevaLineaBasePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col">
-      {/* Top Navbar */}
-      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-lg sticky top-0 z-30">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
+      {/* Top Navbar Mobile-First */}
+      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-xl sticky top-0 z-30">
+        <div className="max-w-6xl mx-auto px-3 sm:px-6 py-2.5 sm:py-0 sm:h-16 flex items-center justify-between gap-2.5">
+          <div className="flex items-center gap-2.5 min-w-0">
             <Link
               href="/lineas-base"
-              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30"
+              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30 shrink-0 shadow-sm"
               title="Volver a Líneas Base"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-black text-base text-white tracking-tight">Establecer Nueva Línea Base</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="font-black text-xs sm:text-base text-white tracking-tight truncate">
+                  Establecer Nueva Línea Base
+                </span>
+                <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase tracking-wider shrink-0 shadow-sm">
                   Transacción ACID (RNF-08)
                 </span>
               </div>
-              <span className="text-[11px] text-slate-400">Congelamiento estricto de especificaciones técnicas aprobadas</span>
+              <span className="text-[10px] sm:text-[11px] text-slate-300 block truncate">
+                Congelamiento estricto de especificaciones técnicas aprobadas
+              </span>
             </div>
           </div>
         </div>

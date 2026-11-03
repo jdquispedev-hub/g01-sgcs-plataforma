@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import {
   ArrowLeft,
   Lock,
@@ -157,84 +158,93 @@ export default function DetalleLineaBasePage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col print:bg-white print:p-0">
-      {/* Top Navbar (oculta al imprimir) */}
-      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-lg sticky top-0 z-30 print:hidden">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased print:bg-white print:p-0">
+      {/* Top Navbar Mobile-First (oculta al imprimir) */}
+      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-xl sticky top-0 z-30 print:hidden">
+        <div className="max-w-6xl mx-auto px-3 sm:px-6 py-2.5 sm:py-0 sm:h-16 flex items-center justify-between gap-2.5">
+          <div className="flex items-center gap-2.5 min-w-0">
             <Link
               href="/lineas-base"
-              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30"
+              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30 shrink-0 shadow-sm"
               title="Volver a Líneas Base"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-black text-base text-white tracking-tight">{lineaBase.codigo}</span>
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="font-mono text-xs sm:text-sm font-black text-white tracking-tight truncate">
+                  {lineaBase.codigo}
+                </span>
                 {lineaBase.estado === 'VIGENTE' ? (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-black border border-emerald-500/40 uppercase">
+                  <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-black border border-emerald-500/40 uppercase shrink-0">
                     Vigente
                   </span>
                 ) : (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-400/20 text-slate-300 font-black border border-slate-400/40 uppercase">
+                  <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-slate-400/20 text-slate-300 font-black border border-slate-400/40 uppercase shrink-0">
                     Obsoleta
                   </span>
                 )}
               </div>
-              <span className="text-[11px] text-slate-400">Acta Oficial de Configuración Inmutable (RF-10)</span>
+              <span className="text-[10px] sm:text-[11px] text-slate-300 block truncate">
+                Acta Oficial de Configuración Inmutable (RF-10)
+              </span>
             </div>
           </div>
 
           <button
             onClick={handlePrint}
-            className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs shadow-sm transition flex items-center gap-1.5 border border-white/20"
+            className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs shadow-sm transition flex items-center gap-1.5 border border-white/20 shrink-0"
           >
             <Printer className="w-4 h-4 text-upt-gold" />
-            <span className="hidden sm:inline">Imprimir Acta Formal</span>
+            <span className="hidden sm:inline">Imprimir Acta</span>
           </button>
         </div>
       </header>
 
       {/* Main Container */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-6 print:max-w-none print:p-0 print:space-y-4">
+      <main className="max-w-6xl mx-auto px-3 sm:px-6 py-6 sm:py-8 flex-1 w-full space-y-6 print:max-w-none print:p-0 print:space-y-4">
         {/* Encabezado del Acta Oficial */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-slate-300 shadow-md print:shadow-none print:border-none print:p-4 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-100 pb-6">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="font-mono text-sm font-black text-upt-navy-700 bg-upt-navy-50 px-3 py-1 rounded-xl border border-upt-navy-200 flex items-center gap-1.5">
-                  <Lock className="w-4 h-4 text-upt-gold" />
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="bg-white rounded-3xl p-5 sm:p-8 border-2 border-slate-300 shadow-md print:shadow-none print:border-none print:p-4 space-y-6"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-200/80 pb-6">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <span className="font-mono text-xs sm:text-sm font-black text-upt-navy-800 bg-upt-navy-50 px-3 py-1 rounded-xl border border-upt-navy-200 flex items-center gap-1.5">
+                  <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-upt-gold" />
                   {lineaBase.codigo}
                 </span>
-                <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg">
+                <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
                   Proyecto: {lineaBase.proyecto.codigo}
                 </span>
                 {lineaBase.estado === 'VIGENTE' ? (
-                  <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Línea Base Vigente
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200">
+                  <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-300">
                     <Archive className="w-3.5 h-3.5 text-slate-400" /> Histórica / Obsoleta
                   </span>
                 )}
               </div>
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
+              <h1 className="text-lg sm:text-2xl font-black text-slate-950 leading-tight">
                 {lineaBase.nombre}
               </h1>
-              <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-3xl leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-700 mt-2 max-w-3xl leading-relaxed">
                 {lineaBase.descripcion || 'Sin justificación técnica adicional.'}
               </p>
             </div>
 
             {/* Sello de Inmutabilidad Visual */}
-            <div className="bg-gradient-to-br from-upt-navy-50 to-slate-100 border border-upt-navy-100 rounded-2xl p-4 text-center shrink-0 sm:w-56">
+            <div className="bg-gradient-to-br from-upt-navy-50 to-slate-100 border-2 border-upt-navy-100 rounded-2xl p-4 text-center shrink-0 sm:w-56 shadow-sm">
               <ShieldCheck className="w-8 h-8 text-upt-gold mx-auto mb-1" />
-              <div className="font-black text-xs text-upt-navy-900 uppercase tracking-wider">
+              <div className="font-black text-xs text-upt-navy-950 uppercase tracking-wider">
                 Línea Base Inmutable
               </div>
-              <span className="text-[10px] text-slate-500 block mt-0.5 font-medium">
+              <span className="text-[10px] text-slate-600 block mt-0.5 font-bold">
                 Protección ACID (RNF-08)
               </span>
             </div>
@@ -271,7 +281,7 @@ export default function DetalleLineaBasePage() {
               </span>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Tabla Detallada de Especificaciones y Versiones Congeladas */}
         <div className="bg-white rounded-3xl border-2 border-slate-300 shadow-md overflow-hidden print:shadow-none print:border">
