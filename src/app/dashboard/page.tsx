@@ -28,6 +28,7 @@ import {
   Network,
   Printer,
   Terminal,
+  ShieldAlert,
 } from 'lucide-react';
 
 interface UserData {
@@ -39,6 +40,14 @@ interface UserData {
   rubro: string;
 }
 
+interface BloqueoActivo {
+  id: string;
+  detalle_bloqueo: string;
+  created_at: string;
+  proyecto: { codigo: string; nombre: string };
+  usuario: { nombre_completo: string };
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<UserData | null>(null);
@@ -48,15 +57,17 @@ export default function DashboardPage() {
   const [lineasVigentes, setLineasVigentes] = useState<number>(0);
   const [totalRfc, setTotalRfc] = useState<number>(0);
   const [rfcPendientes, setRfcPendientes] = useState<number>(0);
+  const [bloqueosActivos, setBloqueosActivos] = useState<BloqueoActivo[]>([]);
 
   useEffect(() => {
     async function loadDashboard() {
       try {
-        const [resMe, resEcs, resLb, resRfc] = await Promise.all([
+        const [resMe, resEcs, resLb, resRfc, resBloqueos] = await Promise.all([
           fetch('/api/auth/me'),
           fetch('/api/ecs'),
           fetch('/api/lineas-base'),
           fetch('/api/cambios'),
+          fetch('/api/bitacora/bloqueos-activos'),
         ]);
 
         const dataMe = await resMe.json();
@@ -86,6 +97,11 @@ export default function DashboardPage() {
             (r: any) => r.estado === 'PENDIENTE_EVALUACION' || r.estado === 'EN_EVALUACION'
           ).length;
           setRfcPendientes(pendientes);
+        }
+
+        const dataBloqueos = await resBloqueos.json();
+        if (dataBloqueos.success) {
+          setBloqueosActivos(dataBloqueos.data);
         }
       } catch {
         router.push('/login');
@@ -188,6 +204,13 @@ export default function DashboardPage() {
               <span>Cambios</span>
             </Link>
             <Link
+              href="/bitacora"
+              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
+            >
+              <Activity className="w-4 h-4 text-slate-400" />
+              <span>Bitácora</span>
+            </Link>
+            <Link
               href="/trazabilidad"
               className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
             >
@@ -207,6 +230,13 @@ export default function DashboardPage() {
             >
               <Terminal className="w-4 h-4 text-slate-400" />
               <span>Auditoría</span>
+            </Link>
+            <Link
+              href="/usuarios"
+              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
+            >
+              <Users className="w-4 h-4 text-slate-400" />
+              <span>Personal</span>
             </Link>
           </nav>
 
@@ -261,6 +291,13 @@ export default function DashboardPage() {
               <span>Cambios</span>
             </Link>
             <Link
+              href="/bitacora"
+              className="px-3 py-1 rounded-xl font-bold text-slate-300 hover:text-white bg-white/5 border border-white/10 flex items-center gap-1.5 shrink-0"
+            >
+              <Activity className="w-3.5 h-3.5" />
+              <span>Bitácora</span>
+            </Link>
+            <Link
               href="/trazabilidad"
               className="px-3 py-1 rounded-xl font-bold text-slate-300 hover:text-white bg-white/5 border border-white/10 flex items-center gap-1.5 shrink-0"
             >
@@ -281,12 +318,63 @@ export default function DashboardPage() {
               <Terminal className="w-3.5 h-3.5" />
               <span>Auditoría</span>
             </Link>
+            <Link
+              href="/usuarios"
+              className="px-3 py-1 rounded-xl font-bold text-slate-300 hover:text-white bg-white/5 border border-white/10 flex items-center gap-1.5 shrink-0"
+            >
+              <Users className="w-3.5 h-3.5" />
+              <span>Personal</span>
+            </Link>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6 sm:space-y-8">
+        
+        {/* Banner Gerencial de Alerta de Bloqueos Activos (Etapa 4 - Cero Teléfono Descompuesto) */}
+        {bloqueosActivos.length > 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-5 rounded-3xl bg-red-600 text-white shadow-xl border-2 border-red-400 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+          >
+            <div className="flex items-start gap-3">
+              <div className="p-2.5 rounded-2xl bg-white/20 text-white shrink-0 mt-0.5">
+                <ShieldAlert className="w-6 h-6 animate-pulse" />
+              </div>
+              <div className="space-y-0.5">
+                <span className="text-[10px] font-black uppercase tracking-wider bg-white/20 px-2 py-0.5 rounded-full inline-block">
+                  Alerta Gerencial Temprana • Cuadrilla Detenida
+                </span>
+                <h3 className="text-base sm:text-lg font-black tracking-tight leading-tight">
+                  Se registran {bloqueosActivos.length} bloqueo(s) crítico(s) en campo
+                </h3>
+                <p className="text-xs text-red-100 max-w-2xl leading-relaxed">
+                  Último reporte: <strong>{bloqueosActivos[0].proyecto.nombre}</strong> — "{bloqueosActivos[0].detalle_bloqueo}"
+                </p>
+              </div>
+            </div>
+
+            <Link
+              href="/bitacora"
+              className="px-4 py-2.5 rounded-2xl bg-white text-red-700 hover:bg-red-50 font-black text-xs shadow transition flex items-center justify-center gap-1.5 shrink-0"
+            >
+              <span>Ver Bitácora de Campo</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
+        ) : (
+          <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 text-xs font-bold flex items-center justify-between shadow-sm">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Operaciones en campo sin bloqueos activos (Flujo Normal).</span>
+            </div>
+            <Link href="/bitacora" className="text-emerald-700 hover:underline font-black text-[11px]">
+              Ir a Bitácora ➔
+            </Link>
+          </div>
+        )}
         
         {/* Banner Hero: Explicación de Qué Hace el Sistema y Erradicación del Teléfono Descompuesto */}
         <section className="bg-gradient-to-r from-upt-navy-900 via-upt-navy-800 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-upt-navy-700 relative overflow-hidden">
@@ -714,6 +802,104 @@ export default function DashboardPage() {
                   className="w-full py-2.5 px-4 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-white hover:text-upt-gold font-black text-xs shadow-md transition flex items-center justify-between group/btn"
                 >
                   <span>Consultar Auditoría</span>
+                  <ChevronRight className="w-4 h-4 text-upt-gold group-hover/btn:translate-x-1.5 transition-transform" />
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Card 7: Bitácora Diaria de Campo */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.35 }}
+              whileHover={{ y: -4, transition: { duration: 0.15 } }}
+              className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-red-500 shadow-md hover:shadow-2xl transition-all flex flex-col justify-between group"
+            >
+              <div className="space-y-4">
+                <div className="flex items-start justify-between">
+                  <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-700 border border-red-200 flex items-center justify-center group-hover:bg-red-600 group-hover:text-white transition shadow-sm">
+                    <Activity className="w-6 h-6" />
+                  </div>
+                  <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-red-50 text-red-800 border border-red-300">
+                    Etapa 4
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-[11px] font-black text-red-700 uppercase tracking-wider block">
+                    Avance de Cuadrilla
+                  </span>
+                  <h3 className="text-xl font-black text-slate-950 group-hover:text-red-700 transition">
+                    Bitácora & Bloqueos
+                  </h3>
+                  <p className="text-xs text-slate-700 mt-2 leading-relaxed">
+                    Registro móvil diario del avance de trabajo con semáforo verde/rojo para alertar detenciones o faltas de insumos.
+                  </p>
+                </div>
+
+                <div className="bg-slate-100/90 p-3 rounded-2xl border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between">
+                  <span>Semáforo:</span>
+                  <span className="text-red-800 bg-red-100 px-2 py-0.5 rounded-md flex items-center gap-1">
+                    🟢 Normal / 🔴 Bloqueo
+                  </span>
+                </div>
+              </div>
+
+              <div className="pt-5 mt-5 border-t border-slate-200/80">
+                <Link
+                  href="/bitacora"
+                  className="w-full py-2.5 px-4 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-white hover:text-upt-gold font-black text-xs shadow-md transition flex items-center justify-between group/btn"
+                >
+                  <span>Abrir Bitácora</span>
+                  <ChevronRight className="w-4 h-4 text-upt-gold group-hover/btn:translate-x-1.5 transition-transform" />
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Card 8: Gestión de Personal y Roles */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.4 }}
+              whileHover={{ y: -4, transition: { duration: 0.15 } }}
+              className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-purple-600 shadow-md hover:shadow-2xl transition-all flex flex-col justify-between group"
+            >
+              <div className="space-y-4">
+                <div className="flex items-start justify-between">
+                  <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-700 border border-purple-200 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition shadow-sm">
+                    <Users className="w-6 h-6" />
+                  </div>
+                  <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-purple-50 text-purple-800 border border-purple-300">
+                    RF-02
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-[11px] font-black text-purple-700 uppercase tracking-wider block">
+                    Directorio Institucional
+                  </span>
+                  <h3 className="text-xl font-black text-slate-950 group-hover:text-purple-700 transition">
+                    Personal & Roles
+                  </h3>
+                  <p className="text-xs text-slate-700 mt-2 leading-relaxed">
+                    Administración de colaboradores, asignación de roles (Administrador, Aprobador, Solicitante) y control de acceso seguro.
+                  </p>
+                </div>
+
+                <div className="bg-slate-100/90 p-3 rounded-2xl border border-slate-300 text-xs font-bold text-slate-700 flex items-center justify-between">
+                  <span>Seguridad:</span>
+                  <span className="text-purple-800 bg-purple-100 px-2 py-0.5 rounded-md">
+                    RBAC • bcrypt
+                  </span>
+                </div>
+              </div>
+
+              <div className="pt-5 mt-5 border-t border-slate-200/80">
+                <Link
+                  href="/usuarios"
+                  className="w-full py-2.5 px-4 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-white hover:text-upt-gold font-black text-xs shadow-md transition flex items-center justify-between group/btn"
+                >
+                  <span>Administrar Personal</span>
                   <ChevronRight className="w-4 h-4 text-upt-gold group-hover/btn:translate-x-1.5 transition-transform" />
                 </Link>
               </div>
