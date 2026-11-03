@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const [proyectos, usuarios] = await Promise.all([
       prisma.proyectoCaso.findMany({
         where: { organizacion_id: session.organizacionId },
-        select: { id: true, codigo: true, nombre: true, estado: true },
+        select: { id: true, codigo: true, nombre: true, cliente_nombre: true, estado: true },
         orderBy: { nombre: 'asc' },
       }),
       prisma.usuario.findMany({

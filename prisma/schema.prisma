@@ -73,6 +73,12 @@ enum NivelImpacto {
   CRITICO
 }
 
+enum TipoReunion {
+  CLIENTE
+  EQUIPO_INTERNO
+  COMITE_CAMBIOS
+}
+
 // -------------------------------------------------------------
 // MODELOS PRINCIPALES
 // -------------------------------------------------------------
@@ -115,6 +121,7 @@ model Usuario {
   evaluaciones_realizadas EvaluacionCambio[] @relation("Evaluador")
   reportes_diarios       ReporteDiario[]    @relation("ReporteAutor")
   auditorias             AuditoriaLog[]     @relation("AuditoriaUsuario")
+  reuniones_convocadas   ReunionProyecto[]  @relation("ReunionConvocante")
 
   @@unique([organizacion_id, email])
   @@index([email])
@@ -137,6 +144,7 @@ model ProyectoCaso {
   elementos_config   Ecs[]
   lineas_base        LineaBase[]
   reportes_diarios   ReporteDiario[]
+  reuniones          ReunionProyecto[]
 
   @@unique([organizacion_id, codigo])
   @@index([organizacion_id, estado])
@@ -321,4 +329,25 @@ model AuditoriaLog {
   @@index([entidad, entidad_id])
   @@index([created_at])
   @@map("auditoria_logs")
+}
+
+model ReunionProyecto {
+  id             String       @id @default(uuid())
+  proyecto_id    String
+  convocante_id  String?
+  titulo         String       @db.VarChar(200)
+  tipo           TipoReunion  @default(CLIENTE)
+  fecha          DateTime     @default(now())
+  hora           String?      @default("10:00") @db.VarChar(10)
+  participantes  String       @db.Text
+  temas_tratados String       @db.Text
+  acuerdos       String       @db.Text
+  proximo_paso   String?      @db.Text
+  created_at     DateTime     @default(now())
+
+  proyecto       ProyectoCaso @relation(fields: [proyecto_id], references: [id], onDelete: Cascade)
+  convocante     Usuario?     @relation("ReunionConvocante", fields: [convocante_id], references: [id], onDelete: SetNull)
+
+  @@index([proyecto_id, fecha])
+  @@map("reuniones_proyecto")
 }
