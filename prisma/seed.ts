@@ -4,12 +4,17 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Iniciando carga de datos semilla (Seed)...');
+  console.log('🌱 Iniciando carga y separación de datos semilla Multi-Tenant (Seed)...');
 
-  // 1. Crear Organización Maestra (Para SuperAdmin)
+  // ============================================================
+  // 1. ORGANIZACIÓN MAESTRA (SUPERADMIN GLOBAL)
+  // ============================================================
   const orgMaestra = await prisma.organizacion.upsert({
     where: { id: '00000000-0000-0000-0000-000000000001' },
-    update: {},
+    update: {
+      nombre: 'Administración Global SGCS',
+      rubro: RubroIndustria.SOFTWARE,
+    },
     create: {
       id: '00000000-0000-0000-0000-000000000001',
       nombre: 'Administración Global SGCS',
@@ -25,8 +30,8 @@ async function main() {
     },
   });
 
-  // 2. Crear Usuario SuperAdmin
   const passwordHash = await bcrypt.hash('Admin123!', 12);
+
   const superAdmin = await prisma.usuario.upsert({
     where: {
       organizacion_id_email: {
@@ -46,31 +51,41 @@ async function main() {
   });
   console.log(`✅ SuperAdmin creado: ${superAdmin.email} (Password: Admin123!)`);
 
-  // 3. Crear Organización Demo: Soluciones de Software & Proyectos
+  // ============================================================
+  // 2. EMPRESA CLIENTE 1: SOFTWARE (DevCraft Software Solutions)
+  // ============================================================
   const orgSoftware = await prisma.organizacion.upsert({
     where: { id: '00000000-0000-0000-0000-000000000002' },
-    update: {},
+    update: {
+      nombre: 'DevCraft Software Solutions',
+      rubro: RubroIndustria.SOFTWARE,
+    },
     create: {
       id: '00000000-0000-0000-0000-000000000002',
-      nombre: 'DevCraft Software & Proyectos Integrales',
+      nombre: 'DevCraft Software Solutions',
       rubro: RubroIndustria.SOFTWARE,
       configuracion_terminologia: {
         terminos: {
-          proyecto: 'Sistema / Proyecto',
-          ecs: 'Entregable / Componente',
-          version: 'Versión / Release',
-          linea_base: 'Hito Congelado (Línea Base)',
-          solicitud_cambio: 'Solicitud de Cambio (RFC)',
-          reporte_diario: 'Bitácora de Jornada',
+          proyecto: 'Sistema / Proyecto TI',
+          ecs: 'Componente / Módulo de Código',
+          version: 'Release / Tag Git',
+          linea_base: 'Línea Base de Código',
+          solicitud_cambio: 'RFC / Ticket de Cambio',
+          reporte_diario: 'Daily Standup de Desarrollo',
         },
       },
     },
   });
 
-  // ============================================================
-  // USUARIOS DEL SISTEMA (Equipo Real de Trabajo)
-  // ============================================================
-  // 1. El Jefe / Gerente General (quien habla con clientes y convoca)
+  // Limpiar cualquier residuo de proyectos de construcción que hayan quedado por error en Software
+  await prisma.proyectoCaso.deleteMany({
+    where: {
+      codigo: 'PRY-CASA-01',
+      organizacion_id: orgSoftware.id,
+    },
+  });
+
+  // Usuarios del Equipo de Software
   const adminSoftware = await prisma.usuario.upsert({
     where: {
       organizacion_id_email: {
@@ -79,11 +94,11 @@ async function main() {
       },
     },
     update: {
-      nombre_completo: 'Carlos Mendoza (Gerente de Proyecto / Jefe)',
+      nombre_completo: 'Carlos Mendoza (Gerente TI / Jefe de Proyecto)',
     },
     create: {
       organizacion_id: orgSoftware.id,
-      nombre_completo: 'Carlos Mendoza (Gerente de Proyecto / Jefe)',
+      nombre_completo: 'Carlos Mendoza (Gerente TI / Jefe de Proyecto)',
       email: 'admin.software@sgcs.com',
       password_hash: passwordHash,
       rol: RolUsuario.ADMINISTRADOR,
@@ -91,7 +106,6 @@ async function main() {
     },
   });
 
-  // 2. Tech Lead / Arquitecto Técnico (quien dictamina y aprueba)
   const aprobadorSoftware = await prisma.usuario.upsert({
     where: {
       organizacion_id_email: {
@@ -100,11 +114,11 @@ async function main() {
       },
     },
     update: {
-      nombre_completo: 'Ing. Rodrigo Paredes (Tech Lead / Especialista)',
+      nombre_completo: 'Ing. Rodrigo Paredes (Tech Lead / Arquitecto)',
     },
     create: {
       organizacion_id: orgSoftware.id,
-      nombre_completo: 'Ing. Rodrigo Paredes (Tech Lead / Especialista)',
+      nombre_completo: 'Ing. Rodrigo Paredes (Tech Lead / Arquitecto)',
       email: 'aprobador.software@sgcs.com',
       password_hash: passwordHash,
       rol: RolUsuario.APROBADOR,
@@ -112,7 +126,6 @@ async function main() {
     },
   });
 
-  // 3. Desarrolladora Frontend & UI/UX
   const devFrontend = await prisma.usuario.upsert({
     where: {
       organizacion_id_email: {
@@ -131,7 +144,6 @@ async function main() {
     },
   });
 
-  // 4. Desarrollador Backend & Bases de Datos
   const devBackend = await prisma.usuario.upsert({
     where: {
       organizacion_id_email: {
@@ -150,30 +162,7 @@ async function main() {
     },
   });
 
-  // 5. Arquitecta de Obras & Estructuras
-  const arquitectaObras = await prisma.usuario.upsert({
-    where: {
-      organizacion_id_email: {
-        organizacion_id: orgSoftware.id,
-        email: 'maria.arquitecta@sgcs.com',
-      },
-    },
-    update: {},
-    create: {
-      organizacion_id: orgSoftware.id,
-      nombre_completo: 'Arq. María Flores (Arquitecta de Obras & Planos)',
-      email: 'maria.arquitecta@sgcs.com',
-      password_hash: passwordHash,
-      rol: RolUsuario.SOLICITANTE,
-      activo: true,
-    },
-  });
-
-  console.log('✅ Usuarios del equipo creados exitosamente (todos con password Admin123!)');
-
-  // ============================================================
-  // CASO 1: PROYECTO SOFTWARE (E-LEARNING & PAGOS)
-  // ============================================================
+  // PROYECTO SOFTWARE 1: Plataforma Web E-Learning y Pagos
   const proyectoSoftware = await prisma.proyectoCaso.upsert({
     where: {
       organizacion_id_codigo: {
@@ -195,7 +184,27 @@ async function main() {
     },
   });
 
-  // ECS Software
+  // PROYECTO SOFTWARE 2: App Móvil de Alumnos y Notificaciones
+  const proyectoSoftware2 = await prisma.proyectoCaso.upsert({
+    where: {
+      organizacion_id_codigo: {
+        organizacion_id: orgSoftware.id,
+        codigo: 'PRY-APP-02',
+      },
+    },
+    update: {},
+    create: {
+      organizacion_id: orgSoftware.id,
+      codigo: 'PRY-APP-02',
+      nombre: 'App Móvil de Estudiantes y Notificaciones Push',
+      cliente_nombre: 'Corporación Educativa San Marcos',
+      fecha_inicio: new Date('2026-10-15'),
+      fecha_estimada_fin: new Date('2026-12-10'),
+      estado: 'EN_EJECUCION',
+    },
+  });
+
+  // ECS Proyecto 1 (Software)
   const ecsSoftware = await prisma.ecs.upsert({
     where: {
       proyecto_id_codigo: {
@@ -215,8 +224,8 @@ async function main() {
     },
   });
 
-  // Versión 1.0.0 Aprobada
-  const version100 = await prisma.versionEcs.upsert({
+  // Versiones ECS Software
+  const versionSoft100 = await prisma.versionEcs.upsert({
     where: {
       ecs_id_numero_version: {
         ecs_id: ecsSoftware.id,
@@ -236,8 +245,7 @@ async function main() {
     },
   });
 
-  // Versión 1.1.0 Pendiente (fruto del cambio pedido por el cliente)
-  const version110 = await prisma.versionEcs.upsert({
+  const versionSoft110 = await prisma.versionEcs.upsert({
     where: {
       ecs_id_numero_version: {
         ecs_id: ecsSoftware.id,
@@ -255,7 +263,7 @@ async function main() {
     },
   });
 
-  // Línea Base Oficial Congelada
+  // Línea Base Software
   const lineaBaseSoftware = await prisma.lineaBase.upsert({
     where: {
       proyecto_id_codigo: {
@@ -279,25 +287,25 @@ async function main() {
     where: {
       linea_base_id_version_ecs_id: {
         linea_base_id: lineaBaseSoftware.id,
-        version_ecs_id: version100.id,
+        version_ecs_id: versionSoft100.id,
       },
     },
     update: {},
     create: {
       linea_base_id: lineaBaseSoftware.id,
-      version_ecs_id: version100.id,
+      version_ecs_id: versionSoft100.id,
     },
   });
 
-  // Solicitud de Cambio (RFC) sobre la Línea Base
+  // RFC Software
   const rfcSoftware = await prisma.solicitudCambio.upsert({
     where: { codigo: 'RFC-2026-001' },
     update: {},
     create: {
       codigo: 'RFC-2026-001',
       ecs_id: ecsSoftware.id,
-      version_base_id: version100.id,
-      version_resultante_id: version110.id,
+      version_base_id: versionSoft100.id,
+      version_resultante_id: versionSoft110.id,
       descripcion: 'Agregar pasarela de cobros en moneda nacional mediante código QR de Yape y Plin.',
       justificacion: 'Requerimiento prioritario de la decana Elena Ramos para los alumnos del Perú.',
       estado: EstadoCambio.EN_EVALUACION,
@@ -318,7 +326,7 @@ async function main() {
     },
   });
 
-  // Reuniones Software (Con fechas en Octubre y Noviembre 2026, incluyendo HOY 03-Nov)
+  // Reuniones Software
   await prisma.reunionProyecto.deleteMany({
     where: { proyecto_id: proyectoSoftware.id },
   });
@@ -385,28 +393,117 @@ async function main() {
         acuerdos: 'Recibir feedback directo de los estudiantes y recopilar métricas de éxito.',
         proximo_paso: 'Cierre del ticket de cambio RFC-2026-001.',
       },
-      {
-        proyecto_id: proyectoSoftware.id,
-        convocante_id: adminSoftware.id,
-        titulo: 'Comité de Cierre y Nueva Línea Base v1.1.0',
-        tipo: TipoReunion.COMITE_CAMBIOS,
-        fecha: new Date('2026-11-12'),
-        hora: '10:00',
-        participantes: 'Carlos Mendoza, Ing. Rodrigo Paredes, Mg. Elena Ramos',
-        temas_tratados: 'Dictamen final de implementación del cambio e incorporación a la nueva Línea Base oficial.',
-        acuerdos: 'Congelar la Línea Base v1.1.0 e iniciar fase de despliegue a producción.',
-        proximo_paso: 'Puesta en marcha final.',
-      },
     ],
   });
 
+  // ECS Proyecto 2 (Software)
+  await prisma.ecs.upsert({
+    where: {
+      proyecto_id_codigo: {
+        proyecto_id: proyectoSoftware2.id,
+        codigo: 'ECS-NOTIF-APP',
+      },
+    },
+    update: {},
+    create: {
+      proyecto_id: proyectoSoftware2.id,
+      codigo: 'ECS-NOTIF-APP',
+      nombre: 'Servicio de Mensajería Push Firebase & WebSockets',
+      tipo: TipoEcs.CODIGO_FUENTE,
+      descripcion: 'Microservicio en Node.js para alertas instantáneas de notas y clases en tiempo real.',
+      ubicacion: 'https://github.com/ClaraBQuispeChileno/G01/src/services/notifications',
+      responsable_id: devBackend.id,
+    },
+  });
+
+  console.log('✅ Empresa de Software (DevCraft) y sus 2 proyectos de software configurados.');
+
   // ============================================================
-  // CASO 2: PROYECTO CONSTRUCCIÓN (CASA RESIDENCIAL DON JUAN)
+  // 3. EMPRESA CLIENTE 2: CONSTRUCCIÓN (Constructora Los Andes)
   // ============================================================
+  const orgConstruccion = await prisma.organizacion.upsert({
+    where: { id: '00000000-0000-0000-0000-000000000004' },
+    update: {
+      nombre: 'Constructora & Proyectos Los Andes',
+      rubro: RubroIndustria.CONSTRUCCION,
+    },
+    create: {
+      id: '00000000-0000-0000-0000-000000000004',
+      nombre: 'Constructora & Proyectos Los Andes',
+      rubro: RubroIndustria.CONSTRUCCION,
+      configuracion_terminologia: {
+        terminos: {
+          proyecto: 'Obra Civil / Edificación',
+          ecs: 'Plano Técnico / Memoria Estructural',
+          version: 'Revisión de Plano / Enmienda',
+          linea_base: 'Hito Congelado / Firma de Planos',
+          solicitud_cambio: 'Orden de Modificación de Obra (RFC)',
+          reporte_diario: 'Bitácora Diaria de Cuadrilla',
+        },
+      },
+    },
+  });
+
+  // Usuarios del Equipo de Construcción
+  const adminConstruccion = await prisma.usuario.upsert({
+    where: {
+      organizacion_id_email: {
+        organizacion_id: orgConstruccion.id,
+        email: 'admin.construccion@sgcs.com',
+      },
+    },
+    update: {},
+    create: {
+      organizacion_id: orgConstruccion.id,
+      nombre_completo: 'Ing. Roberto Sánchez (Residente de Obra / Gerente)',
+      email: 'admin.construccion@sgcs.com',
+      password_hash: passwordHash,
+      rol: RolUsuario.ADMINISTRADOR,
+      activo: true,
+    },
+  });
+
+  const aprobadorConstruccion = await prisma.usuario.upsert({
+    where: {
+      organizacion_id_email: {
+        organizacion_id: orgConstruccion.id,
+        email: 'aprobador.construccion@sgcs.com',
+      },
+    },
+    update: {},
+    create: {
+      organizacion_id: orgConstruccion.id,
+      nombre_completo: 'Arq. María Flores (Arquitecta Estructural / Supervisora)',
+      email: 'aprobador.construccion@sgcs.com',
+      password_hash: passwordHash,
+      rol: RolUsuario.APROBADOR,
+      activo: true,
+    },
+  });
+
+  const maestroObra = await prisma.usuario.upsert({
+    where: {
+      organizacion_id_email: {
+        organizacion_id: orgConstruccion.id,
+        email: 'maestro.obra@sgcs.com',
+      },
+    },
+    update: {},
+    create: {
+      organizacion_id: orgConstruccion.id,
+      nombre_completo: 'Maestro Pedro Quispe (Jefe de Cuadrilla & Cimentación)',
+      email: 'maestro.obra@sgcs.com',
+      password_hash: passwordHash,
+      rol: RolUsuario.SOLICITANTE,
+      activo: true,
+    },
+  });
+
+  // PROYECTO CONSTRUCCIÓN 1: Vivienda Don Juan Pérez
   const proyectoConstruccion = await prisma.proyectoCaso.upsert({
     where: {
       organizacion_id_codigo: {
-        organizacion_id: orgSoftware.id,
+        organizacion_id: orgConstruccion.id,
         codigo: 'PRY-CASA-01',
       },
     },
@@ -414,7 +511,7 @@ async function main() {
       cliente_nombre: 'Don Juan Pérez (Propietario)',
     },
     create: {
-      organizacion_id: orgSoftware.id,
+      organizacion_id: orgConstruccion.id,
       codigo: 'PRY-CASA-01',
       nombre: 'Construcción Vivienda Residencial 2 Pisos',
       cliente_nombre: 'Don Juan Pérez (Propietario)',
@@ -424,7 +521,27 @@ async function main() {
     },
   });
 
-  // ECS Construcción
+  // PROYECTO CONSTRUCCIÓN 2: Edificio Multifamiliar
+  const proyectoConstruccion2 = await prisma.proyectoCaso.upsert({
+    where: {
+      organizacion_id_codigo: {
+        organizacion_id: orgConstruccion.id,
+        codigo: 'PRY-EDIF-02',
+      },
+    },
+    update: {},
+    create: {
+      organizacion_id: orgConstruccion.id,
+      codigo: 'PRY-EDIF-02',
+      nombre: 'Edificio Residencial Multifamiliar 5 Pisos',
+      cliente_nombre: 'Inversiones Inmobiliarias El Roble',
+      fecha_inicio: new Date('2026-10-05'),
+      fecha_estimada_fin: new Date('2027-04-30'),
+      estado: 'EN_EJECUCION',
+    },
+  });
+
+  // ECS Construcción (Planos Estructurales)
   const ecsConstruccion = await prisma.ecs.upsert({
     where: {
       proyecto_id_codigo: {
@@ -440,10 +557,11 @@ async function main() {
       tipo: TipoEcs.DISENO,
       descripcion: 'Planos de cimentación, vigas peraltadas y losa aligerada para vivienda de 2 plantas.',
       ubicacion: 'Drive://Horizonte/Proyectos/Casa-DonJuan/Planos-Estructurales-RevA.dwg',
-      responsable_id: arquitectaObras.id,
+      responsable_id: aprobadorConstruccion.id,
     },
   });
 
+  // Versión 1.0.0 Aprobada
   const versionCasa10 = await prisma.versionEcs.upsert({
     where: {
       ecs_id_numero_version: {
@@ -458,12 +576,32 @@ async function main() {
       descripcion: 'Diseño estructural inicial aprobado para suelo arenoso de 2.5 kg/cm2.',
       archivo_url: 'Drive://Horizonte/Proyectos/Casa-DonJuan/Planos-Estructurales-v1.0.0.pdf',
       estado: 'APROBADA',
-      autor_id: arquitectaObras.id,
-      aprobador_id: aprobadorSoftware.id,
+      autor_id: aprobadorConstruccion.id,
+      aprobador_id: adminConstruccion.id,
       fecha_aprobacion: new Date('2026-10-20'),
     },
   });
 
+  // Versión 1.1.0 Pendiente (Rediseño con piscina)
+  const versionCasa11 = await prisma.versionEcs.upsert({
+    where: {
+      ecs_id_numero_version: {
+        ecs_id: ecsConstruccion.id,
+        numero_version: '1.1.0',
+      },
+    },
+    update: {},
+    create: {
+      ecs_id: ecsConstruccion.id,
+      numero_version: '1.1.0',
+      descripcion: 'Rediseño con excavación de fosa para piscina 6x3m y refuerzo de muro de contención perimetral.',
+      archivo_url: 'Drive://Horizonte/Proyectos/Casa-DonJuan/Planos-Estructurales-v1.1.0-piscina.pdf',
+      estado: 'PENDIENTE',
+      autor_id: aprobadorConstruccion.id,
+    },
+  });
+
+  // Línea Base Construcción
   const lineaBaseCasa = await prisma.lineaBase.upsert({
     where: {
       proyecto_id_codigo: {
@@ -477,7 +615,7 @@ async function main() {
       codigo: 'LB-CASA-P01',
       nombre: 'Línea Base Oficial: Planos y Cimientos Aprobados',
       descripcion: 'Hito congelado con el cliente Don Juan. Prohibido alterar zapatas sin orden formal de cambio.',
-      autor_id: adminSoftware.id,
+      autor_id: adminConstruccion.id,
       estado: 'VIGENTE',
       created_at: new Date('2026-10-22'),
     },
@@ -497,7 +635,36 @@ async function main() {
     },
   });
 
-  // Reuniones Construcción (Con fechas en Octubre y Noviembre 2026, incluyendo HOY 03-Nov)
+  // Solicitud de Cambio (RFC) Construcción: Piscina Adicional
+  const rfcCasa = await prisma.solicitudCambio.upsert({
+    where: { codigo: 'RFC-CASA-001' },
+    update: {},
+    create: {
+      codigo: 'RFC-CASA-001',
+      ecs_id: ecsConstruccion.id,
+      version_base_id: versionCasa10.id,
+      version_resultante_id: versionCasa11.id,
+      descripcion: 'Construcción de piscina temperada de 6x3m en el jardín posterior solicitada por Don Juan.',
+      justificacion: 'Solicitud expresa del propietario Don Juan Pérez con aceptación de sobrecosto y ampliación de plazo.',
+      estado: EstadoCambio.EN_EVALUACION,
+      solicitante_id: adminConstruccion.id,
+      created_at: new Date('2026-10-30'),
+    },
+  });
+
+  await prisma.evaluacionCambio.upsert({
+    where: { solicitud_id: rfcCasa.id },
+    update: {},
+    create: {
+      solicitud_id: rfcCasa.id,
+      impacto: NivelImpacto.ALTO,
+      observaciones: 'El cambio requiere 12 días calendario adicionales para excavación manual y reforzamiento de cimientos vecinos.',
+      evaluador_id: aprobadorConstruccion.id,
+      created_at: new Date('2026-10-31'),
+    },
+  });
+
+  // Reuniones Construcción
   await prisma.reunionProyecto.deleteMany({
     where: { proyecto_id: proyectoConstruccion.id },
   });
@@ -506,60 +673,60 @@ async function main() {
     data: [
       {
         proyecto_id: proyectoConstruccion.id,
-        convocante_id: adminSoftware.id,
+        convocante_id: adminConstruccion.id,
         titulo: 'Reunión Inicial con Don Juan Pérez: Vivienda Familiar 2 Pisos',
         tipo: TipoReunion.CLIENTE,
         fecha: new Date('2026-10-10'),
         hora: '10:00',
-        participantes: 'Carlos Mendoza (Gerente de Obra), Don Juan Pérez (Propietario)',
+        participantes: 'Ing. Roberto Sánchez (Residente), Don Juan Pérez (Propietario)',
         temas_tratados: 'Don Juan solicita una casa de 2 pisos con 4 dormitorios, cochera techada para 2 camionetas y jardín posterior.',
         acuerdos: 'Se acuerda realizar levantamiento topográfico y elaborar planos estructurales sismorresistentes.',
         proximo_paso: 'Reunión técnica con la arquitecta María Flores para dimensionar zapatas.',
       },
       {
         proyecto_id: proyectoConstruccion.id,
-        convocante_id: arquitectaObras.id,
+        convocante_id: aprobadorConstruccion.id,
         titulo: 'Sesión de Cálculo Estructural y Distribución de Cochera',
         tipo: TipoReunion.EQUIPO_INTERNO,
         fecha: new Date('2026-10-16'),
         hora: '14:00',
-        participantes: 'Arq. María Flores, Carlos Mendoza, Ing. Rodrigo Paredes',
+        participantes: 'Arq. María Flores, Ing. Roberto Sánchez, Maestro Pedro Quispe',
         temas_tratados: 'Distribución de vigas peraltadas para permitir espacio libre sin columnas en la cochera techada.',
         acuerdos: 'Elaborar el entregable ECS-PLANO-ESTRUC v1.0.0 y someterlo a dictamen formal.',
         proximo_paso: 'Presentar planos a Don Juan para congelar hito.',
       },
       {
         proyecto_id: proyectoConstruccion.id,
-        convocante_id: adminSoftware.id,
+        convocante_id: adminConstruccion.id,
         titulo: 'Reunión en Terreno con Don Juan y Solicitud de Piscina',
         tipo: TipoReunion.CLIENTE,
         fecha: new Date('2026-10-29'),
         hora: '11:00',
-        participantes: 'Carlos Mendoza, Arq. María Flores, Don Juan Pérez',
+        participantes: 'Ing. Roberto Sánchez, Arq. María Flores, Don Juan Pérez',
         temas_tratados: 'Don Juan aprobó el inicio de obra pero solicitó que en el jardín se construya una piscina temperada de 6x3 metros.',
         acuerdos: 'Se le aclara que la piscina no estaba en la Línea Base pactada (LB-CASA-P01). Se acuerda presupuestar el impacto técnico y financiero.',
         proximo_paso: 'Calcular el impacto presupuestal y estructural de la excavación.',
       },
       {
         proyecto_id: proyectoConstruccion.id,
-        convocante_id: adminSoftware.id,
+        convocante_id: adminConstruccion.id,
         titulo: 'Presentación de Presupuesto Adicional de Piscina a Don Juan (HOY)',
         tipo: TipoReunion.CLIENTE,
         fecha: new Date('2026-11-03'),
         hora: '16:00',
-        participantes: 'Carlos Mendoza, Arq. María Flores, Don Juan Pérez',
+        participantes: 'Ing. Roberto Sánchez, Arq. María Flores, Don Juan Pérez',
         temas_tratados: 'Presentación de cotización de muros de contención para piscina, cuarto de bombas y cronograma extendido (+12 días).',
         acuerdos: 'Don Juan acepta el sobrecosto. Se redacta la solicitud formal de cambio para congelar la adenda.',
         proximo_paso: 'Comité de cambio el jueves para firma de adenda.',
       },
       {
         proyecto_id: proyectoConstruccion.id,
-        convocante_id: arquitectaObras.id,
+        convocante_id: aprobadorConstruccion.id,
         titulo: 'Inspección de Vaciado de Zapatas del Primer Piso',
         tipo: TipoReunion.EQUIPO_INTERNO,
         fecha: new Date('2026-11-07'),
         hora: '08:30',
-        participantes: 'Arq. María Flores, Maestro de Obra Roberto, Cuadrilla de Cimentación',
+        participantes: 'Arq. María Flores, Maestro Pedro Quispe, Cuadrilla de Cimentación',
         temas_tratados: 'Supervisión de calidad del concreto premezclado y colocación de armaduras de acero.',
         acuerdos: 'Registrar en Bitácora Diaria el avance y verificar probetas a los 7 días.',
         proximo_paso: 'Encofrado de columnas.',
@@ -567,7 +734,28 @@ async function main() {
     ],
   });
 
-  console.log('✅ Base de datos poblada con usuarios del equipo, reuniones de calendario y casos reales.');
+  // ECS Proyecto 2 (Construcción)
+  await prisma.ecs.upsert({
+    where: {
+      proyecto_id_codigo: {
+        proyecto_id: proyectoConstruccion2.id,
+        codigo: 'ECS-PLANO-ARQ-EDIF',
+      },
+    },
+    update: {},
+    create: {
+      proyecto_id: proyectoConstruccion2.id,
+      codigo: 'ECS-PLANO-ARQ-EDIF',
+      nombre: 'Planos Arquitectónicos de Departamentos Típicos 5 Pisos',
+      tipo: TipoEcs.DISENO,
+      descripcion: 'Distribución interior de departamentos dúplex y flats con estudio de iluminación natural.',
+      ubicacion: 'Drive://Horizonte/Proyectos/Edificio-Roble/Planos-Arquitectura-v1.dwg',
+      responsable_id: aprobadorConstruccion.id,
+    },
+  });
+
+  console.log('✅ Empresa de Construcción (Constructora Los Andes) y el caso Don Juan configurados.');
+  console.log('🎉 Separación Multi-Tenant completada con éxito.');
 }
 
 main()
