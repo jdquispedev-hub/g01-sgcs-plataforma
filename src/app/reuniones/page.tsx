@@ -390,19 +390,21 @@ export default function ReunionesPage() {
            ======================================================== */}
         {vistaModo === 'CALENDARIO' ? (
           <div className="bg-white rounded-3xl border-2 border-slate-300 shadow-xl overflow-hidden">
-            {/* Días de la semana Header */}
-            <div className="grid grid-cols-7 bg-upt-navy-900 text-white border-b-2 border-upt-gold text-center py-2.5 text-xs font-black uppercase tracking-wider">
-              <span>Lunes</span>
-              <span>Martes</span>
-              <span>Miércoles</span>
-              <span>Jueves</span>
-              <span>Viernes</span>
-              <span className="text-amber-400">Sábado</span>
-              <span className="text-amber-400">Domingo</span>
-            </div>
+            <div className="overflow-x-auto">
+              <div className="min-w-[650px]">
+                {/* Días de la semana Header */}
+                <div className="grid grid-cols-7 bg-upt-navy-900 text-white border-b-2 border-upt-gold text-center py-2.5 text-xs font-black uppercase tracking-wider">
+                  <span><span className="hidden sm:inline">Lunes</span><span className="sm:hidden">Lun</span></span>
+                  <span><span className="hidden sm:inline">Martes</span><span className="sm:hidden">Mar</span></span>
+                  <span><span className="hidden sm:inline">Miércoles</span><span className="sm:hidden">Mié</span></span>
+                  <span><span className="hidden sm:inline">Jueves</span><span className="sm:hidden">Jue</span></span>
+                  <span><span className="hidden sm:inline">Viernes</span><span className="sm:hidden">Vie</span></span>
+                  <span className="text-amber-400"><span className="hidden sm:inline">Sábado</span><span className="sm:hidden">Sáb</span></span>
+                  <span className="text-amber-400"><span className="hidden sm:inline">Domingo</span><span className="sm:hidden">Dom</span></span>
+                </div>
 
-            {/* Grilla de Celdas de Días */}
-            <div className="grid grid-cols-7 border-collapse divide-x divide-y divide-slate-200">
+                {/* Grilla de Celdas de Días */}
+                <div className="grid grid-cols-7 border-collapse divide-x divide-y divide-slate-200">
               {calendarDays.map((dayItem) => {
                 const dayMeetings = reuniones.filter(
                   (r) => r.fecha.split('T')[0] === dayItem.dateStr
@@ -483,7 +485,9 @@ export default function ReunionesPage() {
               })}
             </div>
           </div>
-        ) : (
+        </div>
+      </div>
+    ) : (
           /* ========================================================
              VISTA 2: LISTA DE MINUTAS DETALLADA
              ======================================================== */
