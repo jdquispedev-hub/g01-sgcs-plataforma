@@ -44,9 +44,11 @@ const NAV_ITEMS = [
   {
     href: '/dashboard',
     label: 'Inicio',
+    fullLabel: 'Inicio / Panel de Control',
     icon: Compass,
     badge: null,
     step: null,
+    isCore: true,
   },
   {
     href: '/reuniones',
@@ -55,6 +57,7 @@ const NAV_ITEMS = [
     icon: CalendarDays,
     color: 'text-emerald-400',
     step: 'Paso 1',
+    isCore: true,
   },
   {
     href: '/ecs',
@@ -63,6 +66,7 @@ const NAV_ITEMS = [
     icon: Layers,
     color: 'text-blue-400',
     step: 'Paso 2',
+    isCore: true,
   },
   {
     href: '/aprobaciones',
@@ -71,6 +75,7 @@ const NAV_ITEMS = [
     icon: ShieldCheck,
     color: 'text-amber-400',
     step: 'Paso 3',
+    isCore: true,
   },
   {
     href: '/lineas-base',
@@ -79,6 +84,7 @@ const NAV_ITEMS = [
     icon: Lock,
     color: 'text-purple-400',
     step: 'Paso 4',
+    isCore: true,
   },
   {
     href: '/cambios',
@@ -87,6 +93,7 @@ const NAV_ITEMS = [
     icon: AlertTriangle,
     color: 'text-rose-400',
     step: 'Paso 5',
+    isCore: true,
   },
   {
     href: '/cronograma',
@@ -95,6 +102,7 @@ const NAV_ITEMS = [
     icon: Sparkles,
     color: 'text-upt-gold',
     step: 'Vista',
+    isCore: false,
   },
   {
     href: '/bitacora',
@@ -103,6 +111,7 @@ const NAV_ITEMS = [
     icon: Activity,
     color: 'text-teal-400',
     step: 'Campo',
+    isCore: false,
   },
   {
     href: '/trazabilidad',
@@ -111,6 +120,7 @@ const NAV_ITEMS = [
     icon: Network,
     color: 'text-indigo-400',
     step: 'Auditoría',
+    isCore: false,
   },
 ];
 
@@ -173,34 +183,34 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
         </div>
       )}
 
-      {/* Header Principal */}
+      {/* Header Principal Responsivo */}
       <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-xl sticky top-0 z-40">
-        <div className="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
+        <div className="w-full px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
           
           {/* Logo y Nombre de Organización */}
-          <div className="flex items-center gap-3 shrink-0">
-            <Link href="/dashboard" className="flex items-center gap-2.5 group">
-              <div className="w-10 h-10 rounded-2xl bg-upt-navy-800 border border-upt-gold/40 flex items-center justify-center text-upt-gold shadow-md group-hover:border-upt-gold transition shrink-0">
-                <ShieldCheck className="w-6 h-6" />
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0">
+            <Link href="/dashboard" className="flex items-center gap-2 sm:gap-2.5 group min-w-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-upt-navy-800 border border-upt-gold/40 flex items-center justify-center text-upt-gold shadow-md group-hover:border-upt-gold transition shrink-0">
+                <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
-              <div className="shrink-0 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-black text-sm sm:text-base text-white tracking-tight truncate max-w-[140px] sm:max-w-[200px] md:max-w-xs">
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <span className="font-black text-xs sm:text-base text-white tracking-tight truncate max-w-[120px] sm:max-w-[180px] xl:max-w-xs">
                     {user?.organizacionNombre || 'SGCS Plataforma'}
                   </span>
-                  <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 uppercase tracking-wider shadow-sm shrink-0">
+                  <span className="text-[9px] sm:text-[10px] font-black px-1.5 sm:px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 uppercase tracking-wider shadow-sm shrink-0">
                     {user?.rubro || 'PLATAFORMA'}
                   </span>
                 </div>
-                <span className="text-[10px] sm:text-[11px] text-slate-300 font-medium block truncate">
+                <span className="text-[10px] sm:text-[11px] text-slate-300 font-medium hidden md:block truncate max-w-[200px] xl:max-w-xs">
                   SGCS • Control de Configuración y Proyectos
                 </span>
               </div>
             </Link>
           </div>
 
-          {/* Navegación Desktop (xl:flex) */}
-          <nav className="hidden xl:flex items-center gap-1 bg-upt-navy-950/80 p-1 rounded-2xl border border-white/15 shrink-0">
+          {/* Navegación Desktop Completa (2xl:flex >= 1536px, Ej. Monitor 24") */}
+          <nav className="hidden 2xl:flex items-center gap-1 bg-upt-navy-950/80 p-1 rounded-2xl border border-white/15 shrink-0">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
@@ -221,19 +231,50 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
             })}
           </nav>
 
-          {/* Acciones Derecha Desktop */}
-          <div className="hidden sm:flex items-center gap-2.5 shrink-0">
+          {/* Navegación Laptop Compacta (xl:flex 2xl:hidden, 1280px a 1535px, Ej. Laptop 13-14", 1366x768) */}
+          <nav className="hidden xl:flex 2xl:hidden items-center gap-1 bg-upt-navy-950/80 p-1 rounded-2xl border border-white/15 shrink-0">
+            {NAV_ITEMS.filter((item) => item.isCore).map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`px-2 py-1 rounded-xl text-[11px] font-bold transition flex items-center gap-1 whitespace-nowrap ${
+                    isActive
+                      ? 'bg-upt-navy-700 text-upt-gold shadow-sm border border-upt-gold/40 font-black'
+                      : 'text-slate-300 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <Icon className={`w-3 h-3 ${isActive ? 'text-upt-gold' : item.color || 'text-slate-400'}`} />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="px-2 py-1 rounded-xl text-[11px] font-black text-upt-gold hover:bg-white/10 transition flex items-center gap-1 active:scale-95"
+              title="Ver Canvas, Bitácora y Trazabilidad"
+            >
+              <span>+ Más</span>
+              <ChevronRight className="w-3 h-3" />
+            </button>
+          </nav>
+
+          {/* Acciones Derecha (Guía, Usuario y Logout) */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             <button
               onClick={() => setGuiaModalOpen(true)}
               className="px-2.5 py-1.5 rounded-xl bg-upt-gold hover:bg-amber-400 text-upt-navy-950 font-black text-xs shadow-md transition flex items-center gap-1.5 shrink-0 active:scale-95"
               title="Ver guía en 5 pasos"
             >
               <HelpCircle className="w-3.5 h-3.5 text-upt-navy-950" />
-              <span className="hidden md:inline">¿Cómo funciona?</span>
+              <span className="hidden lg:inline">¿Cómo funciona?</span>
             </button>
 
-            <div className="text-right pl-1 border-l border-white/15">
-              <p className="font-extrabold text-white text-xs leading-tight truncate max-w-[150px]">
+            {/* Ficha de Usuario en Barra (Visible desde xl) */}
+            <div className="text-right pl-2 border-l border-white/15 hidden xl:block">
+              <p className="font-extrabold text-white text-xs leading-tight truncate max-w-[120px] 2xl:max-w-[160px]">
                 {displayName}
               </p>
               <span className="text-[9px] font-bold text-upt-gold uppercase tracking-wider block">
@@ -241,27 +282,19 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
               </span>
             </div>
 
+            {/* Logout en Barra (Visible en Tablets y Desktops) */}
             <button
               onClick={handleDefaultLogout}
-              className="p-2 rounded-xl bg-white/10 hover:bg-red-500/20 text-slate-300 hover:text-red-400 font-bold transition border border-white/10 shrink-0"
+              className="hidden sm:flex p-2 rounded-xl bg-white/10 hover:bg-red-500/20 text-slate-300 hover:text-red-400 font-bold transition border border-white/10 shrink-0"
               title="Cerrar sesión"
             >
               <LogOut className="w-4 h-4" />
             </button>
-          </div>
 
-          {/* Botones Móvil (< sm / < xl) */}
-          <div className="flex xl:hidden items-center gap-2">
-            <button
-              onClick={() => setGuiaModalOpen(true)}
-              className="p-2 rounded-xl bg-upt-gold text-upt-navy-950 font-black text-xs shadow-sm transition active:scale-95"
-              title="¿Cómo funciona?"
-            >
-              <HelpCircle className="w-4 h-4" />
-            </button>
+            {/* Botón Menú / Hamburguesa (< xl o para abrir el Drawer de Módulos) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 border border-white/15 transition active:scale-95"
+              className="xl:hidden p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 border border-white/15 transition active:scale-95 flex items-center gap-1"
               aria-label="Abrir menú de navegación"
             >
               {mobileMenuOpen ? <X className="w-5 h-5 text-upt-gold" /> : <Menu className="w-5 h-5" />}
@@ -270,9 +303,9 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
         </div>
       </header>
 
-      {/* Drawer Móvil / Tablet (< xl) */}
+      {/* Drawer Lateral Responsivo */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 xl:hidden">
+        <div className="fixed inset-0 z-50">
           {/* Backdrop con Blur */}
           <div
             className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm transition-opacity"

@@ -104,6 +104,14 @@ export default function DashboardPage() {
   const [reuniones, setReuniones] = useState<ReunionItem[]>([]);
   const [agendarModalOpen, setAgendarModalOpen] = useState(false);
 
+  // Modal Crear Proyecto / Obra
+  const [crearProyectoModalOpen, setCrearProyectoModalOpen] = useState(false);
+  const [nuevoProyCodigo, setNuevoProyCodigo] = useState('');
+  const [nuevoProyNombre, setNuevoProyNombre] = useState('');
+  const [nuevoProyCliente, setNuevoProyCliente] = useState('');
+  const [creandoProy, setCreandoProy] = useState(false);
+  const [errorCrearProy, setErrorCrearProy] = useState('');
+
   // Pestaña de módulos
   const [tabModulo, setTabModulo] = useState<'OPERACION' | 'SUPERVISION'>('OPERACION');
   const [guiaModalOpen, setGuiaModalOpen] = useState(false);
@@ -197,6 +205,45 @@ export default function DashboardPage() {
     router.refresh();
   };
 
+  const handleCrearProyecto = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nuevoProyCodigo.trim() || !nuevoProyNombre.trim() || !nuevoProyCliente.trim()) {
+      setErrorCrearProy('Por favor complete todos los campos obligatorios');
+      return;
+    }
+    setCreandoProy(true);
+    setErrorCrearProy('');
+    try {
+      const res = await fetch('/api/proyectos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          codigo: nuevoProyCodigo.trim().toUpperCase(),
+          nombre: nuevoProyNombre.trim(),
+          cliente_nombre: nuevoProyCliente.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setErrorCrearProy(data.message || 'Error al registrar el proyecto');
+        setCreandoProy(false);
+        return;
+      }
+
+      const nuevo = data.data;
+      setProyectos((prev) => [nuevo, ...prev]);
+      setSelectedProyectoId(nuevo.id);
+      setCrearProyectoModalOpen(false);
+      setNuevoProyCodigo('');
+      setNuevoProyNombre('');
+      setNuevoProyCliente('');
+    } catch {
+      setErrorCrearProy('Error de conexión con el servidor');
+    } finally {
+      setCreandoProy(false);
+    }
+  };
+
   const handleRevertSuperadmin = async () => {
     try {
       const res = await fetch('/api/superadmin/impersonate/revert', { method: 'POST' });
@@ -276,63 +323,120 @@ export default function DashboardPage() {
           {/* Lado Izquierdo: Ficha del Proyecto y Pipeline de 5 Pasos (7 cols) */}
           <section className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-300 shadow-md flex flex-col justify-between space-y-5">
             <div className="space-y-3">
-              {/* Selector de Proyecto Activo */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-slate-200 pb-3">
-                <div>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-upt-navy-700 bg-upt-navy-50 px-2.5 py-0.5 rounded-md border border-upt-navy-200 inline-block mb-1">
-                    Proyecto Seleccionado
-                  </span>
-                  <h2 className="text-lg sm:text-xl font-black text-slate-900 flex items-center gap-2">
-                    <span>{activeProyecto?.nombre || 'Plataforma Web'}</span>
-                    <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
-                      {activeProyecto?.codigo}
-                    </span>
-                  </h2>
-                  <p className="text-xs text-slate-600 mt-0.5">
-                    Cliente Oficial: <strong className="text-slate-900">{activeProyecto?.cliente_nombre || 'Sin cliente asignado'}</strong>
-                  </p>
-                </div>
-
-                <div className="shrink-0">
-                  <select
-                    value={selectedProyectoId}
-                    onChange={(e) => setSelectedProyectoId(e.target.value)}
-                    className="px-3 py-1.5 bg-slate-100 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 transition cursor-pointer"
-                  >
-                    {proyectos.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.codigo} - {p.nombre}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Siguiente Paso Recomendado */}
-              <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-3.5 flex items-start gap-3 shadow-sm">
-                <div className="w-8 h-8 rounded-xl bg-amber-200 text-amber-900 flex items-center justify-center shrink-0 mt-0.5">
-                  <Sparkles className="w-4 h-4 text-amber-800" />
+            {proyectos.length === 0 ? (
+              <div className="bg-slate-50 rounded-2xl p-6 sm:p-8 border-2 border-dashed border-slate-300 text-center space-y-3">
+                <div className="w-14 h-14 rounded-2xl bg-upt-gold/20 text-upt-navy-950 flex items-center justify-center mx-auto border border-upt-gold/40 shadow-inner">
+                  {user?.rubro === 'CONSTRUCCION' ? (
+                    <Building className="w-7 h-7 text-upt-navy-900" />
+                  ) : (
+                    <Briefcase className="w-7 h-7 text-upt-navy-900" />
+                  )}
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block">
-                    Acción Recomendada Ahora:
+                  <span className="text-[10px] font-black uppercase tracking-wider text-upt-gold bg-upt-navy-950 px-2.5 py-0.5 rounded-full inline-block">
+                    {user?.rubro === 'CONSTRUCCION'
+                      ? 'Industria de Construcción y Obras Civiles'
+                      : user?.rubro === 'VETERINARIA'
+                      ? 'Industria de Servicios Veterinarios'
+                      : 'Industria de Software y Tecnología'}
                   </span>
-                  <p className="text-xs font-bold text-slate-900 leading-snug">
-                    {versionesPendientes > 0
-                      ? `Hay ${versionesPendientes} versión(es) de código/planos esperando dictamen técnico del Tech Lead.`
-                      : lineasVigentes === 0
-                      ? 'Los entregables están listos. El siguiente paso es congelar la primera Línea Base.'
-                      : 'Línea Base oficial vigente. El equipo debe continuar la ejecución y documentar avances.'}
+                  <h3 className="text-lg font-black text-slate-900">
+                    {user?.rubro === 'CONSTRUCCION'
+                      ? 'No hay obras civiles registradas en esta empresa'
+                      : user?.rubro === 'VETERINARIA'
+                      ? 'No hay casos clínicos registrados en este centro'
+                      : 'No hay proyectos registrados en esta organización'}
+                  </h3>
+                  <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
+                    {user?.rubro === 'CONSTRUCCION'
+                      ? 'Comienza registrando tu primera obra de edificación o vivienda para gestionar planos estructurales, zapatas, aprobaciones y minutas con clientes.'
+                      : user?.rubro === 'VETERINARIA'
+                      ? 'Registra tu primer protocolo clínico para controlar formatos de triaje y atenciones.'
+                      : 'Registra tu primer sistema para controlar entregables de código, versiones aprobadas y líneas base.'}
                   </p>
                 </div>
+                <button
+                  onClick={() => setCrearProyectoModalOpen(true)}
+                  className="mt-2 px-5 py-2.5 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-black text-xs shadow-md transition active:scale-95 inline-flex items-center gap-2 border border-upt-gold/40"
+                >
+                  <Plus className="w-4 h-4 stroke-[3]" />
+                  <span>
+                    {user?.rubro === 'CONSTRUCCION'
+                      ? 'Registrar Primera Obra Civil'
+                      : user?.rubro === 'VETERINARIA'
+                      ? 'Registrar Primer Servicio Clínico'
+                      : 'Registrar Primer Proyecto TI'}
+                  </span>
+                </button>
               </div>
+            ) : (
+              <>
+                {/* Selector de Proyecto Activo */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-slate-200 pb-3">
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-upt-navy-700 bg-upt-navy-50 px-2.5 py-0.5 rounded-md border border-upt-navy-200 inline-block mb-1">
+                      {user?.rubro === 'CONSTRUCCION' ? 'Obra Civil Seleccionada' : 'Proyecto Seleccionado'}
+                    </span>
+                    <h2 className="text-lg sm:text-xl font-black text-slate-900 flex items-center gap-2">
+                      <span>{activeProyecto?.nombre}</span>
+                      <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
+                        {activeProyecto?.codigo}
+                      </span>
+                    </h2>
+                    <p className="text-xs text-slate-600 mt-0.5">
+                      Cliente Oficial: <strong className="text-slate-900">{activeProyecto?.cliente_nombre || 'Cliente sin asignar'}</strong>
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <select
+                      value={selectedProyectoId}
+                      onChange={(e) => setSelectedProyectoId(e.target.value)}
+                      className="px-3 py-1.5 bg-slate-100 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 transition cursor-pointer max-w-[200px] truncate"
+                    >
+                      {proyectos.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.codigo} - {p.nombre}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      onClick={() => setCrearProyectoModalOpen(true)}
+                      className="p-1.5 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold transition shadow-sm border border-upt-gold/30 shrink-0 active:scale-95"
+                      title={user?.rubro === 'CONSTRUCCION' ? 'Registrar Nueva Obra' : 'Registrar Nuevo Proyecto'}
+                    >
+                      <Plus className="w-4 h-4 stroke-[3]" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Siguiente Paso Recomendado */}
+                <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-3.5 flex items-start gap-3 shadow-sm">
+                  <div className="w-8 h-8 rounded-xl bg-amber-200 text-amber-900 flex items-center justify-center shrink-0 mt-0.5">
+                    <Sparkles className="w-4 h-4 text-amber-800" />
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block">
+                      Acción Recomendada Ahora:
+                    </span>
+                    <p className="text-xs font-bold text-slate-900 leading-snug">
+                      {versionesPendientes > 0
+                        ? `Hay ${versionesPendientes} versión(es) de entregables esperando dictamen técnico del especialista.`
+                        : lineasVigentes === 0
+                        ? 'Los entregables están listos. El siguiente paso es congelar la primera Línea Base.'
+                        : 'Línea Base oficial vigente. El equipo debe continuar la ejecución y documentar avances.'}
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
 
               {/* Pipeline Guiado de 5 Pasos Interactivos */}
               <div>
                 <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider block mb-2">
                   Flujo Oficial del Proyecto (Haz clic para navegar):
                 </span>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-2">
                   <Link
                     href="/reuniones"
                     className="p-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-300 text-emerald-950 transition flex flex-col justify-between shadow-sm active:scale-95"
@@ -379,7 +483,7 @@ export default function DashboardPage() {
                   </Link>
                   <Link
                     href="/cambios"
-                    className="col-span-2 sm:col-span-1 p-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 border-2 border-rose-300 text-rose-950 transition flex flex-col justify-between shadow-sm active:scale-95"
+                    className="col-span-2 sm:col-span-3 xl:col-span-1 p-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 border-2 border-rose-300 text-rose-950 transition flex flex-col justify-between shadow-sm active:scale-95"
                   >
                     <span className="text-[9px] font-black text-rose-700">5. CAMBIOS</span>
                     <span className="text-xs font-black truncate">Modificaciones</span>
@@ -490,7 +594,7 @@ export default function DashboardPage() {
         {/* ========================================================
            ACCIONES RÁPIDAS (Atajos de 1 clic)
            ======================================================== */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <button
             type="button"
             onClick={() => setAgendarModalOpen(true)}
@@ -948,6 +1052,131 @@ export default function DashboardPage() {
         usuarios={usuarios}
         currentUserId={user?.userId}
       />
+
+      {/* Modal Registrar Nuevo Proyecto / Obra Civil */}
+      {crearProyectoModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border-2 border-slate-300 space-y-4 animate-in fade-in zoom-in-95 duration-150 my-6">
+            <div className="flex items-start justify-between border-b border-slate-200 pb-3">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-upt-gold bg-upt-navy-950 px-2.5 py-0.5 rounded-full inline-block mb-1">
+                  {user?.rubro === 'CONSTRUCCION'
+                    ? 'Nueva Obra Civil / Edificación'
+                    : user?.rubro === 'VETERINARIA'
+                    ? 'Nuevo Caso Clínico / Servicio'
+                    : 'Nuevo Sistema / Proyecto TI'}
+                </span>
+                <h3 className="text-lg font-black text-slate-900">
+                  {user?.rubro === 'CONSTRUCCION'
+                    ? 'Registrar Nueva Obra de Construcción'
+                    : user?.rubro === 'VETERINARIA'
+                    ? 'Registrar Nuevo Protocolo Clínico'
+                    : 'Registrar Nuevo Proyecto de Software'}
+                </h3>
+              </div>
+              <button
+                onClick={() => setCrearProyectoModalOpen(false)}
+                className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition"
+              >
+                ✕
+              </button>
+            </div>
+
+            {errorCrearProy && (
+              <div className="p-3 rounded-xl bg-red-100 border border-red-300 text-red-900 text-xs font-bold flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0 text-red-600" />
+                <span>{errorCrearProy}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleCrearProyecto} className="space-y-3.5 text-xs">
+              <div>
+                <label className="font-extrabold text-slate-800 block mb-1">
+                  Código Único del Proyecto / Obra *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={nuevoProyCodigo}
+                  onChange={(e) => setNuevoProyCodigo(e.target.value.toUpperCase())}
+                  placeholder={
+                    user?.rubro === 'CONSTRUCCION'
+                      ? 'Ej: OBRA-EDIF-03 o PRY-CASA-02'
+                      : user?.rubro === 'VETERINARIA'
+                      ? 'Ej: PRY-CLIN-02'
+                      : 'Ej: PRY-APP-03 o SIST-ERP-01'
+                  }
+                  className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 font-mono font-bold text-slate-900 focus:border-upt-navy-700 focus:bg-white bg-slate-50 transition"
+                />
+              </div>
+
+              <div>
+                <label className="font-extrabold text-slate-800 block mb-1">
+                  Nombre Completo de la Obra o Sistema *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={nuevoProyNombre}
+                  onChange={(e) => setNuevoProyNombre(e.target.value)}
+                  placeholder={
+                    user?.rubro === 'CONSTRUCCION'
+                      ? 'Ej: Construcción de Vivienda Multifamiliar 4 Pisos'
+                      : user?.rubro === 'VETERINARIA'
+                      ? 'Ej: Protocolo de Cirugías Menores y Esterilización'
+                      : 'Ej: Plataforma Web de Pasarela de Pagos Móviles'
+                  }
+                  className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 font-bold text-slate-900 focus:border-upt-navy-700 focus:bg-white bg-slate-50 transition"
+                />
+              </div>
+
+              <div>
+                <label className="font-extrabold text-slate-800 block mb-1">
+                  Cliente Oficial / Propietario / Entidad Contratante *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={nuevoProyCliente}
+                  onChange={(e) => setNuevoProyCliente(e.target.value)}
+                  placeholder={
+                    user?.rubro === 'CONSTRUCCION'
+                      ? 'Ej: Don Roberto Gómez (Propietario) o Inmobiliaria Del Sur'
+                      : 'Ej: Empresa Cliente S.A.C. o Entidad Financiera'
+                  }
+                  className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 font-medium text-slate-900 focus:border-upt-navy-700 focus:bg-white bg-slate-50 transition"
+                />
+              </div>
+
+              <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setCrearProyectoModalOpen(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={creandoProy}
+                  className="px-5 py-2 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-black transition shadow-md active:scale-95 disabled:opacity-50 flex items-center gap-2 border border-upt-gold/40"
+                >
+                  {creandoProy ? (
+                    <span>Registrando...</span>
+                  ) : (
+                    <>
+                      <Plus className="w-4 h-4 stroke-[3]" />
+                      <span>
+                        {user?.rubro === 'CONSTRUCCION' ? 'Crear Obra Civil' : 'Crear Proyecto'}
+                      </span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

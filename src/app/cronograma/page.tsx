@@ -25,6 +25,7 @@ import {
   Check,
   Tag,
   ArrowUpRight,
+  Sparkles,
 } from 'lucide-react';
 
 interface TimelineEvent {
@@ -67,12 +68,16 @@ export default function CronogramaPage() {
       try {
         const res = await fetch('/api/auxiliares');
         const data = await res.json();
-        if (data.success && data.data.proyectos.length > 0) {
+        if (data.success && Array.isArray(data.data.proyectos) && data.data.proyectos.length > 0) {
           setProyectos(data.data.proyectos);
           setSelectedProyectoId(data.data.proyectos[0].id);
+        } else {
+          setProyectos([]);
+          setLoading(false);
         }
       } catch (err) {
         console.error('Error al cargar proyectos auxiliares:', err);
+        setLoading(false);
       }
     };
     fetchAux();
@@ -218,10 +223,10 @@ export default function CronogramaPage() {
                 <span>Proyecto en Inspección</span>
               </span>
               <h2 className="text-xl sm:text-2xl font-black text-white">
-                {proyecto?.nombre || 'Cargando proyecto...'}
+                {proyecto?.nombre || (proyectos.length === 0 ? 'Sin proyectos registrados' : 'Seleccione un proyecto')}
               </h2>
               <p className="text-xs text-slate-300">
-                Cliente Oficial: <strong className="text-upt-gold">{proyecto?.cliente_nombre}</strong> • Código: <span className="font-mono">{proyecto?.codigo}</span>
+                Cliente Oficial: <strong className="text-upt-gold">{proyecto?.cliente_nombre || 'Sin cliente asignado'}</strong> • Código: <span className="font-mono">{proyecto?.codigo || '-'}</span>
               </p>
             </div>
 
@@ -263,8 +268,29 @@ export default function CronogramaPage() {
           </div>
         </div>
 
-        {/* Barra de Alternancia de Vistas (Timeline vs Canvas) */}
-        <div className="flex items-center justify-between border-b-2 border-slate-300 pb-3">
+        {proyectos.length === 0 ? (
+          <div className="bg-white rounded-3xl p-10 border-2 border-dashed border-slate-300 text-center space-y-3 shadow-md">
+            <div className="w-16 h-16 rounded-2xl bg-upt-gold/20 text-upt-navy-950 flex items-center justify-center mx-auto border border-upt-gold/40">
+              <Sparkles className="w-8 h-8 text-upt-navy-900" />
+            </div>
+            <h3 className="text-xl font-black text-slate-900">
+              No hay proyectos registrados para mostrar en el Cronograma
+            </h3>
+            <p className="text-xs text-slate-600 max-w-md mx-auto">
+              Comienza registrando tu primera obra civil o sistema desde el Dashboard principal para visualizar aquí la línea de tiempo viva.
+            </p>
+            <Link
+              href="/dashboard"
+              className="mt-3 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-upt-navy-900 text-upt-gold font-black text-xs shadow-md transition active:scale-95 border border-upt-gold/40"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Ir al Dashboard a Registrar Proyecto</span>
+            </Link>
+          </div>
+        ) : (
+          <>
+            {/* Barra de Alternancia de Vistas (Timeline vs Canvas) */}
+            <div className="flex items-center justify-between border-b-2 border-slate-300 pb-3">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setViewMode('TIMELINE')}
@@ -598,6 +624,8 @@ export default function CronogramaPage() {
             </div>
 
           </div>
+        )}
+          </>
         )}
 
       </main>
