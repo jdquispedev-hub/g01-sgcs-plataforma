@@ -133,7 +133,7 @@ export async function GET(request: NextRequest) {
         tipo: 'ECS_CREADO',
         fecha: ecs.created_at.toISOString(),
         titulo: `Nuevo Entregable: ${ecs.codigo} - ${ecs.nombre}`,
-        subtitulo: `Tipo: ${ecs.tipo}`,
+        subtitulo: `Tipo: ${ecs.tipo === 'DISENO' ? 'Diseño / Planos' : ecs.tipo === 'DOCUMENTO' ? 'Documento / Especificación' : ecs.tipo === 'CODIGO_FUENTE' ? 'Código Fuente' : ecs.tipo === 'BASE_DATOS' ? 'Base de Datos' : ecs.tipo === 'CASO_PRUEBA' ? 'Caso de Prueba / QA' : ecs.tipo}`,
         descripcion: ecs.descripcion || 'Entregable registrado en el inventario del proyecto.',
         badge: 'Artefacto',
         icono: 'FileText',
