@@ -355,19 +355,28 @@ export default function DashboardPage() {
                       : 'Registra tu primer sistema para controlar entregables de código, versiones aprobadas y líneas base.'}
                   </p>
                 </div>
-                <button
-                  onClick={() => setCrearProyectoModalOpen(true)}
-                  className="mt-2 px-5 py-2.5 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-black text-xs shadow-md transition active:scale-95 inline-flex items-center gap-2 border border-upt-gold/40"
-                >
-                  <Plus className="w-4 h-4 stroke-[3]" />
-                  <span>
-                    {user?.rubro === 'CONSTRUCCION'
-                      ? 'Registrar Primera Obra Civil'
-                      : user?.rubro === 'VETERINARIA'
-                      ? 'Registrar Primer Servicio Clínico'
-                      : 'Registrar Primer Proyecto TI'}
-                  </span>
-                </button>
+                <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
+                  <button
+                    onClick={() => setCrearProyectoModalOpen(true)}
+                    className="px-5 py-2.5 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-black text-xs shadow-md transition active:scale-95 inline-flex items-center gap-2 border border-upt-gold/40"
+                  >
+                    <Plus className="w-4 h-4 stroke-[3]" />
+                    <span>
+                      {user?.rubro === 'CONSTRUCCION'
+                        ? 'Registrar Primera Obra Civil'
+                        : user?.rubro === 'VETERINARIA'
+                        ? 'Registrar Primer Servicio Clínico'
+                        : 'Registrar Primer Proyecto TI'}
+                    </span>
+                  </button>
+                  <Link
+                    href="/usuarios"
+                    className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs shadow-sm transition active:scale-95 inline-flex items-center gap-2 border-2 border-slate-300"
+                  >
+                    <Users className="w-4 h-4 text-purple-600" />
+                    <span>Gestionar Personal & Roles</span>
+                  </Link>
+                </div>
               </div>
             ) : (
               <>
