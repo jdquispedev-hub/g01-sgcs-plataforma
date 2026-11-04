@@ -10,6 +10,24 @@ export interface PasoFlujo {
   iconName: 'Users' | 'Layers' | 'ShieldCheck' | 'Lock' | 'AlertTriangle';
 }
 
+export interface ModuloCardInfo {
+  titulo: string;
+  descripcion: string;
+}
+
+export interface RubroModulos {
+  reuniones: ModuloCardInfo;
+  canvas: ModuloCardInfo;
+  ecs: ModuloCardInfo;
+  aprobaciones: ModuloCardInfo;
+  lineasBase: ModuloCardInfo;
+  cambios: ModuloCardInfo;
+  bitacora: ModuloCardInfo;
+  trazabilidad: ModuloCardInfo;
+  reportes: ModuloCardInfo;
+  ecsAtajoSubtitulo: string;
+}
+
 export interface RubroConfig {
   nombreIndustria: string;
   badgeIndustria: string;
@@ -74,6 +92,9 @@ export interface RubroConfig {
     lineaBaseVigente: string;
     sinProyectos: string;
   };
+
+  // Módulos y Tarjetas del Sistema
+  modulos: RubroModulos;
 
   // Guía de 5 Pasos ("¿Cómo funciona?")
   pasosGuia: PasoFlujo[];
@@ -140,6 +161,46 @@ export const CATALOGO_TERMINOLOGIA: Record<RubroTipo, RubroConfig> = {
       sinLineaBase: 'Los planos estructurales iniciales están aprobados. El siguiente paso es congelar la Línea Base Contractual con el cliente.',
       lineaBaseVigente: 'Línea Base Contractual vigente. La cuadrilla debe continuar la faena y registrar los partes diarios en la bitácora.',
       sinProyectos: 'Aún no tienes obras civiles registradas. Comienza registrando tu primera obra de edificación o vial.',
+    },
+
+    modulos: {
+      reuniones: {
+        titulo: 'Actas de Coordinación de Obra',
+        descripcion: 'Agenda y minutas de campo con el propietario Don Juan Pérez, contratistas y acuerdos de metrados.',
+      },
+      canvas: {
+        titulo: 'Línea de Tiempo de Obra (Canvas)',
+        descripcion: 'Tablero visual interactivo que une actas de obra, planos técnicos, visados de residencia y adicionales.',
+      },
+      ecs: {
+        titulo: 'Planos y Memorias Técnicas (ECS)',
+        descripcion: 'Catálogo oficial de planos estructurales, memorias de cálculo, hojas de metrados y ensayos de resistencia.',
+      },
+      aprobaciones: {
+        titulo: 'Dictamen del Ingeniero Residente',
+        descripcion: 'Visado técnico formal y aprobación de planos y memorias antes de autorizar el vaciado en faena.',
+      },
+      lineasBase: {
+        titulo: 'Línea Base Contractual de Obra',
+        descripcion: 'Hito inmutable de planos y metrados aprobados que blindan el presupuesto y plazo frente al cliente.',
+      },
+      cambios: {
+        titulo: 'Adicionales y Modificaciones de Obra (RFC)',
+        descripcion: 'Gestión formal de imprevistos, adicionales de metrado (ej. piscina) y ampliaciones de plazo contractual.',
+      },
+      bitacora: {
+        titulo: 'Parte Diario de Faena (Campo)',
+        descripcion: 'Registro de cuadrillas, vaciado de concreto en m², clima en terreno y alertas tempranas de bloqueos.',
+      },
+      trazabilidad: {
+        titulo: 'Matriz de Trazabilidad Obra - Planos',
+        descripcion: 'Trazabilidad integral desde las actas con el propietario hasta los planos visados y órdenes de cambio.',
+      },
+      reportes: {
+        titulo: 'Informes Técnicos y Actas de Entrega',
+        descripcion: 'Generación de informes de avance físico, actas de recepción de obra y exportación de metrados.',
+      },
+      ecsAtajoSubtitulo: 'Planos, memorias o metrados',
     },
 
     pasosGuia: [
@@ -254,6 +315,46 @@ export const CATALOGO_TERMINOLOGIA: Record<RubroTipo, RubroConfig> = {
       sinProyectos: 'Aún no tienes proyectos de software registrados. Registra tu primer sistema o app.',
     },
 
+    modulos: {
+      reuniones: {
+        titulo: 'Minutas de Sprint & Kickoff',
+        descripcion: 'Acuerdos de historias de usuario, arquitectura y compromisos pactados con el Product Owner y cliente.',
+      },
+      canvas: {
+        titulo: 'Línea de Tiempo del Release (Canvas)',
+        descripcion: 'Tablero visual interactivo que sincroniza sprints, entregables de código, dictámenes técnicos y RFCs.',
+      },
+      ecs: {
+        titulo: 'Artefactos y Código Fuente (ECS)',
+        descripcion: 'Repositorio de microservicios, APIs, scripts de base de datos y especificaciones SRS bajo Git.',
+      },
+      aprobaciones: {
+        titulo: 'Dictamen del Tech Lead (Code Review)',
+        descripcion: 'Revisión técnica de arquitectura, pruebas unitarias y linters antes de autorizar el merge.',
+      },
+      lineasBase: {
+        titulo: 'Línea Base de Release (Tag Oficial)',
+        descripcion: 'Congelamiento inmutable de artefactos probados para un Release o Sprint sin cambios imprevistos.',
+      },
+      cambios: {
+        titulo: 'Control de Cambios Técnico (RFC)',
+        descripcion: 'Evaluación de impacto técnico, deuda arquitectónica y horas estimadas por el Comité de Cambios (CCB).',
+      },
+      bitacora: {
+        titulo: 'Bitácora de Despliegue y Sprint',
+        descripcion: 'Registro de incidencias en staging/producción, puntos de historia y alertas de bloqueo técnico.',
+      },
+      trazabilidad: {
+        titulo: 'Matriz de Trazabilidad de Requisitos (RTV)',
+        descripcion: 'Trazabilidad bidireccional desde la historia de usuario hasta el código fuente, commits y pruebas.',
+      },
+      reportes: {
+        titulo: 'Auditoría de Configuración (CSA)',
+        descripcion: 'Generación de informes formales de release notes, estado de artefactos y exportación de métricas.',
+      },
+      ecsAtajoSubtitulo: 'Código, APIs o documentos SRS',
+    },
+
     pasosGuia: [
       {
         paso: 1,
@@ -363,6 +464,46 @@ export const CATALOGO_TERMINOLOGIA: Record<RubroTipo, RubroConfig> = {
       sinLineaBase: 'Los protocolos médicos están aprobados. El siguiente paso es congelar el Protocolo Clínico Base.',
       lineaBaseVigente: 'Protocolo Clínico Base vigente. El equipo asistencial debe monitorear y registrar constantes en la bitácora.',
       sinProyectos: 'Aún no tienes campañas o especialidades registradas. Registra tu primer servicio clínico.',
+    },
+
+    modulos: {
+      reuniones: {
+        titulo: 'Juntas Clínicas y Anamnesis',
+        descripcion: 'Minutas de casos clínicos, rondas de pacientes y acuerdos terapéuticos con los tutores de mascotas.',
+      },
+      canvas: {
+        titulo: 'Línea de Tiempo del Paciente (Canvas)',
+        descripcion: 'Evolución cronológica integral del paciente: consulta inicial, protocolos médicos y ajustes farmacológicos.',
+      },
+      ecs: {
+        titulo: 'Protocolos y Fichas Clínicas (ECS)',
+        descripcion: 'Inventario formal de protocolos anestésicos, fichas de triaje, consentimientos y registros farmacológicos.',
+      },
+      aprobaciones: {
+        titulo: 'Dictamen del Veterinario Jefe',
+        descripcion: 'Evaluación médica formal de perfiles bioquímicos y autorización técnica antes de intervenir pacientes.',
+      },
+      lineasBase: {
+        titulo: 'Protocolo Clínico Base (Tratamiento)',
+        descripcion: 'Hito médico inmutable de pautas aprobadas que resguardan la vida del animal y evitan errores de dosis.',
+      },
+      cambios: {
+        titulo: 'Modificaciones de Tratamiento (RFC)',
+        descripcion: 'Gestión de imprevistos médicos, cambios de antibiótico por intolerancia y ajustes de dosificación.',
+      },
+      bitacora: {
+        titulo: 'Cuaderno de Hospitalización',
+        descripcion: 'Registro de constantes vitales por turno, medicación administrada y evolución clínica del paciente.',
+      },
+      trazabilidad: {
+        titulo: 'Trazabilidad Diagnóstico - Alta',
+        descripcion: 'Trazabilidad médica desde el triaje de ingreso hasta el protocolo quirúrgico y la evolución hospitalaria.',
+      },
+      reportes: {
+        titulo: 'Fichas Médicas e Informes de Alta',
+        descripcion: 'Generación de actas clínicas firmadas, resúmenes de hospitalización y exportación de historiales.',
+      },
+      ecsAtajoSubtitulo: 'Protocolos, consentimientos o fichas',
     },
 
     pasosGuia: [

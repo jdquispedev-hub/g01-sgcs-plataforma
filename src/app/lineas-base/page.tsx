@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { getTerminologia } from '@/lib/terminologia';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ShieldCheck,
@@ -61,6 +62,7 @@ export default function LineasBasePage() {
   const [search, setSearch] = useState('');
   const [estadoFiltro, setEstadoFiltro] = useState('');
   const [proyectoFiltro, setProyectoFiltro] = useState('');
+  const [rubro, setRubro] = useState<string>('CONSTRUCCION');
 
   const loadData = async () => {
     setLoading(true);
@@ -70,13 +72,19 @@ export default function LineasBasePage() {
       if (estadoFiltro) url.searchParams.set('estado', estadoFiltro);
       if (proyectoFiltro) url.searchParams.set('proyectoId', proyectoFiltro);
 
-      const [resLineas, resAux] = await Promise.all([
+      const [resLineas, resAux, resMe] = await Promise.all([
         fetch(url.toString()),
         fetch('/api/auxiliares'),
+        fetch('/api/auth/me'),
       ]);
 
       const dataLineas = await resLineas.json();
       const dataAux = await resAux.json();
+      const dataMe = await resMe.json();
+
+      if (dataMe?.success && dataMe?.user?.rubro) {
+        setRubro(dataMe.user.rubro);
+      }
 
       if (dataLineas.success) setLineasBase(dataLineas.data);
       if (dataAux.success) setProyectos(dataAux.data.proyectos);
@@ -98,6 +106,7 @@ export default function LineasBasePage() {
 
   const totalVigentes = lineasBase.filter((lb) => lb.estado === 'VIGENTE').length;
   const totalObsoletas = lineasBase.filter((lb) => lb.estado === 'OBSOLETA').length;
+  const terminologia = getTerminologia(rubro);
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
@@ -117,14 +126,14 @@ export default function LineasBasePage() {
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-black text-sm sm:text-base text-white tracking-tight truncate">
-                  Líneas Base Oficiales (Hitos Congelados)
+                  {terminologia.lineaBaseLabel}
                 </span>
                 <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase tracking-wider shrink-0 shadow-sm">
                   Paso 4: Congelamiento de Alcance
                 </span>
               </div>
               <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
-                Alcance formal inmutable acordado con el cliente; cualquier modificación requiere una Solicitud de Cambio (RFC)
+                {terminologia.lineaBaseSubtitulo}
               </p>
             </div>
           </div>
@@ -166,12 +175,10 @@ export default function LineasBasePage() {
                 <span>Paso 4 del Proceso Oficial</span>
               </div>
               <h2 className="text-lg sm:text-2xl font-black text-white tracking-tight">
-                ¿Qué es un Hito Congelado (Línea Base)?
+                {terminologia.lineaBaseLabel}
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Toma una <strong className="text-white font-bold">«fotografía congelada e inmutable»</strong> de todos los entregables aprobados formalmente. 
-                Una vez establecida, nadie en el equipo, ventas ni gerencia puede alterar los requerimientos o código sin abrir formalmente una 
-                <strong className="text-upt-gold"> Solicitud de Cambio (RFC)</strong>.
+                {terminologia.lineaBaseExplicacion}
               </p>
             </div>
 

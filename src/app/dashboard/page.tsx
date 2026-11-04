@@ -377,25 +377,13 @@ export default function DashboardPage() {
                 </div>
                 <div className="space-y-1">
                   <span className="text-[10px] font-black uppercase tracking-wider text-upt-gold bg-upt-navy-950 px-2.5 py-0.5 rounded-full inline-block">
-                    {user?.rubro === 'CONSTRUCCION'
-                      ? 'Industria de Construcción y Obras Civiles'
-                      : user?.rubro === 'VETERINARIA'
-                      ? 'Industria de Servicios Veterinarios'
-                      : 'Industria de Software y Tecnología'}
+                    {terminologia.badgeIndustria}
                   </span>
                   <h3 className="text-lg font-black text-slate-900">
-                    {user?.rubro === 'CONSTRUCCION'
-                      ? 'No hay obras civiles registradas en esta empresa'
-                      : user?.rubro === 'VETERINARIA'
-                      ? 'No hay casos clínicos registrados en este centro'
-                      : 'No hay proyectos registrados en esta organización'}
+                    No hay {terminologia.proyectoLabelPlural.toLowerCase()} registrados en esta organización
                   </h3>
                   <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
-                    {user?.rubro === 'CONSTRUCCION'
-                      ? 'Comienza registrando tu primera obra de edificación o vivienda para gestionar planos estructurales, zapatas, aprobaciones y minutas con clientes.'
-                      : user?.rubro === 'VETERINARIA'
-                      ? 'Registra tu primer protocolo clínico para controlar formatos de triaje y atenciones.'
-                      : 'Registra tu primer sistema para controlar entregables de código, versiones aprobadas y líneas base.'}
+                    {terminologia.recomendaciones.sinProyectos}
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
@@ -407,11 +395,7 @@ export default function DashboardPage() {
                       >
                         <Plus className="w-4 h-4 stroke-[3]" />
                         <span>
-                          {user?.rubro === 'CONSTRUCCION'
-                            ? 'Registrar Primera Obra Civil'
-                            : user?.rubro === 'VETERINARIA'
-                            ? 'Registrar Primer Servicio Clínico'
-                            : 'Registrar Primer Proyecto TI'}
+                          Registrar Primer(a) {terminologia.proyectoLabel}
                         </span>
                       </button>
                       <Link
@@ -425,10 +409,10 @@ export default function DashboardPage() {
                   ) : (
                     <div className="bg-white rounded-2xl p-4 border border-slate-200 text-center max-w-sm">
                       <p className="text-xs text-slate-700 font-bold">
-                        Tu organización aún no tiene una obra activa asignada.
+                        Tu organización aún no tiene {terminologia.proyectoLabel.toLowerCase()} activo asignado.
                       </p>
                       <p className="text-[11px] text-slate-500 mt-0.5">
-                        Comunícate con el Administrador de tu empresa para que aperture o te asigne a una obra.
+                        Comunícate con el Administrador de tu empresa para que aperture o te asigne a uno.
                       </p>
                     </div>
                   )}
@@ -440,7 +424,7 @@ export default function DashboardPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-slate-200 pb-3">
                   <div>
                     <span className="text-[10px] font-black uppercase tracking-wider text-upt-navy-700 bg-upt-navy-50 px-2.5 py-0.5 rounded-md border border-upt-navy-200 inline-block mb-1">
-                      {user?.rubro === 'CONSTRUCCION' ? 'Obra Civil Seleccionada' : 'Proyecto Seleccionado'}
+                      {terminologia.proyectoLabel} Seleccionado
                     </span>
                     <h2 className="text-lg sm:text-xl font-black text-slate-900 flex items-center gap-2">
                       <span>{activeProyecto?.nombre}</span>
@@ -469,7 +453,7 @@ export default function DashboardPage() {
                       <button
                         onClick={() => setCrearProyectoModalOpen(true)}
                         className="p-1.5 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold transition shadow-sm border border-upt-gold/30 shrink-0 active:scale-95"
-                        title={user?.rubro === 'CONSTRUCCION' ? 'Registrar Nueva Obra' : 'Registrar Nuevo Proyecto'}
+                        title={`Registrar Nuevo(a) ${terminologia.proyectoLabel}`}
                       >
                         <Plus className="w-4 h-4 stroke-[3]" />
                       </button>
@@ -528,7 +512,7 @@ export default function DashboardPage() {
                         : 'bg-emerald-50 hover:bg-emerald-100 border-emerald-300 text-emerald-950'
                     }`}
                   >
-                    <span className="text-[9px] font-black">{user?.rubro === 'CONSTRUCCION' ? '3. RESIDENTE' : user?.rubro === 'VETERINARIA' ? '3. VET. JEFE' : '3. TECH LEAD'}</span>
+                    <span className="text-[9px] font-black">3. {terminologia.aprobadorRolLabel.toUpperCase()}</span>
                     <span className="text-xs font-black truncate">Dictamen</span>
                     <span className="text-[9px]">
                       {versionesPendientes > 0 ? `${versionesPendientes} Por Ver` : '✓ Al día'}
@@ -704,7 +688,7 @@ export default function DashboardPage() {
               <span className="font-black text-xs text-slate-900 block group-hover:text-blue-700 transition">
                 + Subir Entregable (ECS)
               </span>
-              <span className="text-[10px] text-slate-500">Código, planos o docs</span>
+              <span className="text-[10px] text-slate-500">{terminologia.modulos.ecsAtajoSubtitulo}</span>
             </div>
           </Link>
 
@@ -719,7 +703,7 @@ export default function DashboardPage() {
               <span className="font-black text-xs text-slate-900 block group-hover:text-purple-700 transition">
                 + Congelar Hito Oficial
               </span>
-              <span className="text-[10px] text-slate-500">Fijar Línea Base</span>
+              <span className="text-[10px] text-slate-500">{terminologia.lineaBaseLabel}</span>
             </div>
           </Link>
         </div>
@@ -782,10 +766,10 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <h3 className="text-base font-black text-slate-900">
-                      Reuniones & Calendario
+                      {terminologia.modulos.reuniones.titulo}
                     </h3>
                     <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                      Agenda de sesiones con el cliente y el equipo. Registro de minutas y compromisos vinculantes.
+                      {terminologia.modulos.reuniones.descripcion}
                     </p>
                   </div>
                 </div>
@@ -813,10 +797,10 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <h3 className="text-base font-black text-slate-900">
-                      Línea de Tiempo (Canvas)
+                      {terminologia.modulos.canvas.titulo}
                     </h3>
                     <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                      Tablero visual interactivo que une reuniones, entregables, aprobaciones y solicitudes de cambio.
+                      {terminologia.modulos.canvas.descripcion}
                     </p>
                   </div>
                 </div>
@@ -844,10 +828,10 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <h3 className="text-base font-black text-slate-900">
-                      Entregables y Componentes (ECS)
+                      {terminologia.modulos.ecs.titulo}
                     </h3>
                     <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                      Catálogo de código fuente, planos, bases de datos y documentos técnicos bajo control de versiones.
+                      {terminologia.modulos.ecs.descripcion}
                     </p>
                   </div>
                   <div className="text-xs text-slate-600 font-bold bg-slate-100 p-2 rounded-xl">
@@ -878,10 +862,10 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <h3 className="text-base font-black text-slate-900">
-                      Bandeja de Aprobaciones
+                      {terminologia.modulos.aprobaciones.titulo}
                     </h3>
                     <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                      Módulo para el Tech Lead: revisión técnica y dictamen (Aprobar o Rechazar) de versiones y solicitudes.
+                      {terminologia.modulos.aprobaciones.descripcion}
                     </p>
                   </div>
                   <div className="text-xs text-slate-600 font-bold bg-slate-100 p-2 rounded-xl">
@@ -912,10 +896,10 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <h3 className="text-base font-black text-slate-900">
-                      Hitos Oficiales (Líneas Base)
+                      {terminologia.modulos.lineasBase.titulo}
                     </h3>
                     <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                      Fotografía congelada e inmutable del alcance pactado. Nadie puede alterar lo pactado a ciegas.
+                      {terminologia.modulos.lineasBase.descripcion}
                     </p>
                   </div>
                   <div className="text-xs text-slate-600 font-bold bg-slate-100 p-2 rounded-xl">
@@ -946,10 +930,10 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <h3 className="text-base font-black text-slate-900">
-                      Control de Cambios (RFC)
+                      {terminologia.modulos.cambios.titulo}
                     </h3>
                     <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                      Si el cliente pide modificar lo congelado, aquí se evalúa el impacto en costo, tiempo y arquitectura.
+                      {terminologia.modulos.cambios.descripcion}
                     </p>
                   </div>
                   <div className="text-xs text-slate-600 font-bold bg-slate-100 p-2 rounded-xl">
@@ -981,10 +965,10 @@ export default function DashboardPage() {
                     <Activity className="w-5 h-5" />
                   </div>
                   <h3 className="text-base font-black text-slate-900">
-                    Bitácora Diaria de Campo
+                    {terminologia.modulos.bitacora.titulo}
                   </h3>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    Reporte de avance diario de cuadrilla y semáforo verde/rojo de bloqueos o falta de insumos.
+                    {terminologia.modulos.bitacora.descripcion}
                   </p>
                 </div>
                 <div className="pt-4 mt-4 border-t border-slate-200">
@@ -1005,10 +989,10 @@ export default function DashboardPage() {
                     <Network className="w-5 h-5" />
                   </div>
                   <h3 className="text-base font-black text-slate-900">
-                    Matriz de Trazabilidad
+                    {terminologia.modulos.trazabilidad.titulo}
                   </h3>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    Árbol completo de relaciones: Requerimiento ➔ Entregable ➔ Línea Base ➔ Solicitud de Cambio.
+                    {terminologia.modulos.trazabilidad.descripcion}
                   </p>
                 </div>
                 <div className="pt-4 mt-4 border-t border-slate-200">
@@ -1029,10 +1013,10 @@ export default function DashboardPage() {
                     <Printer className="w-5 h-5" />
                   </div>
                   <h3 className="text-base font-black text-slate-900">
-                    Reportes Oficiales (CSA)
+                    {terminologia.modulos.reportes.titulo}
                   </h3>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    Generación de informes formales de configuración, actas firmables y exportación CSV de artefactos.
+                    {terminologia.modulos.reportes.descripcion}
                   </p>
                 </div>
                 <div className="pt-4 mt-4 border-t border-slate-200">
@@ -1105,10 +1089,10 @@ export default function DashboardPage() {
                         <Activity className="w-5 h-5" />
                       </div>
                       <h3 className="text-base font-black text-slate-900">
-                        Bitácora & Partes Diarios
+                        {terminologia.modulos.bitacora.titulo}
                       </h3>
                       <p className="text-xs text-slate-600 leading-relaxed">
-                        Registro diario de faena, horas hombre, avance de partidas y reporte de alertas de cuadrilla.
+                        {terminologia.modulos.bitacora.descripcion}
                       </p>
                     </div>
                     <div className="pt-4 mt-4 border-t border-slate-200">
@@ -1129,10 +1113,10 @@ export default function DashboardPage() {
                         <AlertTriangle className="w-5 h-5" />
                       </div>
                       <h3 className="text-base font-black text-slate-900">
-                        Órdenes de Cambio (RFC)
+                        {terminologia.modulos.cambios.titulo}
                       </h3>
                       <p className="text-xs text-slate-600 leading-relaxed">
-                        Seguimiento a modificaciones imprevistas solicitadas al cliente y dictámenes del comité.
+                        {terminologia.modulos.cambios.descripcion}
                       </p>
                     </div>
                     <div className="pt-4 mt-4 border-t border-slate-200">
@@ -1181,18 +1165,10 @@ export default function DashboardPage() {
             <div className="flex items-start justify-between border-b border-slate-200 pb-3">
               <div>
                 <span className="text-[10px] font-black uppercase tracking-wider text-upt-gold bg-upt-navy-950 px-2.5 py-0.5 rounded-full inline-block mb-1">
-                  {user?.rubro === 'CONSTRUCCION'
-                    ? 'Nueva Obra Civil / Edificación'
-                    : user?.rubro === 'VETERINARIA'
-                    ? 'Nuevo Caso Clínico / Servicio'
-                    : 'Nuevo Sistema / Proyecto TI'}
+                  Nuevo(a) {terminologia.proyectoLabel}
                 </span>
                 <h3 className="text-lg font-black text-slate-900">
-                  {user?.rubro === 'CONSTRUCCION'
-                    ? 'Registrar Nueva Obra de Construcción'
-                    : user?.rubro === 'VETERINARIA'
-                    ? 'Registrar Nuevo Protocolo Clínico'
-                    : 'Registrar Nuevo Proyecto de Software'}
+                  Registrar Nuevo(a) {terminologia.proyectoLabel}
                 </h3>
               </div>
               <button
@@ -1213,58 +1189,42 @@ export default function DashboardPage() {
             <form onSubmit={handleCrearProyecto} className="space-y-3.5 text-xs">
               <div>
                 <label className="font-extrabold text-slate-800 block mb-1">
-                  Código Único del Proyecto / Obra *
+                  Código Único ({terminologia.proyectoLabel}) *
                 </label>
                 <input
                   type="text"
                   required
                   value={nuevoProyCodigo}
                   onChange={(e) => setNuevoProyCodigo(e.target.value.toUpperCase())}
-                  placeholder={
-                    user?.rubro === 'CONSTRUCCION'
-                      ? 'Ej: OBRA-EDIF-03 o PRY-CASA-02'
-                      : user?.rubro === 'VETERINARIA'
-                      ? 'Ej: PRY-CLIN-02'
-                      : 'Ej: PRY-APP-03 o SIST-ERP-01'
-                  }
+                  placeholder={`Ej: ${terminologia.proyectoCodigoEjemplo}`}
                   className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 font-mono font-bold text-slate-900 focus:border-upt-navy-700 focus:bg-white bg-slate-50 transition"
                 />
               </div>
 
               <div>
                 <label className="font-extrabold text-slate-800 block mb-1">
-                  Nombre Completo de la Obra o Sistema *
+                  Nombre Completo ({terminologia.proyectoLabel}) *
                 </label>
                 <input
                   type="text"
                   required
                   value={nuevoProyNombre}
                   onChange={(e) => setNuevoProyNombre(e.target.value)}
-                  placeholder={
-                    user?.rubro === 'CONSTRUCCION'
-                      ? 'Ej: Construcción de Vivienda Multifamiliar 4 Pisos'
-                      : user?.rubro === 'VETERINARIA'
-                      ? 'Ej: Protocolo de Cirugías Menores y Esterilización'
-                      : 'Ej: Plataforma Web de Pasarela de Pagos Móviles'
-                  }
+                  placeholder={terminologia.proyectoPlaceholder}
                   className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 font-bold text-slate-900 focus:border-upt-navy-700 focus:bg-white bg-slate-50 transition"
                 />
               </div>
 
               <div>
                 <label className="font-extrabold text-slate-800 block mb-1">
-                  Cliente Oficial / Propietario / Entidad Contratante *
+                  {terminologia.clienteLabel} *
                 </label>
                 <input
                   type="text"
                   required
                   value={nuevoProyCliente}
                   onChange={(e) => setNuevoProyCliente(e.target.value)}
-                  placeholder={
-                    user?.rubro === 'CONSTRUCCION'
-                      ? 'Ej: Don Roberto Gómez (Propietario) o Inmobiliaria Del Sur'
-                      : 'Ej: Empresa Cliente S.A.C. o Entidad Financiera'
-                  }
+                  placeholder={terminologia.clientePlaceholder}
                   className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 font-medium text-slate-900 focus:border-upt-navy-700 focus:bg-white bg-slate-50 transition"
                 />
               </div>
@@ -1288,7 +1248,7 @@ export default function DashboardPage() {
                     <>
                       <Plus className="w-4 h-4 stroke-[3]" />
                       <span>
-                        {user?.rubro === 'CONSTRUCCION' ? 'Crear Obra Civil' : 'Crear Proyecto'}
+                        Crear {terminologia.proyectoLabel}
                       </span>
                     </>
                   )}

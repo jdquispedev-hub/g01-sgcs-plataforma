@@ -81,13 +81,19 @@ export default function EcsPage() {
       if (search) url.searchParams.set('search', search);
       if (tipoFiltro) url.searchParams.set('tipo', tipoFiltro);
 
-      const [resEcs, resAux] = await Promise.all([
+      const [resEcs, resAux, resMe] = await Promise.all([
         fetch(url.toString()),
         fetch('/api/auxiliares'),
+        fetch('/api/auth/me'),
       ]);
 
       const dataEcs = await resEcs.json();
       const dataAux = await resAux.json();
+      const dataMe = await resMe.json();
+
+      if (dataMe?.success && dataMe?.user?.rubro) {
+        setRubro(dataMe.user.rubro);
+      }
 
       if (dataEcs.success) setEcsList(dataEcs.data);
       if (dataAux.success) {
