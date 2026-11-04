@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getTerminologia } from '@/lib/terminologia';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft,
@@ -127,6 +128,7 @@ export default function DetalleRfcPage() {
 
   const [solicitud, setSolicitud] = useState<SolicitudDetalle | null>(null);
   const [userRole, setUserRole] = useState<string>('');
+  const [rubro, setRubro] = useState<string>('CONSTRUCCION');
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [feedbackSuccess, setFeedbackSuccess] = useState<string | null>(null);
@@ -159,6 +161,7 @@ export default function DetalleRfcPage() {
 
       if (dataMe.success) {
         setUserRole(dataMe.data.user.rol);
+        if (dataMe.data.user.rubro) setRubro(dataMe.data.user.rubro);
       }
 
       if (dataRfc.success) {
@@ -340,6 +343,8 @@ export default function DetalleRfcPage() {
   }
 
   if (!solicitud) return null;
+
+  const terminologia = getTerminologia(rubro);
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
@@ -756,7 +761,7 @@ export default function DetalleRfcPage() {
                   rows={3}
                   value={justificacionResolucion}
                   onChange={(e) => setJustificacionResolucion(e.target.value)}
-                  placeholder="Explica la decisión (ej. Se autoriza la modificación del schema para soportar Stripe; o se rechaza por comprometer el sprint actual)..."
+                  placeholder={`Ej. ${terminologia.cambioEjemploResolucion}`}
                   className="w-full px-4 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-medium text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
                 />
               </div>

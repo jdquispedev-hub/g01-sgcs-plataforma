@@ -41,95 +41,129 @@ interface NavbarPrincipalProps {
   onLogout?: () => Promise<void> | void;
 }
 
-const NAV_ITEMS = [
-  {
-    href: '/dashboard',
-    label: 'Inicio',
-    fullLabel: 'Inicio / Panel de Control',
-    icon: Compass,
-    badge: null,
-    step: null,
-    isCore: true,
-  },
-  {
-    href: '/reuniones',
-    label: '1. Minutas',
-    fullLabel: 'Paso 1: Reuniones & Minutas',
-    icon: CalendarDays,
-    color: 'text-emerald-400',
-    step: 'Paso 1',
-    isCore: true,
-  },
-  {
-    href: '/ecs',
-    label: '2. ECS',
-    fullLabel: 'Paso 2: Entregables (ECS)',
-    icon: Layers,
-    color: 'text-blue-400',
-    step: 'Paso 2',
-    isCore: true,
-  },
-  {
-    href: '/aprobaciones',
-    label: '3. Aprobación',
-    fullLabel: 'Paso 3: Dictamen Tech Lead',
-    icon: ShieldCheck,
-    color: 'text-amber-400',
-    step: 'Paso 3',
-    isCore: true,
-  },
-  {
-    href: '/lineas-base',
-    label: '4. Hitos',
-    fullLabel: 'Paso 4: Hitos Congelados (Líneas Base)',
-    icon: Lock,
-    color: 'text-purple-400',
-    step: 'Paso 4',
-    isCore: true,
-  },
-  {
-    href: '/cambios',
-    label: '5. Cambios',
-    fullLabel: 'Paso 5: Solicitudes de Cambio (RFC)',
-    icon: AlertTriangle,
-    color: 'text-rose-400',
-    step: 'Paso 5',
-    isCore: true,
-  },
-  {
-    href: '/cronograma',
-    label: 'Canvas',
-    fullLabel: 'Canvas de Cronograma Visual',
-    icon: Sparkles,
-    color: 'text-upt-gold',
-    step: 'Vista',
-    isCore: false,
-  },
-  {
-    href: '/bitacora',
-    label: 'Bitácora',
-    fullLabel: 'Bitácora Diaria de Campo',
-    icon: Activity,
-    color: 'text-teal-400',
-    step: 'Campo',
-    isCore: false,
-  },
-  {
-    href: '/trazabilidad',
-    label: 'Matriz RTV',
-    fullLabel: 'Matriz de Trazabilidad de Requisitos',
-    icon: Network,
-    color: 'text-indigo-400',
-    step: 'Auditoría',
-    isCore: false,
-  },
-];
+function getNavItems(rubro?: string) {
+  const isConstruccion = rubro === 'CONSTRUCCION';
+  const isVeterinaria = rubro === 'VETERINARIA';
+
+  return [
+    {
+      href: '/dashboard',
+      label: 'Inicio',
+      fullLabel: 'Inicio / Panel de Control',
+      icon: Compass,
+      badge: null,
+      step: null,
+      isCore: true,
+    },
+    {
+      href: '/reuniones',
+      label: '1. Minutas',
+      fullLabel: isConstruccion
+        ? 'Paso 1: Minutas de Coordinación de Obra'
+        : isVeterinaria
+        ? 'Paso 1: Juntas Médicas y Turnos'
+        : 'Paso 1: Reuniones & Minutas',
+      icon: CalendarDays,
+      color: 'text-emerald-400',
+      step: 'Paso 1',
+      isCore: true,
+    },
+    {
+      href: '/ecs',
+      label: isConstruccion ? '2. Planos' : isVeterinaria ? '2. Fichas' : '2. ECS',
+      fullLabel: isConstruccion
+        ? 'Paso 2: Planos Estructurales & Memorias (ECS)'
+        : isVeterinaria
+        ? 'Paso 2: Protocolos & Fichas Clínicas (ECS)'
+        : 'Paso 2: Entregables de Software (ECS)',
+      icon: Layers,
+      color: 'text-blue-400',
+      step: 'Paso 2',
+      isCore: true,
+    },
+    {
+      href: '/aprobaciones',
+      label: '3. Aprobación',
+      fullLabel: isConstruccion
+        ? 'Paso 3: Dictamen del Ingeniero Residente'
+        : isVeterinaria
+        ? 'Paso 3: Dictamen Veterinario Jefe'
+        : 'Paso 3: Dictamen Tech Lead',
+      icon: ShieldCheck,
+      color: 'text-amber-400',
+      step: 'Paso 3',
+      isCore: true,
+    },
+    {
+      href: '/lineas-base',
+      label: '4. Hitos',
+      fullLabel: isConstruccion
+        ? 'Paso 4: Línea Base Contractual de Obra'
+        : isVeterinaria
+        ? 'Paso 4: Protocolo Clínico Base Aprobado'
+        : 'Paso 4: Hitos Congelados (Líneas Base)',
+      icon: Lock,
+      color: 'text-purple-400',
+      step: 'Paso 4',
+      isCore: true,
+    },
+    {
+      href: '/cambios',
+      label: isConstruccion ? '5. Adicionales' : '5. Cambios',
+      fullLabel: isConstruccion
+        ? 'Paso 5: Órdenes de Modificación / Adicionales (RFC)'
+        : isVeterinaria
+        ? 'Paso 5: Modificación de Tratamiento (RFC)'
+        : 'Paso 5: Solicitudes Formales de Cambio (RFC)',
+      icon: AlertTriangle,
+      color: 'text-rose-400',
+      step: 'Paso 5',
+      isCore: true,
+    },
+    {
+      href: '/cronograma',
+      label: 'Canvas',
+      fullLabel: 'Canvas de Cronograma Visual',
+      icon: Sparkles,
+      color: 'text-upt-gold',
+      step: 'Vista',
+      isCore: false,
+    },
+    {
+      href: '/bitacora',
+      label: 'Bitácora',
+      fullLabel: isConstruccion
+        ? 'Parte Diario de Faena (Bitácora)'
+        : isVeterinaria
+        ? 'Cuaderno Diario de Hospitalización'
+        : 'Bitácora Diaria de Campo & Deploy',
+      icon: Activity,
+      color: 'text-teal-400',
+      step: 'Campo',
+      isCore: false,
+    },
+    {
+      href: '/trazabilidad',
+      label: 'Matriz RTV',
+      fullLabel: isConstruccion
+        ? 'Matriz de Trazabilidad Obra - Planos'
+        : isVeterinaria
+        ? 'Matriz Diagnóstico - Tratamiento - Evolución'
+        : 'Matriz de Trazabilidad de Requisitos (RTV)',
+      icon: Network,
+      color: 'text-indigo-400',
+      step: 'Auditoría',
+      isCore: false,
+    },
+  ];
+}
 
 export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [guiaModalOpen, setGuiaModalOpen] = useState(false);
+  const navItems = getNavItems(user?.rubro);
 
   const handleDefaultLogout = async () => {
     if (onLogout) {
@@ -212,7 +246,7 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
 
           {/* Navegación Desktop Completa (2xl:flex >= 1536px, Ej. Monitor 24") */}
           <nav className="hidden 2xl:flex items-center gap-1 bg-upt-navy-950/80 p-1 rounded-2xl border border-white/15 shrink-0">
-            {NAV_ITEMS.map((item) => {
+            {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
               return (
@@ -248,7 +282,7 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
 
           {/* Navegación Laptop Compacta (xl:flex 2xl:hidden, 1280px a 1535px, Ej. Laptop 13-14", 1366x768) */}
           <nav className="hidden xl:flex 2xl:hidden items-center gap-1 bg-upt-navy-950/80 p-1 rounded-2xl border border-white/15 shrink-0">
-            {NAV_ITEMS.filter((item) => item.isCore).map((item) => {
+            {navItems.filter((item) => item.isCore).map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
               return (
@@ -384,7 +418,7 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
                 Flujo Operativo del Proyecto
               </div>
 
-              {NAV_ITEMS.map((item) => {
+              {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
                 return (
@@ -471,7 +505,7 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
       )}
 
       {/* Modal Guiado de 5 Pasos */}
-      <GuiaFlujoModal isOpen={guiaModalOpen} onClose={() => setGuiaModalOpen(false)} />
+      <GuiaFlujoModal isOpen={guiaModalOpen} onClose={() => setGuiaModalOpen(false)} rubro={user?.rubro} />
     </>
   );
 }

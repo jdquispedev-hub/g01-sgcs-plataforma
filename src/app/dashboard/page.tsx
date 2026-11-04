@@ -38,6 +38,7 @@ import {
 import GuiaFlujoModal from '@/components/GuiaFlujoModal';
 import AgendarReunionModal from '@/components/AgendarReunionModal';
 import NavbarPrincipal from '@/components/NavbarPrincipal';
+import { getTerminologia } from '@/lib/terminologia';
 
 interface UserData {
   userId: string;
@@ -103,6 +104,7 @@ export default function DashboardPage() {
 
   const [user, setUser] = useState<UserData | null>(null);
   const isAdmin = user?.rol === 'ADMINISTRADOR' || user?.rol === 'SUPERADMIN';
+  const terminologia = getTerminologia(user?.rubro);
   const [loading, setLoading] = useState(true);
 
   // Métricas
@@ -486,10 +488,10 @@ export default function DashboardPage() {
                     </span>
                     <p className="text-xs font-bold text-slate-900 leading-snug">
                       {versionesPendientes > 0
-                        ? `Hay ${versionesPendientes} versión(es) de entregables esperando dictamen técnico del especialista.`
+                        ? terminologia.recomendaciones.pendientesAprobacion(versionesPendientes)
                         : lineasVigentes === 0
-                        ? 'Los entregables están listos. El siguiente paso es congelar la primera Línea Base.'
-                        : 'Línea Base oficial vigente. El equipo debe continuar la ejecución y documentar avances.'}
+                        ? terminologia.recomendaciones.sinLineaBase
+                        : terminologia.recomendaciones.lineaBaseVigente}
                     </p>
                   </div>
                 </div>
@@ -526,7 +528,7 @@ export default function DashboardPage() {
                         : 'bg-emerald-50 hover:bg-emerald-100 border-emerald-300 text-emerald-950'
                     }`}
                   >
-                    <span className="text-[9px] font-black">3. TECH LEAD</span>
+                    <span className="text-[9px] font-black">{user?.rubro === 'CONSTRUCCION' ? '3. RESIDENTE' : user?.rubro === 'VETERINARIA' ? '3. VET. JEFE' : '3. TECH LEAD'}</span>
                     <span className="text-xs font-black truncate">Dictamen</span>
                     <span className="text-[9px]">
                       {versionesPendientes > 0 ? `${versionesPendientes} Por Ver` : '✓ Al día'}
@@ -550,7 +552,7 @@ export default function DashboardPage() {
                     href="/cambios"
                     className="col-span-2 sm:col-span-3 xl:col-span-1 p-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 border-2 border-rose-300 text-rose-950 transition flex flex-col justify-between shadow-sm active:scale-95"
                   >
-                    <span className="text-[9px] font-black text-rose-700">5. CAMBIOS</span>
+                    <span className="text-[9px] font-black text-rose-700">{user?.rubro === 'CONSTRUCCION' ? '5. ADICIONALES' : '5. CAMBIOS'}</span>
                     <span className="text-xs font-black truncate">Modificaciones</span>
                     <span className="text-[9px] text-slate-500">
                       {rfcPendientes > 0 ? `${rfcPendientes} RFCs` : '0 RFCs'}

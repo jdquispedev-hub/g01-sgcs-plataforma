@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { getTerminologia } from '@/lib/terminologia';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -55,6 +56,7 @@ export default function EcsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [tipoFiltro, setTipoFiltro] = useState('');
+  const [rubro, setRubro] = useState('CONSTRUCCION');
   const [tabEstado, setTabEstado] = useState<'TODOS' | 'PENDIENTE' | 'APROBADA'>('TODOS');
 
   // Modal nuevo ECS
@@ -199,6 +201,8 @@ export default function EcsPage() {
     }
   };
 
+  const terminologia = getTerminologia(rubro);
+
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
       {/* Top Navbar Mobile-First */}
@@ -223,7 +227,7 @@ export default function EcsPage() {
                 </span>
               </div>
               <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
-                Control de versiones y especificaciones técnicas aprobadas por el Tech Lead
+                {terminologia.ecsSubtitulo} aprobados por el {terminologia.aprobadorCargo}
               </p>
             </div>
           </div>

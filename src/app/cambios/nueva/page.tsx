@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { getTerminologia } from '@/lib/terminologia';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -60,6 +61,7 @@ export default function NuevaRfcPage() {
   // Estados de envío y feedback
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [rubro, setRubro] = useState('CONSTRUCCION');
 
   // 1. Cargar proyectos
   useEffect(() => {
@@ -67,6 +69,7 @@ export default function NuevaRfcPage() {
       try {
         const res = await fetch('/api/auxiliares');
         const data = await res.json();
+        fetch('/api/auth/me').then(r => r.json()).then(m => { if (m.success && m.data?.user?.rubro) setRubro(m.data.user.rubro); });
         if (data.success && data.data.proyectos.length > 0) {
           setProyectos(data.data.proyectos);
           setProyectoId(data.data.proyectos[0].id);
@@ -191,6 +194,8 @@ export default function NuevaRfcPage() {
     }
   };
 
+  const terminologia = getTerminologia(rubro);
+
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
       {/* Top Navbar Mobile-First */}
@@ -280,7 +285,7 @@ export default function NuevaRfcPage() {
                     type="text"
                     value={codigo}
                     onChange={(e) => setCodigo(e.target.value.toUpperCase())}
-                    placeholder="Ej. RFC-PRJ01-2026-001"
+                    placeholder={`Ej. ${terminologia.cambioEjemploCodigo}`}
                     className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-mono font-black uppercase text-slate-900 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition"
                   />
                 </div>
@@ -355,7 +360,7 @@ export default function NuevaRfcPage() {
                   rows={4}
                   value={descripcion}
                   onChange={(e) => setDescripcion(e.target.value)}
-                  placeholder="Detalla qué partes del código, planos o especificaciones deben modificarse, agregarse o eliminarse..."
+                  placeholder={`Ej. ${terminologia.cambioEjemploDescripcion}`}
                   className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-medium text-slate-900 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition"
                 />
               </div>
@@ -369,7 +374,7 @@ export default function NuevaRfcPage() {
                   rows={3}
                   value={justificacion}
                   onChange={(e) => setJustificacion(e.target.value)}
-                  placeholder="Explica por qué es necesario este cambio (ej. Solicitud directa del cliente, corrección de bug en pasarela de pagos, ajuste normativo, etc.)..."
+                  placeholder={`Ej. ${terminologia.cambioEjemploJustificacion}`}
                   className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-medium text-slate-900 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition"
                 />
               </div>
