@@ -5,8 +5,8 @@ import { getSession } from '@/lib/auth';
 
 const versionSchema = z.object({
   numero_version: z.string().min(1, 'El número de versión es requerido').max(30),
-  descripcion: z.string().min(5, 'La descripción del cambio debe tener al menos 5 caracteres'),
-  archivo_url: z.string().url('Debe ser una URL válida hacia el archivo, commit o repositorio').optional().or(z.literal('')),
+  descripcion: z.string().min(3, 'La descripción del cambio debe tener al menos 3 caracteres'),
+  archivo_url: z.string().max(500).optional().or(z.literal('')),
 });
 
 // -------------------------------------------------------------
@@ -27,8 +27,11 @@ export async function POST(
     const validation = versionSchema.safeParse(body);
 
     if (!validation.success) {
+      const firstError =
+        Object.values(validation.error.flatten().fieldErrors)[0]?.[0] ||
+        'Datos de entrada inválidos';
       return NextResponse.json(
-        { success: false, message: 'Datos de entrada inválidos', errors: validation.error.format() },
+        { success: false, message: firstError, errors: validation.error.format() },
         { status: 400 }
       );
     }

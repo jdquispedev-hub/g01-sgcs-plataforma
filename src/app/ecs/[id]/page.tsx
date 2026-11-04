@@ -123,7 +123,13 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        setVersionError(data.message || 'Error al registrar la versión');
+        const errorDetail =
+          data.message ||
+          data.errors?.archivo_url?._errors?.[0] ||
+          data.errors?.descripcion?._errors?.[0] ||
+          data.errors?.numero_version?._errors?.[0] ||
+          'Error al registrar la versión';
+        setVersionError(errorDetail);
         setSavingVersion(false);
         return;
       }
@@ -481,13 +487,13 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Enlace Digital o Ubicación del Archivo
+                  Enlace Digital o Ubicación del Archivo <span className="text-slate-400 font-normal">(Opcional)</span>
                 </label>
                 <input
                   type="text"
                   value={archivoUrl}
                   onChange={(e) => setArchivoUrl(e.target.value)}
-                  placeholder={terminologia.ecsUbicacionPlaceholder}
+                  placeholder="Ej. https://drive.google.com/..., enlace web o ruta local (opcional)"
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500 font-mono"
                 />
               </div>
