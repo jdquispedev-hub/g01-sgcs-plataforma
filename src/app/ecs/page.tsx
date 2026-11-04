@@ -53,6 +53,8 @@ interface AuxData {
 export default function EcsPage() {
   const [ecsList, setEcsList] = useState<EcsItem[]>([]);
   const [auxData, setAuxData] = useState<AuxData>({ proyectos: [], usuarios: [] });
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [filtroAsignacion, setFiltroAsignacion] = useState<'TODOS' | 'MIS_ASIGNACIONES'>('TODOS');
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [tipoFiltro, setTipoFiltro] = useState('');
@@ -91,8 +93,15 @@ export default function EcsPage() {
       const dataAux = await resAux.json();
       const dataMe = await resMe.json();
 
-      if (dataMe?.success && dataMe?.user?.rubro) {
-        setRubro(dataMe.user.rubro);
+      if (dataMe?.success) {
+        const u = dataMe.data?.user || dataMe.user;
+        if (u) {
+          setCurrentUser(u);
+          if (u.rubro) setRubro(u.rubro);
+          if (u.rol === 'SOLICITANTE') {
+            setFiltroAsignacion('MIS_ASIGNACIONES');
+          }
+        }
       }
 
       if (dataEcs.success) setEcsList(dataEcs.data);
@@ -338,8 +347,43 @@ export default function EcsPage() {
             </button>
           </form>
 
-          {/* Filtros Rápidos por Estado de Aprobación */}
+          {/* Pestañas de Asignación Personal */}
           <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-200">
+            <span className="text-xs font-black text-slate-700 mr-1 flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Vista:
+            </span>
+            <button
+              type="button"
+              onClick={() => setFiltroAsignacion('MIS_ASIGNACIONES')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-black transition flex items-center gap-1.5 ${
+                filtroAsignacion === 'MIS_ASIGNACIONES'
+                  ? 'bg-upt-navy-900 text-upt-gold shadow border border-upt-gold/30'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              <span>⭐ Asignados a Mí</span>
+              <span className="text-[10px] px-2 py-0.2 rounded-full bg-upt-gold/20 text-upt-gold font-bold">
+                {ecsList.filter((e) => e.responsable?.id === currentUser?.userId).length}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setFiltroAsignacion('TODOS')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                filtroAsignacion === 'TODOS'
+                  ? 'bg-upt-navy-900 text-upt-gold shadow border border-upt-gold/30'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              <span>Todos los Entregables</span>
+              <span className="text-[10px] px-2 py-0.2 rounded-full bg-slate-200 text-slate-700 font-bold">
+                {ecsList.length}
+              </span>
+            </button>
+          </div>
+
+          {/* Filtros Rápidos por Estado de Aprobación */}
+          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
             <span className="text-xs font-bold text-slate-500 mr-1">Filtrar por estado:</span>
             <button
               type="button"
@@ -388,6 +432,9 @@ export default function EcsPage() {
             </p>
           </div>
         ) : ecsList.filter((item) => {
+            if (filtroAsignacion === 'MIS_ASIGNACIONES' && item.responsable?.id !== currentUser?.userId) {
+              return false;
+            }
             if (tabEstado === 'TODOS') return true;
             const u = item.versiones[0];
             if (tabEstado === 'PENDIENTE') return u?.estado === 'PENDIENTE';
@@ -399,13 +446,18 @@ export default function EcsPage() {
               <Layers className="w-7 h-7" />
             </div>
             <h3 className="font-black text-slate-900 text-base">
-              No se encontraron entregables con este filtro
+              {filtroAsignacion === 'MIS_ASIGNACIONES'
+                ? 'No tienes entregables asignados directamente'
+                : 'No se encontraron entregables con este filtro'}
             </h3>
             <p className="text-xs text-slate-600 mt-1 max-w-md mx-auto leading-relaxed">
-              No hay artefactos en esta categoría. Puedes cambiar de pestaña o registrar uno nuevo.
+              {filtroAsignacion === 'MIS_ASIGNACIONES'
+                ? 'El Administrador puede asignarte como Responsable Técnico al dar de alta nuevos planos o partidas en la obra.'
+                : 'No hay artefactos en esta categoría. Puedes cambiar de pestaña o registrar uno nuevo.'}
             </p>
             <button
               onClick={() => {
+                setFiltroAsignacion('TODOS');
                 setTabEstado('TODOS');
                 setSearch('');
                 setTipoFiltro('');
@@ -425,6 +477,9 @@ export default function EcsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
             {ecsList
               .filter((item) => {
+                if (filtroAsignacion === 'MIS_ASIGNACIONES' && item.responsable?.id !== currentUser?.userId) {
+                  return false;
+                }
                 if (tabEstado === 'TODOS') return true;
                 const u = item.versiones[0];
                 if (tabEstado === 'PENDIENTE') return u?.estado === 'PENDIENTE';
@@ -435,11 +490,16 @@ export default function EcsPage() {
               const tipoInfo = getTipoStyle(item.tipo);
               const TipoIcon = tipoInfo.icon;
               const ultimaVersion = item.versiones[0];
+              const isMyEcs = item.responsable?.id === currentUser?.userId;
 
               return (
                 <div
                   key={item.id}
-                  className="bg-white rounded-3xl border-2 border-slate-300 border-l-[6px] border-l-upt-navy-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.12)] hover:shadow-2xl hover:border-upt-gold/80 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between overflow-hidden group"
+                  className={`bg-white rounded-3xl border-2 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.12)] hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between overflow-hidden group ${
+                    isMyEcs
+                      ? 'border-amber-400 ring-2 ring-amber-400/20 border-l-[6px] border-l-amber-500'
+                      : 'border-slate-300 border-l-[6px] border-l-upt-navy-700 hover:border-upt-gold/80'
+                  }`}
                 >
                     <div>
                       {/* Header de la Tarjeta */}
@@ -453,6 +513,11 @@ export default function EcsPage() {
                             <span className="text-[10px] font-black text-slate-700 bg-slate-200 px-2 py-0.5 rounded-md">
                               {item.proyecto.codigo}
                             </span>
+                            {isMyEcs && (
+                              <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-800 border border-amber-500/30 flex items-center gap-1 shadow-sm">
+                                <Sparkles className="w-3 h-3 text-amber-600" /> Asignado a Ti
+                              </span>
+                            )}
                           </div>
                           <h3 className="font-black text-slate-950 text-sm sm:text-base group-hover:text-upt-navy-800 transition leading-snug">
                             {item.nombre}
@@ -505,10 +570,20 @@ export default function EcsPage() {
                     <div className="p-4 pt-0">
                       <Link
                         href={`/ecs/${item.id}`}
-                        className="w-full py-2.5 px-4 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-white hover:text-upt-gold font-black text-xs transition flex items-center justify-between group/btn shadow-md active:scale-98"
+                        className={`w-full py-2.5 px-4 rounded-xl font-black text-xs transition flex items-center justify-between group/btn shadow-md active:scale-98 ${
+                          isMyEcs
+                            ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 font-black'
+                            : 'bg-upt-navy-900 hover:bg-upt-navy-800 text-white hover:text-upt-gold'
+                        }`}
                       >
-                        <span>Ver Ficha, Versiones y Dictamen</span>
-                        <ChevronRight className="w-4 h-4 text-upt-gold group-hover/btn:translate-x-1.5 transition-transform" />
+                        <span>
+                          {isMyEcs && !ultimaVersion
+                            ? '🚀 Subir Primera Versión (v1.0.0)'
+                            : isMyEcs
+                            ? '⭐ Abrir Mi Entregable y Versiones'
+                            : 'Ver Ficha, Versiones y Dictamen'}
+                        </span>
+                        <ChevronRight className={`w-4 h-4 group-hover/btn:translate-x-1.5 transition-transform ${isMyEcs ? 'text-slate-950' : 'text-upt-gold'}`} />
                       </Link>
                     </div>
                   </div>

@@ -51,6 +51,7 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [ecs, setEcs] = useState<EcsDetail | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<string>('');
+  const [currentUserId, setCurrentUserId] = useState<string>('');
   const [rubro, setRubro] = useState<string>('CONSTRUCCION');
   const [loading, setLoading] = useState(true);
 
@@ -88,6 +89,7 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
       }
       if (dataMe.success) {
         setCurrentUserRole(dataMe.data?.user?.rol || '');
+        setCurrentUserId(dataMe.data?.user?.userId || dataMe.data?.user?.id || '');
         if (dataMe.data?.user?.rubro) {
           setRubro(dataMe.data.user.rubro);
         }
@@ -297,6 +299,35 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
             </div>
           )}
         </div>
+
+        {/* Banner Guiado para el Responsable Asignado */}
+        {ecs.responsable?.id === currentUserId && (
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-4 border-2 border-amber-300 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center shrink-0 shadow-sm font-black">
+                ⭐
+              </div>
+              <div>
+                <p className="text-xs font-black text-amber-950">
+                  Eres el Responsable Técnico de este entregable
+                </p>
+                <p className="text-xs text-amber-900">
+                  {ecs.versiones.length === 0
+                    ? 'Aún no has registrado tu primera versión. Haz clic en "Subir Versión 1.0.0" para entregar tus planos o documentos iniciales.'
+                    : 'Tus entregas están registradas abajo. Puedes proponer nuevas revisiones cuando realices modificaciones.'}
+                </p>
+              </div>
+            </div>
+            {ecs.versiones.length === 0 && (
+              <button
+                onClick={() => setModalVersionOpen(true)}
+                className="px-4 py-2 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-black text-xs shadow transition active:scale-95 shrink-0"
+              >
+                + Subir Versión 1.0.0
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Historial de Versiones (RF-07, RF-08) */}
         <div>

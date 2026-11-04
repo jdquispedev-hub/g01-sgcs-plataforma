@@ -195,6 +195,12 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
   const displayName = user?.nombreCompleto?.split('(')[0]?.trim() || user?.nombreCompleto || 'Usuario';
   const displayRole = user?.nombreCompleto?.includes('(')
     ? user.nombreCompleto.split('(')[1]?.replace(')', '')?.trim()
+    : user?.rol === 'SOLICITANTE'
+    ? 'Técnico / Responsable'
+    : user?.rol === 'APROBADOR'
+    ? 'Aprobador / Calidad'
+    : user?.rol === 'ADMINISTRADOR'
+    ? 'Administrador'
     : user?.rol || 'USUARIO';
 
   return (

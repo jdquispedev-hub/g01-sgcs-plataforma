@@ -106,6 +106,8 @@ export default function DashboardPage() {
   const isAdmin = user?.rol === 'ADMINISTRADOR' || user?.rol === 'SUPERADMIN';
   const terminologia = getTerminologia(user?.rubro);
   const [loading, setLoading] = useState(true);
+  const [vistaTab, setVistaTab] = useState<'PERSONAL' | 'GENERAL'>('GENERAL');
+  const [ecsList, setEcsList] = useState<any[]>([]);
 
   // Métricas
   const [totalEcs, setTotalEcs] = useState<number>(0);
@@ -151,6 +153,11 @@ export default function DashboardPage() {
         const dataMe = await resMe.json();
         if (dataMe.success) {
           setUser(dataMe.data.user);
+          if (dataMe.data.user.rol === 'SOLICITANTE') {
+            setVistaTab('PERSONAL');
+          } else {
+            setVistaTab('GENERAL');
+          }
         } else {
           router.push('/login');
           return;
@@ -158,6 +165,7 @@ export default function DashboardPage() {
 
         const dataEcs = await resEcs.json();
         if (dataEcs.success && Array.isArray(dataEcs.data)) {
+          setEcsList(dataEcs.data);
           setTotalEcs(dataEcs.data.length);
           let pendientes = 0;
           dataEcs.data.forEach((ecs: any) => {
@@ -295,7 +303,20 @@ export default function DashboardPage() {
   const displayName = user?.nombreCompleto?.split('(')[0]?.trim() || user?.nombreCompleto || 'Usuario';
   const displayRole = user?.nombreCompleto?.includes('(')
     ? user.nombreCompleto.split('(')[1]?.replace(')', '')?.trim()
+    : user?.rol === 'SOLICITANTE'
+    ? 'Técnico / Responsable'
+    : user?.rol === 'APROBADOR'
+    ? 'Aprobador / Calidad'
+    : user?.rol === 'ADMINISTRADOR'
+    ? 'Administrador'
     : user?.rol || 'USUARIO';
+
+  const misEcs = ecsList.filter(
+    (e) => e.responsable?.id === user?.userId || e.responsable_id === user?.userId
+  );
+  const misEcsPendientes = misEcs.filter(
+    (e) => !e.versiones || e.versiones.length === 0 || e.versiones.some((v: any) => v.estado === 'PENDIENTE')
+  );
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
@@ -358,10 +379,268 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* ========================================================
-           SECCIÓN CENTRAL: PROYECTO ACTIVO Y AGENDA DE REUNIONES
-           ======================================================== */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        {/* Selector de Modo de Vista (Personal vs General) */}
+        <div className="bg-white p-2 rounded-2xl border-2 border-slate-300 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setVistaTab('PERSONAL')}
+              className={`px-4 py-2 rounded-xl text-xs font-black transition flex items-center gap-2 ${
+                vistaTab === 'PERSONAL'
+                  ? 'bg-upt-navy-900 text-upt-gold shadow-md border border-upt-gold/30'
+                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+              }`}
+            >
+              <User className="w-4 h-4 text-upt-gold" />
+              <span>Mi Espacio de Trabajo</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-upt-gold/20 text-upt-gold font-bold">
+                {misEcs.length} a mi cargo
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setVistaTab('GENERAL')}
+              className={`px-4 py-2 rounded-xl text-xs font-black transition flex items-center gap-2 ${
+                vistaTab === 'GENERAL'
+                  ? 'bg-upt-navy-900 text-upt-gold shadow-md border border-upt-gold/30'
+                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+              }`}
+            >
+              <Compass className="w-4 h-4 text-upt-gold" />
+              <span>Visión General de la Obra</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 font-bold">
+                Pipeline Completo
+              </span>
+            </button>
+          </div>
+
+          <div className="text-[11px] text-slate-500 font-semibold px-2">
+            {vistaTab === 'PERSONAL'
+              ? 'Mostrando tus asignaciones y entregas prioritarias'
+              : 'Mostrando pipeline corporativo, minutas y líneas base'}
+          </div>
+        </div>
+
+        {/* VISTA PERSONAL: MI ESPACIO DE TRABAJO */}
+        {vistaTab === 'PERSONAL' && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            {/* Banner de Bienvenida del Colaborador */}
+            <div className="bg-gradient-to-r from-upt-navy-900 via-slate-900 to-upt-navy-800 rounded-3xl p-6 sm:p-7 text-white border-2 border-upt-navy-700 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-upt-gold/20 border-2 border-upt-gold/40 flex items-center justify-center text-upt-gold shadow-lg shrink-0">
+                  <User className="w-7 h-7" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs font-black text-upt-gold uppercase tracking-wider">
+                      Espacio Operativo de Colaborador
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-slate-200 border border-white/20">
+                      {displayRole}
+                    </span>
+                  </div>
+                  <h2 className="text-xl sm:text-2xl font-black text-white mt-0.5">
+                    ¡Hola, {displayName}!
+                  </h2>
+                  <p className="text-xs text-slate-300 mt-1">
+                    Proyecto Activo: <strong className="text-white">{activeProyecto?.nombre || 'Obra Asignada'}</strong>
+                    {activeProyecto?.cliente_nombre ? ` • Cliente: ${activeProyecto.cliente_nombre}` : ''}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/bitacora"
+                  className="px-4 py-2.5 rounded-xl bg-upt-gold hover:bg-amber-400 text-upt-navy-950 font-black text-xs shadow-lg transition active:scale-95 flex items-center gap-2"
+                >
+                  <Activity className="w-4 h-4 stroke-[2.5]" />
+                  <span>Reportar Bitácora de Hoy</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* 3 KPIs Personales del Usuario */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="bg-white p-5 rounded-2xl border-2 border-slate-300 shadow-sm flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-200">
+                  <Layers className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    Mis {terminologia.ecsLabelPlural}
+                  </p>
+                  <p className="text-2xl font-black text-slate-900 mt-0.5">{misEcs.length}</p>
+                  <p className="text-[10px] text-slate-400 font-medium">Bajo tu responsabilidad técnica</p>
+                </div>
+              </div>
+
+              <div className="bg-white p-5 rounded-2xl border-2 border-slate-300 shadow-sm flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-200">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    Entregas Pendientes
+                  </p>
+                  <p className="text-2xl font-black text-amber-600 mt-0.5">{misEcsPendientes.length}</p>
+                  <p className="text-[10px] text-slate-400 font-medium">Requieren subir versión o dictamen</p>
+                </div>
+              </div>
+
+              <div className="bg-white p-5 rounded-2xl border-2 border-slate-300 shadow-sm flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-200">
+                  <CheckCircle2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    Bitácora de Campo
+                  </p>
+                  <p className="text-base font-black text-emerald-700 mt-0.5">Semáforo Activo</p>
+                  <p className="text-[10px] text-slate-400 font-medium">Reporta jornada y bloqueos diarios</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Sección de Artefactos Asignados */}
+            <div className="bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-300 shadow-md space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                <div>
+                  <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                    <Layers className="w-5 h-5 text-upt-navy-900" />
+                    <span>Mis {terminologia.ecsLabelPlural} Asignados</span>
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Entregables y partidas donde figuras formalmente como Responsable Técnico directo.
+                  </p>
+                </div>
+                <Link
+                  href="/ecs"
+                  className="text-xs font-black text-upt-navy-900 hover:text-upt-gold-600 flex items-center gap-1 shrink-0"
+                >
+                  <span>Ver Catálogo Completo ➔</span>
+                </Link>
+              </div>
+
+              {misEcs.length === 0 ? (
+                <div className="bg-slate-50 rounded-2xl p-8 border-2 border-dashed border-slate-300 text-center space-y-3">
+                  <Layers className="w-12 h-12 text-slate-400 mx-auto" />
+                  <div className="space-y-1">
+                    <h4 className="text-base font-bold text-slate-800">
+                      Aún no tienes {terminologia.ecsLabelPlural.toLowerCase()} asignados directamente
+                    </h4>
+                    <p className="text-xs text-slate-500 max-w-md mx-auto">
+                      El Administrador de la obra te asignará como Responsable Técnico al dar de alta nuevos planos o partidas en el Catálogo ECS.
+                    </p>
+                  </div>
+                  <Link
+                    href="/ecs"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-upt-navy-900 text-upt-gold text-xs font-black shadow transition"
+                  >
+                    <Compass className="w-4 h-4" />
+                    <span>Explorar Catálogo de la Obra</span>
+                  </Link>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {misEcs.map((ecs: any) => {
+                    const ultimaVersion = ecs.versiones?.[0];
+                    const sinVersiones = !ecs.versiones || ecs.versiones.length === 0;
+                    const esAprobada = ultimaVersion?.estado === 'APROBADA';
+
+                    return (
+                      <div
+                        key={ecs.id}
+                        className="bg-slate-50 hover:bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-upt-navy-900 transition shadow-sm space-y-3 flex flex-col justify-between"
+                      >
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-mono text-xs font-black px-2 py-0.5 rounded-md bg-upt-navy-100 text-upt-navy-900 border border-upt-navy-300">
+                              {ecs.codigo}
+                            </span>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 border border-amber-500/30 flex items-center gap-1">
+                              <Sparkles className="w-3 h-3" /> Asignado a Ti
+                            </span>
+                          </div>
+
+                          <h4 className="text-base font-black text-slate-900 leading-snug">
+                            {ecs.nombre}
+                          </h4>
+                          {ecs.descripcion && (
+                            <p className="text-xs text-slate-600 line-clamp-2">
+                              {ecs.descripcion}
+                            </p>
+                          )}
+
+                          <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
+                            <span className="text-slate-500 font-semibold">Estado de Entrega:</span>
+                            {sinVersiones ? (
+                              <span className="font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md">
+                                ⚠️ Sin versión entregada
+                              </span>
+                            ) : esAprobada ? (
+                              <span className="font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                <CheckCircle2 className="w-3.5 h-3.5" /> Aprobada v{ultimaVersion.numero_version}
+                              </span>
+                            ) : (
+                              <span className="font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                <Clock className="w-3.5 h-3.5" /> En Dictamen v{ultimaVersion.numero_version}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="pt-2 flex items-center gap-2">
+                          <Link
+                            href={`/ecs/${ecs.id}`}
+                            className="flex-1 py-2 px-3 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-bold text-xs transition flex items-center justify-center gap-1.5 shadow"
+                          >
+                            <span>{sinVersiones ? '🚀 Subir Primera Versión (v1.0.0)' : 'Ver Expediente Completo'}</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </Link>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Tarjeta de Bitácora Diaria y Semáforo de Bloqueo */}
+            <div className="bg-gradient-to-r from-emerald-900 to-teal-950 rounded-3xl p-6 text-white border-2 border-emerald-700 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
+                  <Activity className="w-6 h-6 text-emerald-300" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-full inline-block">
+                    Control de Campo en Tiempo Real (Fase 5)
+                  </span>
+                  <h4 className="text-base font-black text-white mt-0.5">
+                    Reporte Diario de Jornada y Detección de Bloqueos
+                  </h4>
+                  <p className="text-xs text-emerald-100">
+                    Informa tus avances de hoy y activa el semáforo rojo si tu trabajo está detenido por falta de insumos o planos.
+                  </p>
+                </div>
+              </div>
+              <Link
+                href="/bitacora"
+                className="px-5 py-2.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-950 font-black text-xs shadow-md transition active:scale-95 flex items-center justify-center gap-2 shrink-0"
+              >
+                <span>Ir a la Bitácora Diaria</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* VISTA GENERAL: PIPELINE Y AGENDA DE REUNIONES */}
+        {vistaTab === 'GENERAL' && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            {/* SECCIÓN CENTRAL: PROYECTO ACTIVO Y AGENDA DE REUNIONES */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
           {/* Lado Izquierdo: Ficha del Proyecto y Pipeline de 5 Pasos (7 cols) */}
           <section className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-300 shadow-md flex flex-col justify-between space-y-5">
@@ -707,6 +986,8 @@ export default function DashboardPage() {
             </div>
           </Link>
         </div>
+      </div>
+    )}
 
         {/* ========================================================
            SECCIÓN DE MÓDULOS ORGANIZADOS EN PESTAÑAS LIMPIAS
