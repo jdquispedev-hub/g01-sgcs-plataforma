@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
       }),
       prisma.usuario.findMany({
         where: { organizacion_id: session.organizacionId, activo: true },
-        select: { id: true, nombre_completo: true, email: true, rol: true },
+        select: { id: true, nombre_completo: true, email: true, rol: true, cargo: true },
         orderBy: { nombre_completo: 'asc' },
       }),
     ]);

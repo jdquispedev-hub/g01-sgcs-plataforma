@@ -29,6 +29,7 @@ export interface UsuarioOption {
   nombre_completo: string;
   email: string;
   rol: string;
+  cargo?: string | null;
 }
 
 interface AgendarReunionModalProps {
@@ -384,7 +385,7 @@ export default function AgendarReunionModal({
               >
                 {usuarios.map((u) => (
                   <option key={u.id} value={u.id}>
-                    {u.nombre_completo}
+                    {u.nombre_completo}{u.cargo ? ` (${u.cargo})` : ''}
                   </option>
                 ))}
               </select>
@@ -509,6 +510,7 @@ export default function AgendarReunionModal({
                   >
                     <UserCheck className="w-3.5 h-3.5 text-slate-400" />
                     <span>{shortName}</span>
+                    {u.cargo && <span className={`text-[9px] px-1 rounded font-medium ${isSelected ? 'bg-white/20 text-upt-gold' : 'bg-slate-100 text-purple-700'}`}>{u.cargo}</span>}
                     {isSelected && <Check className="w-3 h-3 text-upt-gold ml-0.5" />}
                   </button>
                 );

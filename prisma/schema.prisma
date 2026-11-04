@@ -105,6 +105,7 @@ model Usuario {
   email           String       @db.VarChar(150)
   password_hash   String       @db.VarChar(255)
   rol             RolUsuario   @default(SOLICITANTE)
+  cargo           String?      @db.VarChar(100)
   activo          Boolean      @default(true)
   created_at      DateTime     @default(now())
   updated_at      DateTime     @updatedAt

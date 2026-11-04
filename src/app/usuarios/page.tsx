@@ -19,6 +19,8 @@ import {
   AlertCircle,
   CheckCircle2,
   Lock,
+  Briefcase,
+  Sparkles,
 } from 'lucide-react';
 
 interface UsuarioColaborador {
@@ -26,6 +28,7 @@ interface UsuarioColaborador {
   nombre_completo: string;
   email: string;
   rol: 'ADMINISTRADOR' | 'APROBADOR' | 'SOLICITANTE';
+  cargo?: string | null;
   activo: boolean;
   created_at: string;
   _count: {
@@ -35,20 +38,55 @@ interface UsuarioColaborador {
   };
 }
 
+const SUGERENCIAS_CARGO: Record<string, string[]> = {
+  CONSTRUCCION: [
+    'Arquitecto Proyectista',
+    'Ingeniero Residente',
+    'Ingeniero Estructural',
+    'Topógrafo de Campo',
+    'Supervisor SSOMA',
+    'Maestro de Obra',
+    'Jefe de Producción / Encofrados',
+  ],
+  SOFTWARE: [
+    'Tech Lead / Líder Técnico',
+    'Arquitecto de Software',
+    'Backend Engineer',
+    'Frontend Engineer',
+    'QA Automation / Tester',
+    'Diseñador UI/UX',
+    'DevOps Engineer',
+  ],
+  VETERINARIA: [
+    'Médico Veterinario Cirujano',
+    'Veterinario de Consulta General',
+    'Asistente Clínico y Cuidados',
+    'Especialista en Diagnóstico por Imágenes',
+    'Farmacéutico Veterinario',
+  ],
+};
+
 export default function UsuariosPage() {
   const [usuarios, setUsuarios] = useState<UsuarioColaborador[]>([]);
   const [loading, setLoading] = useState(true);
+  const [rubro, setRubro] = useState<string>('CONSTRUCCION');
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalEditRol, setModalEditRol] = useState<UsuarioColaborador | null>(null);
+  const [modalEditUser, setModalEditUser] = useState<UsuarioColaborador | null>(null);
 
   // Formulario nuevo usuario
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
+  const [cargo, setCargo] = useState('');
   const [rol, setRol] = useState<'ADMINISTRADOR' | 'APROBADOR' | 'SOLICITANTE'>('SOLICITANTE');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  // Formulario edición
+  const [editRol, setEditRol] = useState<'ADMINISTRADOR' | 'APROBADOR' | 'SOLICITANTE'>('SOLICITANTE');
+  const [editCargo, setEditCargo] = useState('');
+  const [savingEdit, setSavingEdit] = useState(false);
 
   const loadUsuarios = async () => {
     setLoading(true);
@@ -69,6 +107,14 @@ export default function UsuariosPage() {
 
   useEffect(() => {
     loadUsuarios();
+    fetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data?.user?.rubro) {
+          setRubro(data.data.user.rubro);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const handleCrearUsuario = async (e: React.FormEvent) => {
@@ -84,6 +130,7 @@ export default function UsuariosPage() {
         body: JSON.stringify({
           nombre_completo: nombre.trim(),
           email: email.trim(),
+          cargo: cargo.trim() || undefined,
           rol,
           password,
         }),
@@ -96,9 +143,10 @@ export default function UsuariosPage() {
         return;
       }
 
-      setSuccessMsg(`Colaborador ${nombre} registrado exitosamente.`);
+      setSuccessMsg(`Colaborador ${nombre} registrado exitosamente como ${cargo.trim() || rol}.`);
       setNombre('');
       setEmail('');
+      setCargo('');
       setPassword('');
       setRol('SOLICITANTE');
       setModalOpen(false);
@@ -135,29 +183,43 @@ export default function UsuariosPage() {
     }
   };
 
-  const handleGuardarCambioRol = async (nuevoRol: 'ADMINISTRADOR' | 'APROBADOR' | 'SOLICITANTE') => {
-    if (!modalEditRol) return;
+  const handleAbrirEdicion = (u: UsuarioColaborador) => {
+    setModalEditUser(u);
+    setEditRol(u.rol);
+    setEditCargo(u.cargo || '');
+  };
+
+  const handleGuardarEdicion = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!modalEditUser) return;
+    setSavingEdit(true);
     setErrorMsg(null);
     setSuccessMsg(null);
 
     try {
-      const res = await fetch(`/api/usuarios/${modalEditRol.id}`, {
+      const res = await fetch(`/api/usuarios/${modalEditUser.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rol: nuevoRol }),
+        body: JSON.stringify({
+          rol: editRol,
+          cargo: editCargo.trim() || null,
+        }),
       });
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        setErrorMsg(data.message || 'Error al cambiar de rol');
+        setErrorMsg(data.message || 'Error al actualizar colaborador');
+        setSavingEdit(false);
         return;
       }
 
-      setSuccessMsg(`Rol de ${modalEditRol.nombre_completo} actualizado a ${nuevoRol}.`);
-      setModalEditRol(null);
+      setSuccessMsg(`Datos de ${modalEditUser.nombre_completo} actualizados correctamente.`);
+      setModalEditUser(null);
       loadUsuarios();
     } catch {
-      setErrorMsg('Error de conexión al actualizar rol');
+      setErrorMsg('Error de conexión al actualizar colaborador');
+    } finally {
+      setSavingEdit(false);
     }
   };
 
@@ -173,6 +235,8 @@ export default function UsuariosPage() {
         return 'bg-slate-100 text-slate-800 border-slate-300';
     }
   };
+
+  const sugerencias = SUGERENCIAS_CARGO[rubro] || SUGERENCIAS_CARGO.CONSTRUCCION;
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
@@ -194,11 +258,11 @@ export default function UsuariosPage() {
                   Gestión de Personal y Roles
                 </span>
                 <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase tracking-wider shrink-0 shadow-sm">
-                  RF-02 • Control de Acceso
+                  {rubro === 'CONSTRUCCION' ? 'Obras Civiles' : rubro === 'SOFTWARE' ? 'Tecnología' : 'Salud Veterinaria'}
                 </span>
               </div>
               <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
-                Directorio institucional de colaboradores y privilegios RBAC
+                Directorio institucional de colaboradores, cargos operativos y privilegios RBAC
               </p>
             </div>
           </div>
@@ -286,9 +350,9 @@ export default function UsuariosPage() {
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr className="bg-slate-100/80 border-b border-slate-200 text-slate-700 uppercase font-black tracking-wider text-[10px]">
-                    <th className="py-3 px-4">Colaborador</th>
+                    <th className="py-3 px-4">Colaborador / Especialidad</th>
                     <th className="py-3 px-4">Email</th>
-                    <th className="py-3 px-4">Rol Asignado</th>
+                    <th className="py-3 px-4">Rol Operativo (SGCS)</th>
                     <th className="py-3 px-4">Estado</th>
                     <th className="py-3 px-4 text-center">Artefactos / Reportes</th>
                     <th className="py-3 px-4 text-right">Acciones</th>
@@ -297,20 +361,32 @@ export default function UsuariosPage() {
                 <tbody className="divide-y divide-slate-100">
                   {usuarios.map((u) => (
                     <tr key={u.id} className="hover:bg-slate-50 transition">
-                      <td className="py-3 px-4 font-bold text-slate-950 flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-upt-navy-100 text-upt-navy-900 font-black text-xs flex items-center justify-center shrink-0">
-                          {u.nombre_completo.charAt(0)}
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-xl bg-upt-navy-900 text-upt-gold font-black text-xs flex items-center justify-center shrink-0 border border-upt-gold/30 shadow-inner">
+                            {u.nombre_completo.charAt(0)}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-black text-slate-900 text-xs">{u.nombre_completo}</p>
+                            {u.cargo ? (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-100 text-purple-900 border border-purple-200 mt-0.5">
+                                <Briefcase className="w-2.5 h-2.5 text-purple-700" />
+                                {u.cargo}
+                              </span>
+                            ) : (
+                              <span className="text-[10px] text-slate-400 italic block mt-0.5">Sin cargo específico</span>
+                            )}
+                          </div>
                         </div>
-                        <span>{u.nombre_completo}</span>
                       </td>
                       <td className="py-3 px-4 text-slate-600 font-mono">{u.email}</td>
                       <td className="py-3 px-4">
                         <button
-                          onClick={() => setModalEditRol(u)}
+                          onClick={() => handleAbrirEdicion(u)}
                           className={`inline-flex items-center text-[10px] font-black px-2.5 py-0.5 rounded-full border transition hover:opacity-80 ${getBadgeRol(
                             u.rol
                           )}`}
-                          title="Haga clic para cambiar de rol"
+                          title="Haga clic para editar rol o cargo"
                         >
                           {u.rol} ✏️
                         </button>
@@ -330,16 +406,25 @@ export default function UsuariosPage() {
                         {u._count.ecs_responsable} ECS • {u._count.reportes_diarios} partes
                       </td>
                       <td className="py-3 px-4 text-right">
-                        <button
-                          onClick={() => handleToggleActivo(u)}
-                          className={`px-3 py-1 rounded-xl text-xs font-black transition border ${
-                            u.activo
-                              ? 'bg-red-50 text-red-700 hover:bg-red-600 hover:text-white border-red-200'
-                              : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border-emerald-200'
-                          }`}
-                        >
-                          {u.activo ? 'Desactivar' : 'Activar'}
-                        </button>
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => handleAbrirEdicion(u)}
+                            className="px-2.5 py-1 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 transition"
+                            title="Editar rol y especialidad"
+                          >
+                            Editar
+                          </button>
+                          <button
+                            onClick={() => handleToggleActivo(u)}
+                            className={`px-2.5 py-1 rounded-xl text-xs font-black transition border ${
+                              u.activo
+                                ? 'bg-red-50 text-red-700 hover:bg-red-600 hover:text-white border-red-200'
+                                : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border-emerald-200'
+                            }`}
+                          >
+                            {u.activo ? 'Desactivar' : 'Activar'}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -353,19 +438,24 @@ export default function UsuariosPage() {
 
       {/* Modal Alta de Colaborador */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border-2 border-slate-200 space-y-5 animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border-2 border-slate-200 space-y-4 animate-in fade-in zoom-in-95 duration-150 my-6">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-upt-gold" />
-                <h3 className="font-black text-base text-slate-900">Dar de Alta Colaborador</h3>
+                <div className="w-9 h-9 rounded-xl bg-upt-gold/20 text-upt-navy-950 flex items-center justify-center border border-upt-gold/40">
+                  <Users className="w-5 h-5 text-upt-navy-900" />
+                </div>
+                <div>
+                  <h3 className="font-black text-base text-slate-900 leading-tight">Dar de Alta Colaborador</h3>
+                  <p className="text-[11px] text-slate-500">Asigna profesión, rol operativo y credenciales de acceso</p>
+                </div>
               </div>
               <button onClick={() => setModalOpen(false)} className="p-1 rounded-xl hover:bg-slate-100 text-slate-500">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleCrearUsuario} className="space-y-4 text-xs">
+            <form onSubmit={handleCrearUsuario} className="space-y-3.5 text-xs">
               <div>
                 <label className="block font-black text-slate-700 mb-1">Nombre Completo <span className="text-red-500">*</span></label>
                 <input
@@ -373,7 +463,7 @@ export default function UsuariosPage() {
                   type="text"
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
-                  placeholder="Ej. Ing. Lucía Ramírez"
+                  placeholder="Ej. Arq. Claudia Morales / Ing. Carlos Mendoza"
                   className="w-full px-3.5 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl font-bold text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
                 />
               </div>
@@ -385,21 +475,72 @@ export default function UsuariosPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="lucia.ramirez@empresa.com"
+                  placeholder="claudia.morales@empresa.com"
                   className="w-full px-3.5 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl font-bold text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
                 />
               </div>
 
+              {/* Cargo / Especialidad por Rubro */}
+              <div className="bg-purple-50/70 p-3.5 rounded-2xl border-2 border-purple-200 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="font-black text-purple-950 flex items-center gap-1.5">
+                    <Briefcase className="w-3.5 h-3.5 text-purple-700" />
+                    <span>Cargo / Especialidad Profesional</span>
+                  </label>
+                  <span className="text-[10px] text-purple-700 font-bold bg-purple-200/70 px-2 py-0.5 rounded-md">
+                    Personalizable
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  value={cargo}
+                  onChange={(e) => setCargo(e.target.value)}
+                  placeholder={
+                    rubro === 'CONSTRUCCION'
+                      ? 'Ej. Arquitecto Proyectista / Ing. Residente'
+                      : rubro === 'SOFTWARE'
+                      ? 'Ej. Tech Lead / Backend Engineer'
+                      : 'Ej. Médico Veterinario Cirujano'
+                  }
+                  className="w-full px-3.5 py-2 bg-white border-2 border-purple-300 rounded-xl font-bold text-slate-900 focus:border-purple-600 transition"
+                />
+                
+                {/* Sugerencias Rápidas según el rubro */}
+                <div className="pt-1">
+                  <span className="text-[10px] font-black text-purple-900 uppercase tracking-wider block mb-1.5">
+                    💡 Cargos frecuentes de {rubro === 'CONSTRUCCION' ? 'Construcción' : rubro === 'SOFTWARE' ? 'Software' : 'Veterinaria'}:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {sugerencias.map((sug) => (
+                      <button
+                        key={sug}
+                        type="button"
+                        onClick={() => setCargo(sug)}
+                        className={`px-2.5 py-1 rounded-xl text-[10px] font-bold transition border ${
+                          cargo === sug
+                            ? 'bg-purple-900 text-upt-gold border-purple-950 shadow-sm font-black'
+                            : 'bg-white hover:bg-purple-100 text-purple-900 border-purple-200'
+                        }`}
+                      >
+                        + {sug}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               <div>
-                <label className="block font-black text-slate-700 mb-1">Rol Operativo <span className="text-red-500">*</span></label>
+                <label className="block font-black text-slate-700 mb-1">
+                  Rol Operativo de Permisos (SGCS) <span className="text-red-500">*</span>
+                </label>
                 <select
                   value={rol}
                   onChange={(e: any) => setRol(e.target.value)}
                   className="w-full px-3.5 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl font-bold text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
                 >
-                  <option value="SOLICITANTE">SOLICITANTE (Técnico de Campo / Redactor)</option>
-                  <option value="APROBADOR">APROBADOR (Especialista Técnico / Dictaminador)</option>
-                  <option value="ADMINISTRADOR">ADMINISTRADOR (Gestor Directivo)</option>
+                  <option value="SOLICITANTE">SOLICITANTE • Técnicos de campo, asistentes, redactores de entregables</option>
+                  <option value="APROBADOR">APROBADOR • Residentes, arquitectos líderes con firma de aprobación y RFCs</option>
+                  <option value="ADMINISTRADOR">ADMINISTRADOR • Gestión directiva y control de configuración</option>
                 </select>
               </div>
 
@@ -439,51 +580,108 @@ export default function UsuariosPage() {
         </div>
       )}
 
-      {/* Modal Cambio de Rol */}
-      {modalEditRol && (
+      {/* Modal Edición de Rol y Cargo */}
+      {modalEditUser && (
         <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border-2 border-slate-200 space-y-4">
-            <h3 className="font-black text-base text-slate-900">
-              Modificar Rol de {modalEditRol.nombre_completo}
-            </h3>
-            <p className="text-xs text-slate-600">
-              Seleccione el nuevo nivel de privilegios RBAC para este usuario en la organización.
-            </p>
-
-            <div className="space-y-2 pt-2 text-xs">
-              <button
-                onClick={() => handleGuardarCambioRol('SOLICITANTE')}
-                className="w-full p-3 rounded-2xl border-2 border-blue-200 hover:bg-blue-50 text-blue-900 font-black text-left flex items-center justify-between"
-              >
-                <span>SOLICITANTE</span>
-                <span className="text-[10px] font-bold text-slate-500">Campo & Avance</span>
-              </button>
-
-              <button
-                onClick={() => handleGuardarCambioRol('APROBADOR')}
-                className="w-full p-3 rounded-2xl border-2 border-emerald-200 hover:bg-emerald-50 text-emerald-900 font-black text-left flex items-center justify-between"
-              >
-                <span>APROBADOR</span>
-                <span className="text-[10px] font-bold text-slate-500">Dictamen Técnico</span>
-              </button>
-
-              <button
-                onClick={() => handleGuardarCambioRol('ADMINISTRADOR')}
-                className="w-full p-3 rounded-2xl border-2 border-purple-200 hover:bg-purple-50 text-purple-900 font-black text-left flex items-center justify-between"
-              >
-                <span>ADMINISTRADOR</span>
-                <span className="text-[10px] font-bold text-slate-500">Acceso Total</span>
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border-2 border-slate-200 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <h3 className="font-black text-base text-slate-900">
+                Editar {modalEditUser.nombre_completo}
+              </h3>
+              <button onClick={() => setModalEditUser(null)} className="p-1 rounded-xl hover:bg-slate-100 text-slate-500">
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="pt-2 flex justify-end">
-              <button
-                onClick={() => setModalEditRol(null)}
-                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs"
-              >
-                Cancelar
-              </button>
-            </div>
+            <form onSubmit={handleGuardarEdicion} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-black text-slate-700 mb-1">
+                  Cargo / Especialidad Profesional
+                </label>
+                <input
+                  type="text"
+                  value={editCargo}
+                  onChange={(e) => setEditCargo(e.target.value)}
+                  placeholder="Ej. Arquitecto Proyectista / Ing. Residente"
+                  className="w-full px-3.5 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl font-bold text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
+                />
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {sugerencias.slice(0, 4).map((sug) => (
+                    <button
+                      key={sug}
+                      type="button"
+                      onClick={() => setEditCargo(sug)}
+                      className="px-2 py-0.5 rounded-lg text-[9px] font-bold bg-slate-100 hover:bg-purple-100 text-slate-800 border border-slate-300"
+                    >
+                      + {sug}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-black text-slate-700 mb-1">
+                  Rol Operativo RBAC (Permisos)
+                </label>
+                <div className="space-y-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditRol('SOLICITANTE')}
+                    className={`w-full p-2.5 rounded-xl border-2 text-left flex items-center justify-between transition ${
+                      editRol === 'SOLICITANTE'
+                        ? 'border-blue-600 bg-blue-50 text-blue-900 font-black shadow-sm'
+                        : 'border-slate-200 hover:bg-slate-50 text-slate-700 font-bold'
+                    }`}
+                  >
+                    <span>SOLICITANTE</span>
+                    <span className="text-[10px] text-slate-500">Campo & Avance</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setEditRol('APROBADOR')}
+                    className={`w-full p-2.5 rounded-xl border-2 text-left flex items-center justify-between transition ${
+                      editRol === 'APROBADOR'
+                        ? 'border-emerald-600 bg-emerald-50 text-emerald-900 font-black shadow-sm'
+                        : 'border-slate-200 hover:bg-slate-50 text-slate-700 font-bold'
+                    }`}
+                  >
+                    <span>APROBADOR</span>
+                    <span className="text-[10px] text-slate-500">Dictamen Técnico & RFCs</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setEditRol('ADMINISTRADOR')}
+                    className={`w-full p-2.5 rounded-xl border-2 text-left flex items-center justify-between transition ${
+                      editRol === 'ADMINISTRADOR'
+                        ? 'border-purple-600 bg-purple-50 text-purple-900 font-black shadow-sm'
+                        : 'border-slate-200 hover:bg-slate-50 text-slate-700 font-bold'
+                    }`}
+                  >
+                    <span>ADMINISTRADOR</span>
+                    <span className="text-[10px] text-slate-500">Acceso Total</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-slate-200 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setModalEditUser(null)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={savingEdit}
+                  className="px-5 py-2 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-black shadow-md transition disabled:opacity-50"
+                >
+                  {savingEdit ? 'Guardando...' : 'Guardar Cambios'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic';
 
 const actualizarUsuarioSchema = z.object({
   rol: z.enum(['ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE']).optional(),
+  cargo: z.string().max(100).optional().nullable(),
   activo: z.boolean().optional(),
 });
 
@@ -79,6 +80,9 @@ export async function PUT(
     if (parseResult.data.rol !== undefined) {
       dataUpdate.rol = parseResult.data.rol as RolUsuario;
     }
+    if (parseResult.data.cargo !== undefined) {
+      dataUpdate.cargo = parseResult.data.cargo ? parseResult.data.cargo.trim() : null;
+    }
     if (parseResult.data.activo !== undefined) {
       dataUpdate.activo = parseResult.data.activo;
     }
@@ -92,6 +96,7 @@ export async function PUT(
           nombre_completo: true,
           email: true,
           rol: true,
+          cargo: true,
           activo: true,
           created_at: true,
         },

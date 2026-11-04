@@ -46,7 +46,7 @@ interface EcsItem {
 
 interface AuxData {
   proyectos: { id: string; codigo: string; nombre: string }[];
-  usuarios: { id: string; nombre_completo: string; email: string }[];
+  usuarios: { id: string; nombre_completo: string; email: string; cargo?: string | null }[];
 }
 
 export default function EcsPage() {
@@ -618,7 +618,7 @@ export default function EcsPage() {
                   >
                     {auxData.usuarios.map((u) => (
                       <option key={u.id} value={u.id}>
-                        {u.nombre_completo}
+                        {u.nombre_completo}{u.cargo ? ` (${u.cargo})` : ''}
                       </option>
                     ))}
                   </select>

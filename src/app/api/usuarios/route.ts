@@ -11,6 +11,7 @@ const crearUsuarioSchema = z.object({
   nombre_completo: z.string().min(3, 'El nombre debe tener al menos 3 caracteres').max(150),
   email: z.string().email('Correo electrónico inválido'),
   rol: z.enum(['ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE']),
+  cargo: z.string().max(100).optional().nullable(),
   password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
 });
 
@@ -33,6 +34,7 @@ export async function GET(request: NextRequest) {
         nombre_completo: true,
         email: true,
         rol: true,
+        cargo: true,
         activo: true,
         created_at: true,
         _count: {
@@ -92,7 +94,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { nombre_completo, email, rol, password } = parseResult.data;
+    const { nombre_completo, email, rol, cargo, password } = parseResult.data;
     const emailNormalizado = email.toLowerCase().trim();
 
     // Validar si el email ya existe en la organización
@@ -121,6 +123,7 @@ export async function POST(request: NextRequest) {
           email: emailNormalizado,
           password_hash: passwordHash,
           rol: rol as RolUsuario,
+          cargo: cargo?.trim() || null,
           activo: true,
         },
         select: {
@@ -128,6 +131,7 @@ export async function POST(request: NextRequest) {
           nombre_completo: true,
           email: true,
           rol: true,
+          cargo: true,
           activo: true,
           created_at: true,
         },
@@ -143,6 +147,7 @@ export async function POST(request: NextRequest) {
             nombre: u.nombre_completo,
             email: u.email,
             rol: u.rol,
+            cargo: u.cargo,
           },
         },
       });
