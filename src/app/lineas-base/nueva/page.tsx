@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getTerminologia } from '@/lib/terminologia';
 import {
   ArrowLeft,
   Lock,
@@ -55,6 +56,7 @@ export default function NuevaLineaBasePage() {
   const [elementos, setElementos] = useState<EcsConVersiones[]>([]);
   const [loadingProyectos, setLoadingProyectos] = useState(true);
   const [loadingEcs, setLoadingEcs] = useState(false);
+  const [rubro, setRubro] = useState<string>('CONSTRUCCION');
 
   // Estados del formulario
   const [codigo, setCodigo] = useState('');
@@ -74,8 +76,17 @@ export default function NuevaLineaBasePage() {
   useEffect(() => {
     async function fetchAux() {
       try {
-        const res = await fetch('/api/auxiliares');
-        const data = await res.json();
+        const [resAux, resMe] = await Promise.all([
+          fetch('/api/auxiliares'),
+          fetch('/api/auth/me'),
+        ]);
+        const data = await resAux.json();
+        const dataMe = await resMe.json();
+
+        if (dataMe?.success && dataMe?.data?.user?.rubro) {
+          setRubro(dataMe.data.user.rubro);
+        }
+
         if (data.success && data.data.proyectos.length > 0) {
           setProyectos(data.data.proyectos);
           setProyectoId(data.data.proyectos[0].id);
@@ -215,6 +226,8 @@ export default function NuevaLineaBasePage() {
     }
   };
 
+  const terminologia = getTerminologia(rubro);
+
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
       {/* Top Navbar Mobile-First */}
@@ -231,14 +244,14 @@ export default function NuevaLineaBasePage() {
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 flex-wrap">
                 <span className="font-black text-xs sm:text-base text-white tracking-tight truncate">
-                  Establecer Nueva Línea Base
+                  Establecer Nueva {terminologia.lineaBaseLabel}
                 </span>
                 <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase tracking-wider shrink-0 shadow-sm">
                   Transacción ACID (RNF-08)
                 </span>
               </div>
               <span className="text-[10px] sm:text-[11px] text-slate-300 block truncate">
-                Congelamiento estricto de especificaciones técnicas aprobadas
+                {terminologia.lineaBaseSubtitulo}
               </span>
             </div>
           </div>
@@ -259,14 +272,14 @@ export default function NuevaLineaBasePage() {
           <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-slate-300 shadow-md space-y-6">
             <div className="flex items-center gap-2 text-upt-navy-800 font-black text-base border-b border-slate-200 pb-3">
               <FolderGit2 className="w-5 h-5 text-upt-gold-600" />
-              <span>1. Proyecto y Datos Generales de la Línea Base</span>
+              <span>1. {terminologia.proyectoLabel} y Datos Generales</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Proyecto */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Proyecto / Caso Operativo <span className="text-red-500">*</span>
+                  {terminologia.proyectoLabel} <span className="text-red-500">*</span>
                 </label>
                 {loadingProyectos ? (
                   <div className="h-10 bg-slate-100 rounded-2xl animate-pulse" />
@@ -284,7 +297,7 @@ export default function NuevaLineaBasePage() {
                   </select>
                 )}
                 <span className="text-[11px] text-slate-500 mt-1 block">
-                  La Línea Base pertenecerá exclusivamente a este proyecto.
+                  La Línea Base pertenecerá exclusivamente a este registro.
                 </span>
               </div>
 
@@ -299,25 +312,25 @@ export default function NuevaLineaBasePage() {
                     type="text"
                     value={codigo}
                     onChange={(e) => setCodigo(e.target.value.toUpperCase())}
-                    placeholder="Ej. LB-PRJ01-v1.0"
+                    placeholder={`Ej. ${terminologia.lineaBaseEjemploCodigo}`}
                     className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-mono font-black uppercase text-slate-900 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition"
                   />
                 </div>
                 <span className="text-[11px] text-slate-500 mt-1 block">
-                  Debe ser único dentro del proyecto.
+                  Debe ser único dentro del registro.
                 </span>
               </div>
 
               {/* Nombre descriptivo */}
               <div className="md:col-span-2">
                 <label className="block text-xs font-black text-slate-700 mb-1.5">
-                  Nombre Descriptivo de la Línea Base <span className="text-red-500">*</span>
+                  Nombre Descriptivo ({terminologia.lineaBaseLabel}) <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
-                  placeholder="Ej. Línea Base de Requerimientos y Arquitectura de Software v1"
+                  placeholder={terminologia.lineaBaseEjemploNombre}
                   className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-semibold text-slate-900 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition"
                 />
               </div>
@@ -331,7 +344,7 @@ export default function NuevaLineaBasePage() {
                   rows={3}
                   value={descripcion}
                   onChange={(e) => setDescripcion(e.target.value)}
-                  placeholder="Detalle el motivo del congelamiento (ej. Hito formal de pase a fase de construcción, aprobación unánime de planos estructurales, etc.)..."
+                  placeholder={`Detalle el motivo del congelamiento (ej. ${terminologia.lineaBaseExplicacion})`}
                   className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-medium text-slate-900 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition"
                 />
               </div>

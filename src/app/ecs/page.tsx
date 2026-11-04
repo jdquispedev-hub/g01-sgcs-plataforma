@@ -530,9 +530,9 @@ export default function EcsPage() {
                 </div>
                 <div>
                   <h3 className="text-base font-black text-slate-900">
-                    Registrar Nuevo Entregable (ECS)
+                    Registrar Nuevo {terminologia.ecsLabel}
                   </h3>
-                  <span className="text-[11px] text-slate-500 font-medium">Paso 2 • Alta de artefacto bajo control de versiones</span>
+                  <span className="text-[11px] text-slate-500 font-medium">Paso 2 • Alta técnica bajo control de versiones</span>
                 </div>
               </div>
               <button
@@ -555,7 +555,7 @@ export default function EcsPage() {
                 {/* Proyecto */}
                 <div>
                   <label className="block text-xs font-black text-slate-700 mb-1">
-                    Proyecto / Caso <span className="text-red-500">*</span>
+                    {terminologia.proyectoLabel} <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={proyectoId}
@@ -579,7 +579,7 @@ export default function EcsPage() {
                     type="text"
                     value={codigo}
                     onChange={(e) => setCodigo(e.target.value.toUpperCase())}
-                    placeholder="Ej. ECS-MOD-AUTH"
+                    placeholder={`Ej. ${terminologia.ecsEjemploCodigo}`}
                     className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-mono font-black uppercase text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
                   />
                 </div>
@@ -587,13 +587,13 @@ export default function EcsPage() {
                 {/* Nombre */}
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-black text-slate-700 mb-1">
-                    Nombre del Artefacto <span className="text-red-500">*</span>
+                    Nombre ({terminologia.ecsLabel}) <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={nombre}
                     onChange={(e) => setNombre(e.target.value)}
-                    placeholder="Ej. Módulo de Autenticación JWT y Roles RBAC"
+                    placeholder={terminologia.ecsEjemploNombre}
                     className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
                   />
                 </div>
@@ -601,18 +601,18 @@ export default function EcsPage() {
                 {/* Tipo */}
                 <div>
                   <label className="block text-xs font-black text-slate-700 mb-1">
-                    Tipo de Artefacto <span className="text-red-500">*</span>
+                    Tipo de {terminologia.ecsLabel} <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={tipo}
                     onChange={(e) => setTipo(e.target.value)}
                     className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 transition"
                   >
-                    <option value="DOCUMENTO">Documento / Requisito</option>
-                    <option value="CODIGO_FUENTE">Código Fuente</option>
-                    <option value="DISENO">Diseño / Plano Arquitectónico</option>
-                    <option value="BASE_DATOS">Base de Datos / Esquema</option>
-                    <option value="CASO_PRUEBA">Caso de Prueba</option>
+                    {terminologia.ecsTipos.map((t) => (
+                      <option key={t.valor} value={t.valor}>
+                        {t.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -637,13 +637,13 @@ export default function EcsPage() {
                 {/* Ubicación */}
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-black text-slate-700 mb-1">
-                    Ubicación Física o Enlace de Repositorio <span className="text-red-500">*</span>
+                    {terminologia.ecsUbicacionLabel} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={ubicacion}
                     onChange={(e) => setUbicacion(e.target.value)}
-                    placeholder="Ej. git://github.com/org/repo o Carpeta Servidor /docs/planos"
+                    placeholder={terminologia.ecsUbicacionPlaceholder}
                     className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-mono font-semibold text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
                   />
                 </div>
@@ -657,7 +657,7 @@ export default function EcsPage() {
                     rows={2}
                     value={descripcion}
                     onChange={(e) => setDescripcion(e.target.value)}
-                    placeholder="Especificaciones o alcance de este artefacto..."
+                    placeholder={terminologia.ecsDescripcionPlaceholder}
                     className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-medium text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
                   />
                 </div>
@@ -678,13 +678,13 @@ export default function EcsPage() {
                 >
                   {saving ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin text-upt-gold" />
                       <span>Registrando...</span>
                     </>
                   ) : (
                     <>
                       <Plus className="w-4 h-4" />
-                      <span>Registrar Artefacto (ECS)</span>
+                      <span>Registrar {terminologia.ecsLabel}</span>
                     </>
                   )}
                 </button>

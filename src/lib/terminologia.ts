@@ -54,6 +54,10 @@ export interface RubroConfig {
   ecsTipos: { valor: string; label: string; placeholder: string }[];
   ecsEjemploCodigo: string;
   ecsEjemploNombre: string;
+  ecsUbicacionLabel: string;
+  ecsUbicacionPlaceholder: string;
+  ecsDescripcionPlaceholder: string;
+  versionEjemploMotivo: string;
 
   // Paso 3: Aprobación Técnica
   aprobadorCargo: string;
@@ -129,7 +133,11 @@ export const CATALOGO_TERMINOLOGIA: Record<RubroTipo, RubroConfig> = {
       { valor: 'OTRO', label: 'Especificación Técnica Especial', placeholder: 'Ej. Ficha Técnica de Aditivos para Concreto' },
     ],
     ecsEjemploCodigo: 'PLANO-EST-01',
-    ecsEjemploNombre: 'Plano Estructural de Cimentaciones y Vigas de Cimentación',
+    ecsEjemploNombre: 'Plano Estructural de Cimentaciones y Zapatas',
+    ecsUbicacionLabel: 'Ubicación Física o Digital del Plano / Expediente',
+    ecsUbicacionPlaceholder: 'Ej. Google Drive Obra / Planoteca Estante B-02 / Autodesk BIM 360',
+    ecsDescripcionPlaceholder: 'Ej. Detalle de cimentaciones, zapatas aisladas, cuantía de acero corrugado y concreto f’c = 210 kg/cm2.',
+    versionEjemploMotivo: 'Ej. Actualización de dimensiones de zapatas según estudio geotécnico de mecánica de suelos.',
 
     aprobadorCargo: 'Ingeniero Residente / Supervisor de Obra',
     aprobadorRolLabel: 'Residente / Supervisor de Obra',
@@ -282,6 +290,10 @@ export const CATALOGO_TERMINOLOGIA: Record<RubroTipo, RubroConfig> = {
     ],
     ecsEjemploCodigo: 'ECS-AUTH-API',
     ecsEjemploNombre: 'Módulo de Autenticación JWT y Roles RBAC',
+    ecsUbicacionLabel: 'Repositorio Git / Rama / Directorio',
+    ecsUbicacionPlaceholder: 'Ej. https://github.com/empresa/repo/tree/main/src/auth',
+    ecsDescripcionPlaceholder: 'Ej. Implementación de middleware JWT, validación Zod y endpoints protegidos con roles RBAC.',
+    versionEjemploMotivo: 'Ej. Corrección de expiración de access token e incorporación de refresh tokens seguros.',
 
     aprobadorCargo: 'Tech Lead / Arquitecto de Software',
     aprobadorRolLabel: 'Tech Lead / Arquitecto',
@@ -432,7 +444,11 @@ export const CATALOGO_TERMINOLOGIA: Record<RubroTipo, RubroConfig> = {
       { valor: 'OTRO', label: 'Guía de Cuidados Post-Operatorios', placeholder: 'Ej. Indicaciones de Alimentación y Medicación Domiciliaria' },
     ],
     ecsEjemploCodigo: 'PROT-ANEST-01',
-    ecsEjemploNombre: 'Protocolo Anestésico Balanceado para Pacientes Felinos',
+    ecsEjemploNombre: 'Protocolo Anestésico Balanceado Felino',
+    ecsUbicacionLabel: 'Archivo Clínico / Sistema Hospitalario',
+    ecsUbicacionPlaceholder: 'Ej. Servidor Clínico / Archivador Físico de Historias Consultorio 2',
+    ecsDescripcionPlaceholder: 'Ej. Pautas de premedicación anestésica, inducción, intubación y plan de fluidoterapia.',
+    versionEjemploMotivo: 'Ej. Incorporación de ketamina en infusión continua según valoración de riesgo ASA II.',
 
     aprobadorCargo: 'Médico Veterinario Jefe / Especialista Cirujano',
     aprobadorRolLabel: 'Médico Veterinario Jefe',

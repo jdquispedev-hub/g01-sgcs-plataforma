@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getTerminologia } from '@/lib/terminologia';
 import { 
   ShieldCheck, 
   ArrowLeft, 
@@ -50,6 +51,7 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [ecs, setEcs] = useState<EcsDetail | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<string>('');
+  const [rubro, setRubro] = useState<string>('CONSTRUCCION');
   const [loading, setLoading] = useState(true);
 
   // Modal nueva versión
@@ -85,7 +87,10 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
         setEditUbicacion(dataEcs.data.ubicacion);
       }
       if (dataMe.success) {
-        setCurrentUserRole(dataMe.data.user.rol);
+        setCurrentUserRole(dataMe.data?.user?.rol || '');
+        if (dataMe.data?.user?.rubro) {
+          setRubro(dataMe.data.user.rubro);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -184,6 +189,7 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
   };
 
   const canApprove = ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR'].includes(currentUserRole);
+  const terminologia = getTerminologia(rubro);
 
   if (loading) {
     return (
@@ -430,28 +436,28 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Descripción del Cambio <span className="text-upt-garnet-500">*</span>
+                  Descripción del Cambio / Motivo <span className="text-upt-garnet-500">*</span>
                 </label>
                 <textarea
                   required
                   rows={3}
                   value={descVersion}
                   onChange={(e) => setDescVersion(e.target.value)}
-                  placeholder="Explique qué se añadió, corrigió o modificó en esta versión..."
+                  placeholder={terminologia.versionEjemploMotivo}
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500"
                 ></textarea>
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Enlace a Archivo / Commit / Plano
+                  Enlace Digital o Ubicación del Archivo
                 </label>
                 <input
-                  type="url"
+                  type="text"
                   value={archivoUrl}
                   onChange={(e) => setArchivoUrl(e.target.value)}
-                  placeholder="https://github.com/.../commit/... o URL de nube"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500"
+                  placeholder={terminologia.ecsUbicacionPlaceholder}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500 font-mono"
                 />
               </div>
 
@@ -481,7 +487,7 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
       {modalEditOpen && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
-            <h3 className="text-lg font-black text-slate-900 mb-1">Actualizar Información del ECS</h3>
+            <h3 className="text-lg font-black text-slate-900 mb-1">Actualizar Información ({terminologia.ecsLabel})</h3>
             <p className="text-xs text-slate-500 mb-4">
               El código identificador permanece invariable por trazabilidad (RF-06).
             </p>
@@ -499,12 +505,13 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Ubicación / Repo</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">{terminologia.ecsUbicacionLabel}</label>
                 <input
                   type="text"
                   required
                   value={editUbicacion}
                   onChange={(e) => setEditUbicacion(e.target.value)}
+                  placeholder={terminologia.ecsUbicacionPlaceholder}
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500"
                 />
               </div>
