@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import AccesoRestringido from '@/components/AccesoRestringido';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -70,6 +71,7 @@ export default function UsuariosPage() {
   const [usuarios, setUsuarios] = useState<UsuarioColaborador[]>([]);
   const [loading, setLoading] = useState(true);
   const [rubro, setRubro] = useState<string>('CONSTRUCCION');
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalEditUser, setModalEditUser] = useState<UsuarioColaborador | null>(null);
 
@@ -106,15 +108,22 @@ export default function UsuariosPage() {
   };
 
   useEffect(() => {
-    loadUsuarios();
     fetch('/api/auth/me')
       .then((res) => res.json())
       .then((data) => {
-        if (data.success && data.data?.user?.rubro) {
-          setRubro(data.data.user.rubro);
+        if (data.success && data.data?.user) {
+          setCurrentUser(data.data.user);
+          if (data.data.user.rubro) {
+            setRubro(data.data.user.rubro);
+          }
+          if (data.data.user.rol === 'ADMINISTRADOR' || data.data.user.rol === 'SUPERADMIN') {
+            loadUsuarios();
+          } else {
+            setLoading(false);
+          }
         }
       })
-      .catch(() => {});
+      .catch(() => setLoading(false));
   }, []);
 
   const handleCrearUsuario = async (e: React.FormEvent) => {
@@ -237,6 +246,16 @@ export default function UsuariosPage() {
   };
 
   const sugerencias = SUGERENCIAS_CARGO[rubro] || SUGERENCIAS_CARGO.CONSTRUCCION;
+
+  if (currentUser && currentUser.rol !== 'ADMINISTRADOR' && currentUser.rol !== 'SUPERADMIN') {
+    return (
+      <AccesoRestringido
+        modulo="Gestión de Personal y Roles"
+        user={currentUser}
+        rolRequerido="Administrador de Empresa"
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import AccesoRestringido from '@/components/AccesoRestringido';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -52,6 +53,7 @@ interface PaginationData {
 
 export default function AuditoriaPage() {
   const [logs, setLogs] = useState<LogItem[]>([]);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [pagination, setPagination] = useState<PaginationData>({
     total: 0,
     page: 1,
@@ -107,6 +109,16 @@ export default function AuditoriaPage() {
     }
     return 'bg-slate-100 text-slate-800 border-slate-300';
   };
+
+  if (currentUser && currentUser.rol !== 'ADMINISTRADOR' && currentUser.rol !== 'SUPERADMIN') {
+    return (
+      <AccesoRestringido
+        modulo="Bitácora de Auditoría del Sistema"
+        user={currentUser}
+        rolRequerido="Administrador de Empresa"
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">

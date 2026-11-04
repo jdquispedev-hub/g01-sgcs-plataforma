@@ -4,7 +4,7 @@ import { verifySessionTokenEdge, AUTH_COOKIE_NAME } from '@/lib/auth-edge';
 // Rutas protegidas y sus roles permitidos (RNF-02)
 const ROUTE_PERMISSIONS: { pattern: RegExp; roles: string[] }[] = [
   { pattern: /^\/superadmin(\/.*)?$/, roles: ['SUPERADMIN'] },
-  { pattern: /^\/dashboard(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR'] },
+  { pattern: /^\/dashboard(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
   { pattern: /^\/aprobaciones(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR'] },
   { pattern: /^\/bitacora(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
   { pattern: /^\/ecs(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
@@ -37,14 +37,7 @@ export async function middleware(request: NextRequest) {
   // Si intenta acceder al login teniendo ya sesión activa, redirigir a su panel correspondiente
   if (pathname === '/login') {
     if (session) {
-      const redirectUrl =
-        session.rol === 'SUPERADMIN'
-          ? '/superadmin'
-          : session.rol === 'ADMINISTRADOR'
-          ? '/dashboard'
-          : session.rol === 'APROBADOR'
-          ? '/aprobaciones'
-          : '/bitacora';
+      const redirectUrl = session.rol === 'SUPERADMIN' ? '/superadmin' : '/dashboard';
       return NextResponse.redirect(new URL(redirectUrl, request.url));
     }
     return NextResponse.next();

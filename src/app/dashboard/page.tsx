@@ -10,6 +10,8 @@ import {
   AlertTriangle,
   Users,
   Briefcase,
+  ShieldAlert,
+  X,
   FileText,
   CheckCircle2,
   Lock,
@@ -46,6 +48,7 @@ interface UserData {
   rubro: string;
   isSupervising?: boolean;
   originalOrgNombre?: string;
+  cargo?: string | null;
 }
 
 interface BloqueoActivo {
@@ -85,7 +88,21 @@ interface ReunionItem {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const [alertaRestringido, setAlertaRestringido] = useState(false);
+  const [moduloRestringido, setModuloRestringido] = useState('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('error_acceso') === 'restringido') {
+        setAlertaRestringido(true);
+        setModuloRestringido(params.get('modulo') || 'solicitado');
+      }
+    }
+  }, []);
+
   const [user, setUser] = useState<UserData | null>(null);
+  const isAdmin = user?.rol === 'ADMINISTRADOR' || user?.rol === 'SUPERADMIN';
   const [loading, setLoading] = useState(true);
 
   // Métricas
@@ -286,6 +303,30 @@ export default function DashboardPage() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
         
+        {/* Alerta de Módulo Restringido (RNF-02) */}
+        {alertaRestringido && (
+          <div className="p-4 rounded-2xl bg-amber-500 text-upt-navy-950 font-bold border-2 border-amber-600 shadow-xl flex items-center justify-between gap-3 animate-in fade-in">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-upt-navy-950 text-upt-gold flex items-center justify-center shrink-0">
+                <ShieldAlert className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xs font-black uppercase tracking-wider">Acceso Restringido (RNF-02)</p>
+                <p className="text-xs font-medium">
+                  El apartado <strong className="underline">&quot;{moduloRestringido}&quot;</strong> está reservado para los Administradores de la empresa. Tu usuario tiene asignado el rol <strong>{user?.rol}</strong>{user?.cargo ? ' (' + user.cargo + ')' : ''}.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setAlertaRestringido(false)}
+              className="p-1.5 rounded-xl hover:bg-black/10 transition text-upt-navy-950 shrink-0"
+              title="Cerrar aviso"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+        
         {/* Alerta de Bloqueos Críticos (si existen) */}
         {bloqueosActivos.length > 0 && (
           <div className="p-4 sm:p-5 rounded-3xl bg-red-600 text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-2 border-red-700 animate-in fade-in duration-200">
@@ -356,26 +397,39 @@ export default function DashboardPage() {
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
-                  <button
-                    onClick={() => setCrearProyectoModalOpen(true)}
-                    className="px-5 py-2.5 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-black text-xs shadow-md transition active:scale-95 inline-flex items-center gap-2 border border-upt-gold/40"
-                  >
-                    <Plus className="w-4 h-4 stroke-[3]" />
-                    <span>
-                      {user?.rubro === 'CONSTRUCCION'
-                        ? 'Registrar Primera Obra Civil'
-                        : user?.rubro === 'VETERINARIA'
-                        ? 'Registrar Primer Servicio Clínico'
-                        : 'Registrar Primer Proyecto TI'}
-                    </span>
-                  </button>
-                  <Link
-                    href="/usuarios"
-                    className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs shadow-sm transition active:scale-95 inline-flex items-center gap-2 border-2 border-slate-300"
-                  >
-                    <Users className="w-4 h-4 text-purple-600" />
-                    <span>Gestionar Personal & Roles</span>
-                  </Link>
+                  {isAdmin ? (
+                    <>
+                      <button
+                        onClick={() => setCrearProyectoModalOpen(true)}
+                        className="px-5 py-2.5 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-black text-xs shadow-md transition active:scale-95 inline-flex items-center gap-2 border border-upt-gold/40"
+                      >
+                        <Plus className="w-4 h-4 stroke-[3]" />
+                        <span>
+                          {user?.rubro === 'CONSTRUCCION'
+                            ? 'Registrar Primera Obra Civil'
+                            : user?.rubro === 'VETERINARIA'
+                            ? 'Registrar Primer Servicio Clínico'
+                            : 'Registrar Primer Proyecto TI'}
+                        </span>
+                      </button>
+                      <Link
+                        href="/usuarios"
+                        className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs shadow-sm transition active:scale-95 inline-flex items-center gap-2 border-2 border-slate-300"
+                      >
+                        <Users className="w-4 h-4 text-purple-600" />
+                        <span>Gestionar Personal & Roles</span>
+                      </Link>
+                    </>
+                  ) : (
+                    <div className="bg-white rounded-2xl p-4 border border-slate-200 text-center max-w-sm">
+                      <p className="text-xs text-slate-700 font-bold">
+                        Tu organización aún no tiene una obra activa asignada.
+                      </p>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        Comunícate con el Administrador de tu empresa para que aperture o te asigne a una obra.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
@@ -409,13 +463,15 @@ export default function DashboardPage() {
                         </option>
                       ))}
                     </select>
-                    <button
-                      onClick={() => setCrearProyectoModalOpen(true)}
-                      className="p-1.5 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold transition shadow-sm border border-upt-gold/30 shrink-0 active:scale-95"
-                      title={user?.rubro === 'CONSTRUCCION' ? 'Registrar Nueva Obra' : 'Registrar Nuevo Proyecto'}
-                    >
-                      <Plus className="w-4 h-4 stroke-[3]" />
-                    </button>
+                    {isAdmin && (
+                      <button
+                        onClick={() => setCrearProyectoModalOpen(true)}
+                        className="p-1.5 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold transition shadow-sm border border-upt-gold/30 shrink-0 active:scale-95"
+                        title={user?.rubro === 'CONSTRUCCION' ? 'Registrar Nueva Obra' : 'Registrar Nuevo Proyecto'}
+                      >
+                        <Plus className="w-4 h-4 stroke-[3]" />
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -988,53 +1044,107 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Auditoría de Seguridad */}
-              <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-emerald-600 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
-                <div className="space-y-3">
-                  <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
-                    <Terminal className="w-5 h-5" />
+              {isAdmin ? (
+                <>
+                  {/* Auditoría de Seguridad (Solo Administradores) */}
+                  <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-emerald-600 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+                    <div className="space-y-3">
+                      <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                        <Terminal className="w-5 h-5" />
+                      </div>
+                      <h3 className="text-base font-black text-slate-900">
+                        Historial de Auditoría
+                      </h3>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        Registro de solo inserción (append-only) de cada acción del sistema: usuario, fecha, IPs y diffs.
+                      </p>
+                    </div>
+                    <div className="pt-4 mt-4 border-t border-slate-200">
+                      <Link
+                        href="/auditoria"
+                        className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                      >
+                        <span>Ver Logs de Auditoría</span>
+                        <ChevronRight className="w-4 h-4 text-upt-gold" />
+                      </Link>
+                    </div>
                   </div>
-                  <h3 className="text-base font-black text-slate-900">
-                    Historial de Auditoría
-                  </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Registro de solo inserción (append-only) de cada acción del sistema: usuario, fecha, IPs y diffs.
-                  </p>
-                </div>
-                <div className="pt-4 mt-4 border-t border-slate-200">
-                  <Link
-                    href="/auditoria"
-                    className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
-                  >
-                    <span>Ver Logs de Auditoría</span>
-                    <ChevronRight className="w-4 h-4 text-upt-gold" />
-                  </Link>
-                </div>
-              </div>
 
-              {/* Personal y Roles */}
-              <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-purple-600 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
-                <div className="space-y-3">
-                  <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center">
-                    <Users className="w-5 h-5" />
+                  {/* Personal y Roles (Solo Administradores) */}
+                  <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-purple-600 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+                    <div className="space-y-3">
+                      <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center">
+                        <Users className="w-5 h-5" />
+                      </div>
+                      <h3 className="text-base font-black text-slate-900">
+                        Personal & Colaboradores
+                      </h3>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        Directorio del equipo: roles (Administrador, Aprobador, Solicitante) y control de accesos.
+                      </p>
+                    </div>
+                    <div className="pt-4 mt-4 border-t border-slate-200">
+                      <Link
+                        href="/usuarios"
+                        className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                      >
+                        <span>Administrar Personal</span>
+                        <ChevronRight className="w-4 h-4 text-upt-gold" />
+                      </Link>
+                    </div>
                   </div>
-                  <h3 className="text-base font-black text-slate-900">
-                    Personal & Colaboradores
-                  </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Directorio del equipo: roles (Administrador, Aprobador, Solicitante) y control de accesos.
-                  </p>
-                </div>
-                <div className="pt-4 mt-4 border-t border-slate-200">
-                  <Link
-                    href="/usuarios"
-                    className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
-                  >
-                    <span>Administrar Personal</span>
-                    <ChevronRight className="w-4 h-4 text-upt-gold" />
-                  </Link>
-                </div>
-              </div>
+                </>
+              ) : (
+                <>
+                  {/* Bitácora Diaria de Campo (Para Colaboradores Operativos) */}
+                  <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-teal-600 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+                    <div className="space-y-3">
+                      <div className="w-10 h-10 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center">
+                        <Activity className="w-5 h-5" />
+                      </div>
+                      <h3 className="text-base font-black text-slate-900">
+                        Bitácora & Partes Diarios
+                      </h3>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        Registro diario de faena, horas hombre, avance de partidas y reporte de alertas de cuadrilla.
+                      </p>
+                    </div>
+                    <div className="pt-4 mt-4 border-t border-slate-200">
+                      <Link
+                        href="/bitacora"
+                        className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                      >
+                        <span>Ir a Mi Bitácora</span>
+                        <ChevronRight className="w-4 h-4 text-upt-gold" />
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Solicitudes de Cambio RFC (Para Colaboradores Operativos) */}
+                  <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-rose-600 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+                    <div className="space-y-3">
+                      <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-700 flex items-center justify-center">
+                        <AlertTriangle className="w-5 h-5" />
+                      </div>
+                      <h3 className="text-base font-black text-slate-900">
+                        Órdenes de Cambio (RFC)
+                      </h3>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        Seguimiento a modificaciones imprevistas solicitadas al cliente y dictámenes del comité.
+                      </p>
+                    </div>
+                    <div className="pt-4 mt-4 border-t border-slate-200">
+                      <Link
+                        href="/cambios"
+                        className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                      >
+                        <span>Ver Solicitudes de Cambio</span>
+                        <ChevronRight className="w-4 h-4 text-upt-gold" />
+                      </Link>
+                    </div>
+                  </div>
+                </>
+              )}
 
             </div>
           )}

@@ -397,24 +397,30 @@ export default function AprobacionesPage() {
                     </div>
 
                     <div className="pt-4 border-t border-slate-200 space-y-2">
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          disabled={actionLoadingId === v.id}
-                          onClick={() => handleDictaminarVersion(v.ecs.id, v.id, 'APROBAR')}
-                          className="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow transition flex items-center justify-center gap-1.5 active:scale-95 disabled:opacity-50"
-                        >
-                          <CheckCircle2 className="w-3.5 h-3.5" />
-                          <span>Aprobar</span>
-                        </button>
-                        <button
-                          disabled={actionLoadingId === v.id}
-                          onClick={() => handleDictaminarVersion(v.ecs.id, v.id, 'RECHAZAR')}
-                          className="py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs shadow transition flex items-center justify-center gap-1.5 active:scale-95 disabled:opacity-50"
-                        >
-                          <XCircle className="w-3.5 h-3.5" />
-                          <span>Rechazar</span>
-                        </button>
-                      </div>
+                      {user?.rol === 'SOLICITANTE' ? (
+                        <div className="py-2 px-3 rounded-xl bg-slate-100 text-slate-600 font-bold text-[11px] text-center border border-slate-200">
+                          🔒 Dictamen reservado para el Especialista Aprobador
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            disabled={actionLoadingId === v.id}
+                            onClick={() => handleDictaminarVersion(v.ecs.id, v.id, 'APROBAR')}
+                            className="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow transition flex items-center justify-center gap-1.5 active:scale-95 disabled:opacity-50"
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            <span>Aprobar</span>
+                          </button>
+                          <button
+                            disabled={actionLoadingId === v.id}
+                            onClick={() => handleDictaminarVersion(v.ecs.id, v.id, 'RECHAZAR')}
+                            className="py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs shadow transition flex items-center justify-center gap-1.5 active:scale-95 disabled:opacity-50"
+                          >
+                            <XCircle className="w-3.5 h-3.5" />
+                            <span>Rechazar</span>
+                          </button>
+                        </div>
+                      )}
 
                       <Link
                         href={`/ecs/${v.ecs.id}`}
@@ -518,7 +524,7 @@ export default function AprobacionesPage() {
                         href={`/cambios/${rfc.id}`}
                         className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow transition flex items-center justify-between group/btn active:scale-95"
                       >
-                        <span>Evaluar Expediente & Resolver Dictamen</span>
+                        <span>{user?.rol === 'SOLICITANTE' ? 'Consultar Expediente del Cambio' : 'Evaluar Expediente & Resolver Dictamen'}</span>
                         <ChevronRight className="w-4 h-4 text-slate-950 group-hover/btn:translate-x-1.5 transition-transform" />
                       </Link>
                     </div>
