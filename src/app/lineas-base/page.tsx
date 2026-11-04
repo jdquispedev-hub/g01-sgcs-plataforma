@@ -117,14 +117,14 @@ export default function LineasBasePage() {
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-black text-sm sm:text-base text-white tracking-tight truncate">
-                  Hitos Oficiales Congelados (Líneas Base)
+                  Líneas Base Oficiales (Hitos Congelados)
                 </span>
                 <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase tracking-wider shrink-0 shadow-sm">
-                  Paso 4: Congelamiento
+                  Paso 4: Congelamiento de Alcance
                 </span>
               </div>
               <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
-                Garantía de que nadie modificará el alcance pactado a ciegas
+                Alcance formal inmutable acordado con el cliente; cualquier modificación requiere una Solicitud de Cambio (RFC)
               </p>
             </div>
           </div>

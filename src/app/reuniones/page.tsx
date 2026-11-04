@@ -28,6 +28,7 @@ import {
   X,
   ArrowUpRight,
   Filter,
+  Printer,
 } from 'lucide-react';
 
 interface ReunionItem {
@@ -230,7 +231,7 @@ export default function ReunionesPage() {
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
       {/* Top Navbar */}
-      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-xl sticky top-0 z-40">
+      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-xl sticky top-0 z-40 print:hidden">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-0 sm:h-16 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
           <div className="flex items-center gap-2.5 min-w-0">
             <Link
@@ -298,7 +299,7 @@ export default function ReunionesPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
+      <main className={`max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6 ${selectedReunion ? 'print:hidden' : ''}`}>
         
         {/* Controles de Navegación del Calendario y Filtros */}
         <div className="bg-white rounded-3xl p-4 sm:p-5 border-2 border-slate-300 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -578,8 +579,8 @@ export default function ReunionesPage() {
          MODAL / DRAWER: DETALLE DE MINUTA SELECCIONADA
          ======================================================== */}
       {selectedReunion && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border-2 border-slate-300 space-y-5 animate-in fade-in zoom-in-95 duration-150 my-6">
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto print:static print:bg-white print:p-0 print:overflow-visible">
+          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border-2 border-slate-300 space-y-5 animate-in fade-in zoom-in-95 duration-150 my-6 print:shadow-none print:border-none print:p-6 print:my-0 print:max-w-none">
             <div className="flex items-start justify-between border-b border-slate-200 pb-3">
               <div>
                 <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -600,12 +601,22 @@ export default function ReunionesPage() {
                   Proyecto: {selectedReunion.proyecto.nombre} • Cliente: {selectedReunion.proyecto.cliente_nombre}
                 </p>
               </div>
-              <button
-                onClick={() => setSelectedReunion(null)}
-                className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition"
-              >
-                ✕
-              </button>
+              <div className="flex items-center gap-2 print:hidden">
+                <button
+                  onClick={() => window.print()}
+                  className="px-3 py-1.5 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-black text-xs flex items-center gap-1.5 shadow transition active:scale-95"
+                  title="Imprimir / Exportar Acta Oficial en PDF"
+                >
+                  <Printer className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Imprimir Acta PDF</span>
+                </button>
+                <button
+                  onClick={() => setSelectedReunion(null)}
+                  className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
 
             {/* Convocante y Participantes */}
@@ -648,8 +659,39 @@ export default function ReunionesPage() {
               </div>
             )}
 
+            {/* Cuadro de Firmas de Conformidad (Visible en Pantalla e Impresión) */}
+            <div className="pt-4 mt-3 border-t-2 border-slate-300">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block text-center mb-4">
+                Constancia y Firma de Acuerdos Vinculantes (Anti-teléfono Descompuesto)
+              </span>
+              <div className="grid grid-cols-2 gap-6 text-center">
+                <div className="space-y-1">
+                  <div className="border-b-2 border-slate-400 h-12 flex items-end justify-center pb-1">
+                    <span className="text-[9px] text-slate-400 italic">(Firma y Sello)</span>
+                  </div>
+                  <p className="text-xs font-black text-slate-900 leading-tight">
+                    {selectedReunion.convocante?.nombre_completo || 'Carlos Mendoza'}
+                  </p>
+                  <p className="text-[10px] text-slate-500 font-bold">
+                    Jefe de Proyecto / Contratista
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <div className="border-b-2 border-slate-400 h-12 flex items-end justify-center pb-1">
+                    <span className="text-[9px] text-slate-400 italic">(Firma de Conformidad)</span>
+                  </div>
+                  <p className="text-xs font-black text-slate-900 leading-tight">
+                    {selectedReunion.proyecto.cliente_nombre || 'Don Juan Pérez'}
+                  </p>
+                  <p className="text-[10px] text-slate-500 font-bold">
+                    Cliente Oficial / Propietario
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Acciones Conectoras */}
-            <div className="pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
+            <div className="pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 print:hidden">
               <span className="text-[10px] font-bold text-slate-500 uppercase">
                 ¿Qué se hace con este acuerdo?
               </span>

@@ -26,6 +26,7 @@ import {
   Table,
   Loader2,
   Compass,
+  Printer,
 } from 'lucide-react';
 
 interface SolicitudTrazabilidad {
@@ -188,7 +189,15 @@ export default function TrazabilidadPage() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0 border-t border-white/10 sm:border-t-0">
+          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0 border-t border-white/10 sm:border-t-0 print:hidden">
+            <button
+              onClick={() => window.print()}
+              className="px-3 py-1.5 rounded-xl bg-upt-gold hover:bg-amber-400 text-upt-navy-950 font-black text-xs flex items-center gap-1.5 shadow transition active:scale-95"
+              title="Exportar Matriz RTM a PDF"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>Imprimir / PDF</span>
+            </button>
             <Link
               href="/lineas-base"
               className="px-2.5 py-1.5 text-xs font-bold rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
@@ -208,8 +217,24 @@ export default function TrazabilidadPage() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
         
+        {/* Encabezado Oficial solo en Impresión PDF */}
+        <div className="hidden print:block mb-6 border-b-2 border-slate-900 pb-3">
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-xl font-black text-slate-900">SGCS • MATRIZ DE TRAZABILIDAD END-TO-END (RTM)</h1>
+              <p className="text-xs text-slate-700 font-bold">
+                Proyecto: {proyectoActual?.codigo} - {proyectoActual?.nombre} • Cliente: {proyectoActual?.cliente}
+              </p>
+              <p className="text-[10px] text-slate-500">Cadena de custodia de requisitos, entregables, líneas base y cambios aprobados (ISO 10007)</p>
+            </div>
+            <div className="text-right text-[10px] text-slate-500 font-mono">
+              Fecha de Emisión: {new Date().toLocaleDateString('es-ES')}
+            </div>
+          </div>
+        </div>
+
         {/* Selector de Proyecto y Selector de Vista */}
-        <div className="bg-white p-4 sm:p-6 rounded-3xl border-2 border-slate-300 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-white p-4 sm:p-6 rounded-3xl border-2 border-slate-300 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="flex items-center gap-2 text-upt-navy-900 font-black text-sm shrink-0">
               <FolderGit2 className="w-5 h-5 text-upt-gold-600" />

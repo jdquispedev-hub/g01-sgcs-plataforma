@@ -35,6 +35,7 @@ import {
 } from 'lucide-react';
 import GuiaFlujoModal from '@/components/GuiaFlujoModal';
 import AgendarReunionModal from '@/components/AgendarReunionModal';
+import NavbarPrincipal from '@/components/NavbarPrincipal';
 
 interface UserData {
   userId: string;
@@ -232,150 +233,8 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
-      {/* Banner de Modo Supervisión SuperAdmin */}
-      {user?.isSupervising && (
-        <div className="bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 px-4 py-2 font-bold text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-between gap-2 shadow-inner border-b-2 border-amber-600 z-50">
-          <div className="flex items-center gap-2">
-            <Eye className="w-4 h-4 text-slate-950 animate-pulse shrink-0" />
-            <span>
-              <strong>Modo Supervisión Global:</strong> Estás auditando el entorno de{' '}
-              <strong className="underline underline-offset-2">{user.organizacionNombre}</strong> como SuperAdministrador.
-            </span>
-          </div>
-          <button
-            onClick={handleRevertSuperadmin}
-            className="px-3 py-1.5 rounded-xl bg-slate-950 text-amber-300 font-extrabold text-xs hover:bg-slate-800 transition shadow flex items-center gap-1.5 shrink-0 active:scale-95"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" /> Volver al Panel SuperAdmin
-          </button>
-        </div>
-      )}
-
-      {/* Top Navbar */}
-      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-xl sticky top-0 z-40">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-2.5 sm:py-0 sm:h-16 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          
-          {/* Logo y Nombre de la Organización */}
-          <div className="flex items-center justify-between sm:justify-start gap-3 shrink-0">
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="w-10 h-10 rounded-2xl bg-upt-navy-800 border border-upt-gold/40 flex items-center justify-center text-upt-gold shadow-md shrink-0">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <div className="shrink-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-black text-sm sm:text-base text-white tracking-tight whitespace-nowrap">
-                    {user?.organizacionNombre || 'SGCS'}
-                  </span>
-                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 uppercase tracking-wider shadow-sm shrink-0 whitespace-nowrap">
-                    {user?.rubro || 'PLATAFORMA'}
-                  </span>
-                </div>
-                <span className="text-[11px] text-slate-300 font-medium block whitespace-nowrap">
-                  SGCS • Control de Configuración y Proyectos
-                </span>
-              </div>
-            </div>
-
-            {/* Salir en Mobile */}
-            <div className="sm:hidden shrink-0">
-              <button
-                onClick={handleLogout}
-                className="p-2 rounded-xl bg-white/10 hover:bg-red-500/20 text-slate-300 hover:text-red-400 font-bold transition border border-white/10"
-                title="Cerrar sesión"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Navegación Principal */}
-          <nav className="hidden xl:flex items-center gap-1 bg-upt-navy-950/80 p-1.5 rounded-2xl border border-white/15 shrink-0">
-            <Link
-              href="/dashboard"
-              className="px-3 py-1.5 rounded-xl text-xs font-black bg-upt-navy-700 text-upt-gold shadow-sm border border-upt-gold/30 flex items-center gap-1.5 whitespace-nowrap"
-            >
-              <Compass className="w-4 h-4" />
-              <span>Inicio</span>
-            </Link>
-            <Link
-              href="/reuniones"
-              className="px-2.5 py-1.5 rounded-xl text-xs font-bold text-emerald-400 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5 whitespace-nowrap"
-            >
-              <CalendarDays className="w-4 h-4 text-emerald-400" />
-              <span>Calendario</span>
-            </Link>
-            <Link
-              href="/cronograma"
-              className="px-2.5 py-1.5 rounded-xl text-xs font-bold text-upt-gold hover:text-white hover:bg-white/10 transition flex items-center gap-1.5 whitespace-nowrap"
-            >
-              <Sparkles className="w-4 h-4 text-upt-gold" />
-              <span>Canvas</span>
-            </Link>
-            <Link
-              href="/ecs"
-              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5 whitespace-nowrap"
-            >
-              <Layers className="w-4 h-4 text-slate-400" />
-              <span>Entregables</span>
-            </Link>
-            <Link
-              href="/aprobaciones"
-              className="px-2.5 py-1 rounded-xl font-bold text-upt-gold hover:text-white bg-upt-gold/15 border border-upt-gold/30 flex items-center gap-1.5 shrink-0 whitespace-nowrap text-xs"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-upt-gold" />
-              <span>Aprobaciones</span>
-            </Link>
-            <Link
-              href="/lineas-base"
-              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5 whitespace-nowrap"
-            >
-              <Lock className="w-4 h-4 text-slate-400" />
-              <span>Hitos</span>
-            </Link>
-            <Link
-              href="/cambios"
-              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5 whitespace-nowrap"
-            >
-              <AlertTriangle className="w-4 h-4 text-slate-400" />
-              <span>Cambios</span>
-            </Link>
-            <Link
-              href="/bitacora"
-              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5 whitespace-nowrap"
-            >
-              <Activity className="w-4 h-4 text-slate-400" />
-              <span>Bitácora</span>
-            </Link>
-          </nav>
-
-          {/* Usuario y Salir Desktop */}
-          <div className="hidden sm:flex items-center gap-3 text-xs shrink-0">
-            <button
-              onClick={() => setGuiaModalOpen(true)}
-              className="px-3 py-1.5 rounded-xl bg-upt-gold hover:bg-amber-400 text-upt-navy-950 font-black text-xs shadow-md transition flex items-center gap-1.5 shrink-0 active:scale-95 whitespace-nowrap"
-            >
-              <HelpCircle className="w-4 h-4 text-upt-navy-950" />
-              <span>¿Cómo funciona?</span>
-            </button>
-            <div className="text-right">
-              <p className="font-extrabold text-white leading-tight whitespace-nowrap">
-                {displayName}
-              </p>
-              <span className="text-[10px] font-bold text-upt-gold uppercase tracking-wider block whitespace-nowrap">
-                {displayRole}
-              </span>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-red-500/20 text-slate-300 hover:text-red-400 font-bold transition flex items-center gap-1.5 border border-white/10 shrink-0 whitespace-nowrap"
-              title="Cerrar sesión"
-            >
-              <LogOut className="w-4 h-4" />
-              <span>Salir</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      {/* Top Navbar Responsivo con Drawer Móvil */}
+      <NavbarPrincipal user={user} onLogout={handleLogout} />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
@@ -476,7 +335,7 @@ export default function DashboardPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                   <Link
                     href="/reuniones"
-                    className="p-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-300 text-emerald-950 transition flex flex-col justify-between"
+                    className="p-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-300 text-emerald-950 transition flex flex-col justify-between shadow-sm active:scale-95"
                   >
                     <span className="text-[9px] font-black text-emerald-700">1. CLIENTE</span>
                     <span className="text-xs font-black truncate">Reuniones</span>
@@ -484,31 +343,31 @@ export default function DashboardPage() {
                   </Link>
                   <Link
                     href="/ecs"
-                    className="p-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-300 text-emerald-950 transition flex flex-col justify-between"
+                    className="p-2.5 rounded-2xl bg-blue-50 hover:bg-blue-100 border-2 border-blue-300 text-blue-950 transition flex flex-col justify-between shadow-sm active:scale-95"
                   >
-                    <span className="text-[9px] font-black text-emerald-700">2. EQUIPO</span>
+                    <span className="text-[9px] font-black text-blue-700">2. EQUIPO</span>
                     <span className="text-xs font-black truncate">Entregables</span>
                     <span className="text-[9px] text-slate-500">{totalEcs} ECS</span>
                   </Link>
                   <Link
                     href="/aprobaciones"
-                    className={`p-2.5 rounded-2xl border-2 transition flex flex-col justify-between ${
+                    className={`p-2.5 rounded-2xl border-2 transition flex flex-col justify-between shadow-sm active:scale-95 ${
                       versionesPendientes > 0
                         ? 'bg-amber-50 hover:bg-amber-100 border-amber-400 text-amber-950'
                         : 'bg-emerald-50 hover:bg-emerald-100 border-emerald-300 text-emerald-950'
                     }`}
                   >
-                    <span className="text-[9px] font-black">3. DICTAMEN</span>
-                    <span className="text-xs font-black truncate">Revisión</span>
+                    <span className="text-[9px] font-black">3. TECH LEAD</span>
+                    <span className="text-xs font-black truncate">Dictamen</span>
                     <span className="text-[9px]">
                       {versionesPendientes > 0 ? `${versionesPendientes} Por Ver` : '✓ Al día'}
                     </span>
                   </Link>
                   <Link
                     href="/lineas-base"
-                    className={`p-2.5 rounded-2xl border-2 transition flex flex-col justify-between ${
+                    className={`p-2.5 rounded-2xl border-2 transition flex flex-col justify-between shadow-sm active:scale-95 ${
                       lineasVigentes > 0
-                        ? 'bg-emerald-50 hover:bg-emerald-100 border-emerald-300 text-emerald-950'
+                        ? 'bg-purple-50 hover:bg-purple-100 border-purple-300 text-purple-950'
                         : 'bg-slate-50 hover:bg-slate-100 border-slate-300 text-slate-700'
                     }`}
                   >
@@ -520,11 +379,11 @@ export default function DashboardPage() {
                   </Link>
                   <Link
                     href="/cambios"
-                    className="p-2.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border-2 border-slate-300 text-slate-700 transition flex flex-col justify-between"
+                    className="col-span-2 sm:col-span-1 p-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 border-2 border-rose-300 text-rose-950 transition flex flex-col justify-between shadow-sm active:scale-95"
                   >
-                    <span className="text-[9px] font-black">5. CAMBIOS</span>
-                    <span className="text-xs font-black truncate">Solicitudes</span>
-                    <span className="text-[9px]">
+                    <span className="text-[9px] font-black text-rose-700">5. CAMBIOS</span>
+                    <span className="text-xs font-black truncate">Modificaciones</span>
+                    <span className="text-[9px] text-slate-500">
                       {rfcPendientes > 0 ? `${rfcPendientes} RFCs` : '0 RFCs'}
                     </span>
                   </Link>

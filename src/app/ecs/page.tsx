@@ -157,20 +157,29 @@ export default function EcsPage() {
     switch (estado) {
       case 'APROBADA':
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Aprobada
+          <span
+            className="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 shadow-sm"
+            title="Aprobada formalmente: Apta para congelar en Línea Base"
+          >
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Aprobada (Apta Línea Base)
           </span>
         );
       case 'RECHAZADA':
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-300">
+          <span
+            className="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-red-100 text-red-900 border border-red-300 shadow-sm"
+            title="Rechazada con observaciones técnicas"
+          >
             <XCircle className="w-3.5 h-3.5 text-red-600" /> Rechazada
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
-            <Clock className="w-3.5 h-3.5 text-amber-600" /> Pendiente
+          <span
+            className="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-950 border border-amber-400 shadow-sm"
+            title="Pendiente de dictamen técnico del Tech Lead"
+          >
+            <Clock className="w-3.5 h-3.5 text-amber-700" /> Pendiente Dictamen
           </span>
         );
     }
@@ -207,14 +216,14 @@ export default function EcsPage() {
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-black text-sm sm:text-base text-white tracking-tight truncate">
-                  Entregables y Componentes (ECS)
+                  Entregables de Configuración (ECS)
                 </span>
                 <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase tracking-wider shrink-0 shadow-sm">
-                  Paso 2: Artefactos
+                  Paso 2: Inventario Técnico
                 </span>
               </div>
               <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
-                Código fuente, planos y documentos bajo control de versiones
+                Control de versiones y especificaciones técnicas aprobadas por el Tech Lead
               </p>
             </div>
           </div>

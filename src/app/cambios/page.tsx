@@ -235,14 +235,14 @@ export default function CambiosPage() {
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-black text-sm sm:text-base text-white tracking-tight truncate">
-                  Control de Cambios (RFC)
+                  Control de Solicitudes de Cambio (RFC - Request for Change)
                 </span>
                 <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase tracking-wider shrink-0 shadow-sm">
-                  Paso 5: Modificaciones
+                  Paso 5: Modificaciones Formales
                 </span>
               </div>
               <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
-                Modificaciones formales sobre hitos previamente congelados
+                Evaluación técnica de impacto antes de autorizar cualquier cambio sobre Líneas Base
               </p>
             </div>
           </div>
