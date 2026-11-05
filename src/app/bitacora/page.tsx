@@ -19,6 +19,7 @@ import {
   Sparkles,
   ShieldAlert,
 } from 'lucide-react';
+import NavbarPrincipal from '@/components/NavbarPrincipal';
 
 interface ReporteItem {
   id: string;
@@ -143,93 +144,90 @@ export default function BitacoraPage() {
   const totalBloqueosActivos = reportes.filter((r) => r.tiene_bloqueo).length;
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
-      {/* Top Navbar Mobile-First */}
-      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-xl sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-0 sm:h-16 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
-          
-          <div className="flex items-center gap-2.5 min-w-0">
-            <Link
-              href="/dashboard"
-              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30 shrink-0 shadow-sm"
-              title="Volver al Dashboard"
-            >
-              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-            </Link>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-black text-sm sm:text-base text-white tracking-tight truncate">
+    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased">
+      {/* Navbar Global Unificado */}
+      <NavbarPrincipal />
+
+      {/* Sub-header contextual */}
+      <div className="bg-[#0B1528] border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+              <Activity className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-base sm:text-lg font-bold text-white tracking-tight">
                   Bitácora Diaria de Campo
-                </span>
-                <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase tracking-wider shrink-0 shadow-sm">
-                  Etapa 4 • Control de Bloqueos
+                </h1>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 uppercase tracking-wider">
+                  Etapa 4 • Bloqueos
                 </span>
               </div>
-              <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
+              <p className="text-xs text-slate-400">
                 Reportes diarios de cuadrilla y alerta gerencial inmediata
               </p>
             </div>
           </div>
 
-          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0 border-t border-white/10 sm:border-t-0">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => setModalOpen(true)}
-              className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-500 hover:from-amber-400 hover:to-upt-gold text-upt-navy-950 font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition flex items-center gap-1.5 shrink-0 active:scale-95"
+              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs shadow-md transition flex items-center gap-1.5"
             >
-              <Plus className="w-4 h-4 stroke-[3]" />
-              <span className="hidden sm:inline">Reportar Jornada</span>
-              <span className="sm:hidden font-bold">Reportar</span>
+              <Plus className="w-4 h-4" />
+              <span>Reportar Jornada</span>
             </button>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
         
         {/* Banner de Retroalimentación de Envío */}
         {successMsg && (
-          <div className="p-4 rounded-2xl bg-emerald-100 border-2 border-emerald-300 text-emerald-900 text-xs sm:text-sm font-bold flex items-center gap-2 shadow-md">
-            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+          <div className="p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm font-semibold flex items-center gap-2 shadow-sm">
+            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
             <span>{successMsg}</span>
           </div>
         )}
 
         {/* Banner de Concepto de la Etapa 4 */}
-        <div className="bg-gradient-to-r from-upt-navy-900 to-slate-800 rounded-3xl p-5 sm:p-6 text-white border border-upt-navy-700 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-[#0C1527] rounded-2xl p-5 sm:p-6 text-white border border-white/10 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-upt-gold text-xs font-bold uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
               <Activity className="w-4 h-4" />
               <span>Etapa 4 del Patrón Universal: Bitácora & Bloqueos</span>
             </div>
-            <h2 className="text-xl font-black text-white">
+            <h2 className="text-lg sm:text-xl font-bold text-white">
               Cero Sorpresas: Visibilidad en Tiempo Real
             </h2>
             <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
-              Los técnicos y cuadrillas registran su avance al finalizar el turno. Si un trabajo se detiene por falta de insumos, planos o aprobaciones, se activa el semáforo rojo para que la gerencia intervenga de inmediato.
+              Los técnicos y cuadrillas registran su avance al finalizar el turno. Si un trabajo se detiene por falta de insumos, especificaciones o aprobaciones, se activa la alerta de bloqueo para que la gerencia intervenga de inmediato.
             </p>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 shrink-0 text-center sm:w-48">
-            <span className="text-[10px] font-bold text-slate-300 uppercase block">Bloqueos Registrados</span>
-            <span className={`text-2xl font-black mt-1 block ${totalBloqueosActivos > 0 ? 'text-red-400 animate-pulse' : 'text-emerald-400'}`}>
+          <div className="bg-[#070D18] p-4 rounded-xl border border-white/10 shrink-0 text-center sm:w-48">
+            <span className="text-[10px] font-bold text-slate-400 uppercase block">Bloqueos Registrados</span>
+            <span className={`text-2xl font-bold mt-1 block ${totalBloqueosActivos > 0 ? 'text-rose-400 animate-pulse' : 'text-emerald-400'}`}>
               {totalBloqueosActivos} {totalBloqueosActivos === 1 ? 'Activo' : 'Activos'}
             </span>
           </div>
         </div>
 
         {/* Filtros Rápidos */}
-        <div className="bg-white p-4 sm:p-5 rounded-3xl border-2 border-slate-300 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="bg-[#0C1527] p-4 sm:p-5 rounded-2xl border border-white/10 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <FolderGit2 className="w-4 h-4 text-upt-gold-600" />
+            <FolderGit2 className="w-4 h-4 text-amber-400" />
             <select
               value={proyectoFiltro}
               onChange={(e) => setProyectoFiltro(e.target.value)}
-              className="px-3 py-1.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
+              className="px-3 py-1.5 bg-[#070D18] border border-white/10 rounded-xl text-xs font-semibold text-slate-200 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
             >
               <option value="">Todos los Proyectos</option>
               {proyectos.map((p) => (
-                <option key={p.id} value={p.id}>
+                <option key={p.id} value={p.id} className="bg-[#0C1527] text-white">
                   {p.codigo} - {p.nombre}
                 </option>
               ))}
@@ -238,10 +236,10 @@ export default function BitacoraPage() {
 
           <button
             onClick={() => setSoloBloqueos(!soloBloqueos)}
-            className={`px-3 py-1.5 rounded-2xl text-xs font-black transition flex items-center gap-1.5 border self-start sm:self-auto ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border self-start sm:self-auto ${
               soloBloqueos
-                ? 'bg-red-600 text-white border-red-500 shadow-md'
-                : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
+                ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-sm'
+                : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'
             }`}
           >
             <AlertTriangle className="w-3.5 h-3.5" />
@@ -251,17 +249,17 @@ export default function BitacoraPage() {
 
         {/* Lista de Tarjetas de Bitácora */}
         {loading ? (
-          <div className="p-16 text-center bg-white rounded-3xl border-2 border-slate-300 shadow-md">
-            <Loader2 className="w-10 h-10 animate-spin text-upt-navy-700 mx-auto mb-3" />
-            <p className="text-xs font-black text-slate-700 uppercase tracking-wider">
+          <div className="p-16 text-center bg-[#0C1527] rounded-2xl border border-white/10 shadow-md">
+            <Loader2 className="w-8 h-8 animate-spin text-amber-400 mx-auto mb-3" />
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
               Consultando reportes de bitácora...
             </p>
           </div>
         ) : reportes.length === 0 ? (
-          <div className="bg-white rounded-3xl border-2 border-dashed border-slate-300 p-12 text-center shadow-md">
-            <Activity className="w-12 h-12 text-slate-400 mx-auto mb-2" />
-            <h3 className="font-black text-slate-900 text-base">No hay reportes de bitácora registrados</h3>
-            <p className="text-xs text-slate-500 mt-1">Usa el botón "Reportar Jornada" para registrar el primer parte diario.</p>
+          <div className="bg-[#0C1527] rounded-2xl border border-white/10 p-12 text-center shadow-md">
+            <Activity className="w-10 h-10 text-slate-500 mx-auto mb-2" />
+            <h3 className="font-bold text-white text-base">No hay reportes de bitácora registrados</h3>
+            <p className="text-xs text-slate-400 mt-1">Usa el botón "Reportar Jornada" para registrar el primer parte diario.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -271,103 +269,102 @@ export default function BitacoraPage() {
               return (
                 <div
                   key={rep.id}
-                  className={`bg-white rounded-3xl border-2 border-slate-300 border-l-[6px] ${
-                    tieneBloqueo ? 'border-l-red-600' : 'border-l-emerald-600'
-                  } shadow-[0_4px_20px_-4px_rgba(0,0,0,0.12)] hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 p-5 flex flex-col justify-between space-y-4`}
+                  className={`bg-[#0C1527] rounded-2xl border border-white/10 border-l-4 ${
+                    tieneBloqueo ? 'border-l-rose-500' : 'border-l-emerald-500'
+                  } hover:border-amber-400/40 hover:-translate-y-0.5 transition-all duration-200 p-5 flex flex-col justify-between space-y-4 shadow-md`}
                 >
-                    <div className="space-y-3">
-                      {/* Cabecera de la tarjeta con Semáforo Visual */}
-                      <div className="flex items-start justify-between gap-2 border-b border-slate-200/80 pb-3">
-                        <div>
-                          <span className="font-mono text-xs font-black text-upt-navy-950 bg-upt-gold/25 px-2.5 py-0.5 rounded-lg border border-upt-gold/50">
-                            {rep.proyecto.codigo}
-                          </span>
-                          <h3 className="font-black text-sm text-slate-950 mt-1 leading-snug">
-                            {rep.proyecto.nombre}
-                          </h3>
-                        </div>
-
-                        {tieneBloqueo ? (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-1 rounded-xl bg-red-600 text-white uppercase tracking-wider shrink-0 shadow-sm animate-pulse">
-                            <AlertTriangle className="w-3.5 h-3.5" />
-                            <span>Bloqueo Activo</span>
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300 uppercase tracking-wider shrink-0">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                            <span>Normal</span>
-                          </span>
-                        )}
+                  <div className="space-y-3">
+                    {/* Cabecera con Semáforo Visual */}
+                    <div className="flex items-start justify-between gap-2 border-b border-white/5 pb-3">
+                      <div>
+                        <span className="font-mono text-xs font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">
+                          {rep.proyecto.codigo}
+                        </span>
+                        <h3 className="font-bold text-sm text-white mt-1 leading-snug">
+                          {rep.proyecto.nombre}
+                        </h3>
                       </div>
 
-                      {/* Resumen de Actividades del Día */}
-                      <p className="text-xs text-slate-800 leading-relaxed">
-                        {rep.resumen_actividades}
-                      </p>
-
-                      {/* Caja de Alerta de Bloqueo si aplica */}
-                      {tieneBloqueo && rep.detalle_bloqueo && (
-                        <div className="p-3.5 rounded-2xl bg-red-50 border-2 border-red-300 text-red-950 space-y-1">
-                          <span className="text-[10px] font-black uppercase tracking-wider text-red-700 flex items-center gap-1">
-                            <ShieldAlert className="w-3.5 h-3.5" /> Motivo del Bloqueo:
-                          </span>
-                          <p className="text-xs font-bold leading-relaxed">{rep.detalle_bloqueo}</p>
-                        </div>
+                      {tieneBloqueo ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/40 uppercase tracking-wider shrink-0 animate-pulse">
+                          <AlertTriangle className="w-3.5 h-3.5" />
+                          <span>Bloqueo Activo</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 uppercase tracking-wider shrink-0">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>Normal</span>
+                        </span>
                       )}
                     </div>
 
-                    {/* Footer con Autor y Fecha */}
-                    <div className="pt-3 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
-                      <div className="flex items-center gap-1.5 font-medium">
-                        <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span className="truncate">
-                          Por: <strong className="text-slate-900">{rep.usuario.nombre_completo}</strong>
+                    {/* Resumen de Actividades del Día */}
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      {rep.resumen_actividades}
+                    </p>
+
+                    {/* Caja de Alerta de Bloqueo si aplica */}
+                    {tieneBloqueo && rep.detalle_bloqueo && (
+                      <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-200 space-y-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-rose-300 flex items-center gap-1">
+                          <ShieldAlert className="w-3.5 h-3.5 text-rose-400" /> Motivo del Bloqueo:
                         </span>
+                        <p className="text-xs font-semibold leading-relaxed">{rep.detalle_bloqueo}</p>
                       </div>
-                      <div className="flex items-center gap-1.5 font-medium">
-                        <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span>
-                          {new Date(rep.created_at).toLocaleDateString('es-PE', {
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </span>
-                      </div>
+                    )}
+                  </div>
+
+                  {/* Footer con Autor y Fecha */}
+                  <div className="pt-3 border-t border-white/5 text-[11px] text-slate-400 space-y-1">
+                    <div className="flex items-center gap-1.5 font-medium">
+                      <User className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                      <span className="truncate">
+                        Por: <strong className="text-slate-200">{rep.usuario.nombre_completo}</strong>
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 font-medium">
+                      <Calendar className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                      <span>
+                        {new Date(rep.created_at).toLocaleDateString('es-PE', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </span>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              );
+            })}
           </div>
         )}
-
       </main>
 
-      {/* Modal / Formulario Mobile-First: Reportar Jornada de Campo */}
+      {/* Modal / Formulario: Reportar Jornada de Campo */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-5 sm:p-8 shadow-2xl border-2 border-slate-200 space-y-5 animate-in fade-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-[#0C1527] rounded-2xl max-w-xl w-full p-5 sm:p-7 shadow-2xl border border-white/10 space-y-5 animate-in fade-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
             
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <div className="flex items-center gap-2">
-                <Activity className="w-5 h-5 text-upt-gold" />
-                <h3 className="font-black text-base text-slate-900">
+                <Activity className="w-5 h-5 text-amber-400" />
+                <h3 className="font-bold text-base text-white">
                   Reportar Jornada de Campo (Bitácora)
                 </h3>
               </div>
               <button
                 onClick={() => setModalOpen(false)}
-                className="p-1 rounded-xl hover:bg-slate-100 text-slate-500"
+                className="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {errorMsg && (
-              <div className="p-3.5 rounded-2xl bg-red-100 border border-red-300 text-red-900 text-xs font-bold flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+              <div className="p-3.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-semibold flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
                 <span>{errorMsg}</span>
               </div>
             )}
@@ -375,16 +372,16 @@ export default function BitacoraPage() {
             <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               {/* Proyecto */}
               <div>
-                <label className="block font-black text-slate-700 mb-1">
-                  Proyecto / Cuadrilla <span className="text-red-500">*</span>
+                <label className="block font-bold text-slate-300 mb-1">
+                  Proyecto / Cuadrilla <span className="text-amber-400">*</span>
                 </label>
                 <select
                   value={nuevoProyectoId}
                   onChange={(e) => setNuevoProyectoId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl font-bold text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
+                  className="w-full px-3.5 py-2.5 bg-[#070D18] border border-white/10 rounded-xl font-medium text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
                 >
                   {proyectos.map((p) => (
-                    <option key={p.id} value={p.id}>
+                    <option key={p.id} value={p.id} className="bg-[#0C1527] text-white">
                       {p.codigo} - {p.nombre}
                     </option>
                   ))}
@@ -393,8 +390,8 @@ export default function BitacoraPage() {
 
               {/* Resumen de Actividades */}
               <div>
-                <label className="block font-black text-slate-700 mb-1">
-                  Resumen de Avance Diario <span className="text-red-500">*</span>
+                <label className="block font-bold text-slate-300 mb-1">
+                  Resumen de Avance Diario <span className="text-amber-400">*</span>
                 </label>
                 <textarea
                   required
@@ -402,13 +399,13 @@ export default function BitacoraPage() {
                   value={resumen}
                   onChange={(e) => setResumen(e.target.value)}
                   placeholder="Detalla las tareas ejecutadas, avances cuantitativos o pruebas realizadas..."
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-upt-navy-700 transition"
+                  className="w-full px-3.5 py-2.5 bg-[#070D18] border border-white/10 rounded-xl font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
                 />
               </div>
 
               {/* Selector de Semáforo de Bloqueo */}
               <div className="pt-2">
-                <label className="block font-black text-slate-700 mb-2">
+                <label className="block font-bold text-slate-300 mb-2">
                   Semáforo Operativo: ¿El trabajo se encuentra detenido o bloqueado?
                 </label>
                 
@@ -416,26 +413,26 @@ export default function BitacoraPage() {
                   <button
                     type="button"
                     onClick={() => setTieneBloqueo(false)}
-                    className={`p-3.5 rounded-2xl border-2 font-black flex flex-col items-center justify-center gap-1.5 transition ${
+                    className={`p-3.5 rounded-xl border font-bold flex flex-col items-center justify-center gap-1.5 transition ${
                       !tieneBloqueo
-                        ? 'bg-emerald-600 text-white border-emerald-500 shadow-md ring-4 ring-emerald-100'
-                        : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
+                        : 'bg-[#070D18] text-slate-400 border-white/10 hover:bg-white/5'
                     }`}
                   >
-                    <CheckCircle2 className="w-5 h-5" />
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                     <span>Sin Bloqueos (Normal)</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setTieneBloqueo(true)}
-                    className={`p-3.5 rounded-2xl border-2 font-black flex flex-col items-center justify-center gap-1.5 transition ${
+                    className={`p-3.5 rounded-xl border font-bold flex flex-col items-center justify-center gap-1.5 transition ${
                       tieneBloqueo
-                        ? 'bg-red-600 text-white border-red-500 shadow-md ring-4 ring-red-100'
-                        : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                        ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-sm'
+                        : 'bg-[#070D18] text-slate-400 border-white/10 hover:bg-white/5'
                     }`}
                   >
-                    <AlertTriangle className="w-5 h-5" />
+                    <AlertTriangle className="w-5 h-5 text-rose-400" />
                     <span>Bloqueo Crítico</span>
                   </button>
                 </div>
@@ -443,37 +440,37 @@ export default function BitacoraPage() {
 
               {/* Campo obligatorio si hay bloqueo */}
               {tieneBloqueo && (
-                <div className="space-y-1.5 bg-red-50 p-4 rounded-2xl border-2 border-red-300 animate-in fade-in duration-200">
-                  <label className="block font-black text-red-950">
-                    Motivo Detallado del Bloqueo <span className="text-red-600">*</span>
+                <div className="space-y-1.5 bg-rose-500/10 p-4 rounded-xl border border-rose-500/30 animate-in fade-in duration-200">
+                  <label className="block font-bold text-rose-300">
+                    Motivo Detallado del Bloqueo <span className="text-rose-400">*</span>
                   </label>
                   <textarea
                     required
                     rows={2}
                     value={detalleBloqueo}
                     onChange={(e) => setDetalleBloqueo(e.target.value)}
-                    placeholder="Ej. Faltan planos estructurales actualizados, no hay aprobación de la RFC-01, o falta suministro..."
-                    className="w-full px-3 py-2 bg-white border-2 border-red-300 rounded-xl font-bold text-red-950 placeholder:text-red-300 focus:outline-none focus:ring-2 focus:ring-red-400"
+                    placeholder="Ej. Faltan especificaciones de la API, no hay aprobación de la RFC-01, o falta credencial..."
+                    className="w-full px-3 py-2 bg-[#070D18] border border-rose-500/40 rounded-lg font-medium text-rose-200 placeholder:text-rose-400/50 focus:outline-none focus:border-rose-400"
                   />
-                  <span className="text-[10px] text-red-700 font-bold block">
+                  <span className="text-[10px] text-rose-300/80 font-medium block">
                     Al enviar, se emitirá una alerta gerencial inmediata en el Dashboard.
                   </span>
                 </div>
               )}
 
               {/* Botones de acción */}
-              <div className="pt-3 border-t border-slate-200 flex justify-end gap-2">
+              <div className="pt-3 border-t border-white/10 flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold"
+                  className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-bold border border-white/10"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-black shadow-md transition flex items-center gap-1.5 disabled:opacity-50"
+                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold shadow-md transition flex items-center gap-1.5 disabled:opacity-50"
                 >
                   {submitting ? (
                     <>

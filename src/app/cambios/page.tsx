@@ -29,6 +29,7 @@ import {
   Tag,
   ArrowRight,
 } from 'lucide-react';
+import NavbarPrincipal from '@/components/NavbarPrincipal';
 
 interface SolicitudItem {
   id: string;
@@ -135,43 +136,43 @@ export default function CambiosPage() {
       case 'PENDIENTE_EVALUACION':
         return {
           label: 'Pendiente Evaluación',
-          badge: 'bg-amber-500 text-slate-950 font-black border border-amber-400 shadow-sm',
+          badge: 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40 shadow-sm',
           borderAccent: 'border-l-amber-500',
           icon: Clock,
         };
       case 'EN_EVALUACION':
         return {
           label: 'En Evaluación Técnica',
-          badge: 'bg-sky-500 text-slate-950 font-black border border-sky-400 shadow-sm',
+          badge: 'bg-sky-500/20 text-sky-300 font-bold border border-sky-500/40 shadow-sm',
           borderAccent: 'border-l-sky-500',
           icon: Activity,
         };
       case 'APROBADA':
         return {
           label: 'Aprobada por Comité',
-          badge: 'bg-emerald-600 text-white font-black border border-emerald-500 shadow-sm',
+          badge: 'bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40 shadow-sm',
           borderAccent: 'border-l-emerald-500',
           icon: CheckCircle2,
         };
       case 'RECHAZADA':
         return {
           label: 'Rechazada',
-          badge: 'bg-red-600 text-white font-black border border-red-500 shadow-sm',
-          borderAccent: 'border-l-red-500',
+          badge: 'bg-rose-500/20 text-rose-300 font-bold border border-rose-500/40 shadow-sm',
+          borderAccent: 'border-l-rose-500',
           icon: XCircle,
         };
       case 'IMPLEMENTADA':
         return {
           label: 'Implementada',
-          badge: 'bg-purple-600 text-white font-black border border-purple-500 shadow-sm',
+          badge: 'bg-purple-500/20 text-purple-300 font-bold border border-purple-500/40 shadow-sm',
           borderAccent: 'border-l-purple-500',
           icon: GitCommit,
         };
       default:
         return {
           label: estado,
-          badge: 'bg-slate-200 text-slate-800',
-          borderAccent: 'border-l-slate-400',
+          badge: 'bg-white/10 text-slate-300 border border-white/10',
+          borderAccent: 'border-l-slate-600',
           icon: Clock,
         };
     }
@@ -181,35 +182,35 @@ export default function CambiosPage() {
     switch (impacto) {
       case 'CRITICO':
         return (
-          <span className="text-[10px] font-black px-2.5 py-1 rounded-lg bg-red-600 text-white uppercase tracking-wider shadow-sm flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+          <span className="text-[10px] font-black px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/40 uppercase tracking-wider shadow-sm flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />
             Impacto Crítico
           </span>
         );
       case 'ALTO':
         return (
-          <span className="text-[10px] font-black px-2.5 py-1 rounded-lg bg-orange-500 text-white uppercase tracking-wider shadow-sm flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-white" />
+          <span className="text-[10px] font-black px-2.5 py-1 rounded-lg bg-orange-500/20 text-orange-300 border border-orange-500/40 uppercase tracking-wider shadow-sm flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
             Impacto Alto
           </span>
         );
       case 'MEDIO':
         return (
-          <span className="text-[10px] font-black px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 uppercase tracking-wider shadow-sm flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-slate-900" />
+          <span className="text-[10px] font-black px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase tracking-wider shadow-sm flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
             Impacto Medio
           </span>
         );
       case 'BAJO':
         return (
-          <span className="text-[10px] font-black px-2.5 py-1 rounded-lg bg-emerald-600 text-white uppercase tracking-wider shadow-sm flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-white" />
+          <span className="text-[10px] font-black px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 uppercase tracking-wider shadow-sm flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
             Impacto Leve
           </span>
         );
       default:
         return (
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-slate-200 text-slate-600 italic">
+          <span className="text-[10px] font-medium px-2 py-0.5 rounded-lg bg-white/5 text-slate-400 border border-white/10 italic">
             Sin evaluar
           </span>
         );
@@ -217,106 +218,93 @@ export default function CambiosPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
-      {/* Top Navbar Mobile-First (Sin solapamientos ni desbordes en 360px) */}
-      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-xl sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-0 sm:h-16 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
-          
-          {/* Lado Izquierdo: Botón volver + Título + Subtítulo */}
-          <div className="flex items-center gap-2.5 min-w-0">
-            <Link
-              href="/dashboard"
-              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30 shrink-0 shadow-sm"
-              title="Volver al Dashboard"
-            >
-              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-            </Link>
-            
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-black text-sm sm:text-base text-white tracking-tight truncate">
-                  Control de Solicitudes de Cambio (RFC - Request for Change)
-                </span>
-                <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase tracking-wider shrink-0 shadow-sm">
-                  Paso 5: Modificaciones Formales
+    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased">
+      {/* Navbar Global Unificado */}
+      <NavbarPrincipal />
+
+      {/* Sub-header contextual */}
+      <div className="bg-[#0B1528] border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+              <GitPullRequest className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                  Control de Solicitudes de Cambio (RFC)
+                </h1>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 uppercase tracking-wider">
+                  Paso 5
                 </span>
               </div>
-              <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
-                Evaluación técnica de impacto antes de autorizar cualquier cambio sobre Líneas Base
+              <p className="text-xs text-slate-400">
+                Evaluación técnica de impacto antes de autorizar cualquier modificación sobre Líneas Base
               </p>
             </div>
           </div>
 
-          {/* Lado Derecho: Acciones y Botón Nueva Solicitud (Responsive) */}
-          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0 border-t border-white/10 sm:border-t-0">
+          <div className="flex items-center gap-2">
             <Link
               href="/aprobaciones"
-              className="px-2.5 py-1.5 text-xs font-bold rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
+              className="px-3 py-1.5 text-xs font-semibold rounded-xl text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition flex items-center gap-1.5"
             >
-              <CheckCircle2 className="w-3.5 h-3.5 text-upt-gold" />
-              <span>Evaluar RFC</span>
+              <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
+              <span>Evaluar Dictamen</span>
             </Link>
             <Link
               href="/cambios/nueva"
-              className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-500 hover:from-amber-400 hover:to-upt-gold text-upt-navy-950 font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition flex items-center gap-1.5 shrink-0 active:scale-95"
+              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs shadow-md transition flex items-center gap-1.5"
             >
-              <Plus className="w-4 h-4 stroke-[3]" />
-              <span className="hidden sm:inline">Nueva Solicitud (RFC)</span>
-              <span className="sm:hidden font-bold">Nueva RFC</span>
+              <Plus className="w-4 h-4" />
+              <span>Nueva Solicitud (RFC)</span>
             </Link>
           </div>
-
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
         
-        {/* Banner Explicativo de Alto Impacto */}
-        <div
-          className="bg-gradient-to-br from-upt-navy-900 via-slate-900 to-upt-navy-800 rounded-3xl p-5 sm:p-7 text-white shadow-2xl border-2 border-upt-navy-700/80 relative overflow-hidden"
-        >
-          <div className="absolute right-0 top-0 w-80 h-full bg-gradient-to-l from-upt-gold/15 to-transparent pointer-events-none" />
-          
+        {/* Banner Explicativo */}
+        <div className="bg-[#0C1527] rounded-2xl p-5 sm:p-6 text-white border border-white/10 relative overflow-hidden shadow-lg">
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div className="space-y-2 max-w-3xl">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-upt-gold/20 text-upt-gold border border-upt-gold/40 text-[11px] font-black uppercase tracking-wider">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20 text-[11px] font-bold uppercase tracking-wider">
                 <GitPullRequest className="w-3.5 h-3.5" />
                 <span>Paso 5 del Proceso Oficial</span>
               </div>
-              <h2 className="text-lg sm:text-2xl font-black text-white tracking-tight">
+              <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
                 ¿Cuándo se crea una Solicitud de Cambio (RFC)?
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Cuando un entregable ya forma parte de un Hito Congelado (Línea Base), <strong className="text-white font-bold">nadie puede modificarlo directamente</strong>. 
-                Se registra una RFC para que el comité evalúe su <span className="text-upt-gold font-bold">impacto en costos, cronograma y código</span> antes de autorizar una nueva versión.
+                Cuando un entregable ya forma parte de un Hito Congelado (Línea Base), <strong className="text-white font-semibold">nadie puede modificarlo directamente</strong>. 
+                Se registra una RFC para que el comité evalúe su <span className="text-amber-400 font-semibold">impacto en costos, cronograma y código</span> antes de autorizar una nueva versión.
               </p>
             </div>
 
             {/* Contadores Clave */}
             <div className="grid grid-cols-2 gap-2.5 sm:gap-3 shrink-0">
-              <div className="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/15 text-center">
-                <span className="text-[10px] text-slate-300 uppercase font-black block">Por Evaluar</span>
-                <span className="text-xl sm:text-2xl font-black text-amber-400">{totalPendientes}</span>
+              <div className="bg-[#070D18] p-3.5 rounded-xl border border-white/10 text-center">
+                <span className="text-[10px] text-slate-400 uppercase font-bold block">Por Evaluar</span>
+                <span className="text-xl sm:text-2xl font-bold text-amber-400">{totalPendientes}</span>
               </div>
-              <div className="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/15 text-center">
-                <span className="text-[10px] text-slate-300 uppercase font-black block">Aprobadas / Cierre</span>
-                <span className="text-xl sm:text-2xl font-black text-emerald-400">{totalAprobadas + totalImplementadas}</span>
+              <div className="bg-[#070D18] p-3.5 rounded-xl border border-white/10 text-center">
+                <span className="text-[10px] text-slate-400 uppercase font-bold block">Aprobadas / Cierre</span>
+                <span className="text-xl sm:text-2xl font-bold text-emerald-400">{totalAprobadas + totalImplementadas}</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Consola de Búsqueda y Filtros de Alto Contraste */}
-        <div
-          className="bg-white p-4 sm:p-5 rounded-3xl border-2 border-slate-300 shadow-lg space-y-3 sm:space-y-4"
-        >
+        {/* Consola de Búsqueda y Filtros */}
+        <div className="bg-[#0C1527] p-4 sm:p-5 rounded-2xl border border-white/10 shadow-md space-y-3 sm:space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-              <Search className="w-4 h-4 text-upt-gold-600" />
+            <span className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <Search className="w-4 h-4 text-amber-400" />
               <span>Buscador y Filtros de Solicitudes de Cambio</span>
             </span>
-            <span className="text-[11px] sm:text-xs font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
+            <span className="text-[11px] sm:text-xs font-bold text-slate-400 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10">
               {solicitudes.length} encontradas
             </span>
           </div>
@@ -324,13 +312,13 @@ export default function CambiosPage() {
           <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
             {/* Input de Búsqueda */}
             <div className="relative flex-1">
-              <Search className="w-5 h-5 absolute left-3.5 top-3 text-upt-gold-600" />
+              <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Buscar por código (ej. RFC-2026-001), justificación o ECS..."
-                className="w-full pl-11 pr-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition shadow-inner"
+                className="w-full pl-10 pr-4 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
               />
             </div>
 
@@ -339,11 +327,11 @@ export default function CambiosPage() {
               <select
                 value={proyectoFiltro}
                 onChange={(e) => setProyectoFiltro(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-bold text-slate-900 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition cursor-pointer"
+                className="w-full px-3.5 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-slate-200 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
               >
                 <option value="">Todos los Proyectos</option>
                 {proyectos.map((p) => (
-                  <option key={p.id} value={p.id}>
+                  <option key={p.id} value={p.id} className="bg-[#0C1527] text-white">
                     {p.codigo} - {p.nombre}
                   </option>
                 ))}
@@ -355,21 +343,21 @@ export default function CambiosPage() {
               <select
                 value={estadoFiltro}
                 onChange={(e) => setEstadoFiltro(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-bold text-slate-900 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition cursor-pointer"
+                className="w-full px-3.5 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-slate-200 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
               >
                 <option value="">Todos los Estados</option>
-                <option value="PENDIENTE_EVALUACION">Pendiente de Evaluación</option>
-                <option value="EN_EVALUACION">En Evaluación Técnica</option>
-                <option value="APROBADA">Aprobada</option>
-                <option value="RECHAZADA">Rechazada</option>
-                <option value="IMPLEMENTADA">Implementada</option>
+                <option value="PENDIENTE_EVALUACION" className="bg-[#0C1527] text-white">Pendiente de Evaluación</option>
+                <option value="EN_EVALUACION" className="bg-[#0C1527] text-white">En Evaluación Técnica</option>
+                <option value="APROBADA" className="bg-[#0C1527] text-white">Aprobada</option>
+                <option value="RECHAZADA" className="bg-[#0C1527] text-white">Rechazada</option>
+                <option value="IMPLEMENTADA" className="bg-[#0C1527] text-white">Implementada</option>
               </select>
             </div>
 
             {/* Botón Buscar */}
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-2xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-1.5 shrink-0 active:scale-95"
+              className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/10 transition flex items-center justify-center gap-1.5 shrink-0"
             >
               <Search className="w-4 h-4" />
               <span>Buscar</span>
@@ -377,34 +365,34 @@ export default function CambiosPage() {
           </form>
         </div>
 
-        {/* Grilla de Tarjetas RFC de Alto Contraste */}
+        {/* Grilla de Tarjetas RFC */}
         {loading ? (
-          <div className="p-16 text-center bg-white rounded-3xl border-2 border-slate-300 shadow-md">
-            <Loader2 className="w-10 h-10 animate-spin text-upt-navy-700 mx-auto mb-3" />
-            <p className="text-xs font-black text-slate-700 uppercase tracking-wider">
+          <div className="p-16 text-center bg-[#0C1527] rounded-2xl border border-white/10 shadow-md">
+            <Loader2 className="w-8 h-8 animate-spin text-amber-400 mx-auto mb-3" />
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
               Consultando registro oficial de RFCs...
             </p>
           </div>
         ) : solicitudes.length === 0 ? (
-          <div className="bg-white rounded-3xl border-2 border-dashed border-slate-300 p-10 sm:p-12 text-center shadow-md">
-            <div className="w-14 h-14 rounded-2xl bg-amber-50 text-upt-garnet flex items-center justify-center mx-auto mb-3 border border-red-200">
-              <GitPullRequest className="w-7 h-7" />
+          <div className="bg-[#0C1527] rounded-2xl border border-white/10 p-10 sm:p-12 text-center shadow-md">
+            <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto mb-3 border border-amber-500/20">
+              <GitPullRequest className="w-6 h-6" />
             </div>
-            <h3 className="font-black text-slate-900 text-base">
+            <h3 className="font-bold text-white text-base">
               No se encontraron Solicitudes de Cambio (RFC)
             </h3>
-            <p className="text-xs text-slate-600 mt-1 max-w-md mx-auto leading-relaxed">
+            <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">
               No hay cambios registrados que coincidan con la búsqueda. Puedes radicar una nueva RFC para proponer modificaciones controladas a un artefacto.
             </p>
             <Link
               href="/cambios/nueva"
-              className="mt-4 inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-black text-xs shadow-md transition"
+              className="mt-4 inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold text-xs shadow-md transition"
             >
               <Plus className="w-4 h-4" /> Radicar Nueva Solicitud (RFC)
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {solicitudes.map((rfc) => {
               const visual = getEstadoVisual(rfc.estado);
               const IconEstado = visual.icon;
@@ -412,98 +400,98 @@ export default function CambiosPage() {
               return (
                 <div
                   key={rfc.id}
-                  className={`bg-white rounded-3xl border-2 border-slate-300 border-l-[6px] ${visual.borderAccent} shadow-[0_4px_20px_-4px_rgba(0,0,0,0.12)] hover:shadow-2xl hover:border-upt-gold/80 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between overflow-hidden group`}
+                  className={`bg-[#0C1527] rounded-2xl border border-white/10 border-l-4 ${visual.borderAccent} hover:border-amber-400/40 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between overflow-hidden group shadow-md`}
                 >
-                    <div>
-                      {/* Header de la Tarjeta */}
-                      <div className="p-4 sm:p-5 pb-3 border-b border-slate-200/80 bg-gradient-to-br from-slate-50 to-white flex items-start justify-between gap-2.5">
-                        <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
-                            <span className="font-mono text-xs font-black text-upt-navy-950 bg-upt-gold/25 px-2.5 py-0.5 rounded-lg border border-upt-gold/50 flex items-center gap-1">
-                              <GitPullRequest className="w-3.5 h-3.5 text-upt-navy-900" />
-                              {rfc.codigo}
-                            </span>
-                            <span className="text-[10px] font-black text-slate-700 bg-slate-200 px-2 py-0.5 rounded-md">
-                              {rfc.ecs.proyecto.codigo}
-                            </span>
-                          </div>
-                          
-                          <h3 className="font-black text-slate-950 text-sm sm:text-base group-hover:text-upt-navy-800 transition leading-snug">
-                            {rfc.ecs.codigo}: {rfc.ecs.nombre}
-                          </h3>
+                  <div>
+                    {/* Header de la Tarjeta */}
+                    <div className="p-4 sm:p-5 pb-3 border-b border-white/5 bg-[#0B1528] flex items-start justify-between gap-2.5">
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                          <span className="font-mono text-xs font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20 flex items-center gap-1">
+                            <GitPullRequest className="w-3 h-3 text-amber-400" />
+                            {rfc.codigo}
+                          </span>
+                          <span className="text-[10px] font-bold text-slate-300 bg-white/10 px-2 py-0.5 rounded-md">
+                            {rfc.ecs.proyecto.codigo}
+                          </span>
                         </div>
+                        
+                        <h3 className="font-bold text-white text-sm sm:text-base group-hover:text-amber-300 transition leading-snug">
+                          {rfc.ecs.codigo}: {rfc.ecs.nombre}
+                        </h3>
+                      </div>
 
-                        {/* Badge de Estado con Icono */}
-                        <div className="shrink-0">
-                          <span className={`inline-flex items-center gap-1 text-[10px] sm:text-[11px] px-2.5 py-1 rounded-xl uppercase tracking-wider ${visual.badge}`}>
-                            <IconEstado className="w-3 h-3 stroke-[2.5]" />
-                            <span>{visual.label}</span>
+                      {/* Badge de Estado con Icono */}
+                      <div className="shrink-0">
+                        <span className={`inline-flex items-center gap-1 text-[10px] sm:text-[11px] px-2.5 py-1 rounded-xl uppercase tracking-wider ${visual.badge}`}>
+                          <IconEstado className="w-3 h-3 stroke-[2.5]" />
+                          <span>{visual.label}</span>
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Cuerpo de la Tarjeta */}
+                    <div className="p-4 sm:p-5 py-4 space-y-3.5">
+                      <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
+                        <strong className="text-white font-semibold">Motivo:</strong> {rfc.descripcion}
+                      </p>
+
+                      {/* Fila de Versión Base & Nivel de Impacto */}
+                      <div className="bg-[#070D18] rounded-xl p-3 border border-white/10 flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-1.5 text-slate-300 font-semibold">
+                          <span>Versión Base:</span>
+                          <span className="font-mono font-bold text-amber-300 bg-white/5 px-2 py-0.5 rounded-md border border-white/10">
+                            v{rfc.version_base.numero_version}
+                          </span>
+                        </div>
+                        <div>{renderBadgeImpacto(rfc.evaluacion?.impacto)}</div>
+                      </div>
+
+                      {/* Artefactos Colaterales Afectados */}
+                      {rfc._count.ecs_afectados > 0 && (
+                        <div className="text-[11px] font-bold text-amber-300 bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20 flex items-center gap-2">
+                          <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                          <span>Afecta a {rfc._count.ecs_afectados} artefactos colaterales</span>
+                        </div>
+                      )}
+
+                      {/* Solicitante y Fecha */}
+                      <div className="flex flex-col gap-1 pt-1 text-[11px] text-slate-400">
+                        <div className="flex items-center gap-1.5">
+                          <User className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                          <span className="truncate">
+                            Solicitado por: <strong className="text-slate-200">{rfc.solicitante.nombre_completo}</strong>
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                          <span>
+                            {new Date(rfc.created_at).toLocaleDateString('es-PE', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
                           </span>
                         </div>
                       </div>
-
-                      {/* Cuerpo de la Tarjeta con Alto Contraste */}
-                      <div className="p-4 sm:p-5 py-4 space-y-3.5">
-                        <p className="text-xs text-slate-800 line-clamp-2 leading-relaxed">
-                          <strong className="text-slate-950 font-black">Motivo:</strong> {rfc.descripcion}
-                        </p>
-
-                        {/* Fila de Versión Base & Nivel de Impacto */}
-                        <div className="bg-slate-100/90 rounded-2xl p-3 border border-slate-300 flex items-center justify-between text-xs">
-                          <div className="flex items-center gap-1.5 text-slate-800 font-bold">
-                            <span>Versión Base:</span>
-                            <span className="font-mono font-black text-upt-navy-950 bg-white px-2 py-0.5 rounded-md border border-slate-300 shadow-sm">
-                              v{rfc.version_base.numero_version}
-                            </span>
-                          </div>
-                          <div>{renderBadgeImpacto(rfc.evaluacion?.impacto)}</div>
-                        </div>
-
-                        {/* Artefactos Colaterales Afectados */}
-                        {rfc._count.ecs_afectados > 0 && (
-                          <div className="text-[11px] font-black text-amber-950 bg-amber-100/80 px-3 py-1.5 rounded-xl border border-amber-300 flex items-center gap-2">
-                            <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
-                            <span>Afecta a {rfc._count.ecs_afectados} artefactos colaterales</span>
-                          </div>
-                        )}
-
-                        {/* Solicitante y Fecha */}
-                        <div className="flex flex-col gap-1 pt-1 text-[11px] text-slate-600 font-medium">
-                          <div className="flex items-center gap-1.5">
-                            <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                            <span className="truncate">
-                              Solicitado por: <strong className="text-slate-900 font-bold">{rfc.solicitante.nombre_completo}</strong>
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                            <span>
-                              {new Date(rfc.created_at).toLocaleDateString('es-PE', {
-                                day: '2-digit',
-                                month: 'short',
-                                year: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                              })}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Botón de Acción con Alto Contraste y Hover Activo */}
-                    <div className="p-4 pt-0">
-                      <Link
-                        href={`/cambios/${rfc.id}`}
-                        className="w-full py-2.5 px-4 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-white hover:text-upt-gold font-black text-xs transition flex items-center justify-between group/btn shadow-md active:scale-98"
-                      >
-                        <span>Inspeccionar Expediente y Dictamen</span>
-                        <ChevronRight className="w-4 h-4 text-upt-gold group-hover/btn:translate-x-1.5 transition-transform" />
-                      </Link>
                     </div>
                   </div>
-                );
-              })}
+
+                  {/* Botón de Acción */}
+                  <div className="p-4 pt-0">
+                    <Link
+                      href={`/cambios/${rfc.id}`}
+                      className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-white font-bold text-xs border border-white/10 transition flex items-center justify-between group/btn"
+                    >
+                      <span>Inspeccionar Expediente y Dictamen</span>
+                      <ChevronRight className="w-4 h-4 text-amber-400 group-hover/btn:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </main>

@@ -18,6 +18,7 @@ import {
   Loader2,
   Info,
 } from 'lucide-react';
+import NavbarPrincipal from '@/components/NavbarPrincipal';
 
 interface VersionAprobada {
   id: string;
@@ -100,11 +101,11 @@ export default function NuevaLineaBasePage() {
     fetchAux();
   }, []);
 
-  // Cargar ECS y versiones aprobadas al cambiar el proyecto seleccionado
+  // Cargar ECS con versiones aprobadas cuando cambia el proyecto
   useEffect(() => {
     if (!proyectoId) return;
 
-    async function fetchVersionesAprobadas() {
+    async function fetchEcsAprobados() {
       setLoadingEcs(true);
       setErrorMsg(null);
       try {
@@ -112,51 +113,51 @@ export default function NuevaLineaBasePage() {
         const data = await res.json();
 
         if (data.success) {
-          const ecsItems: EcsConVersiones[] = data.data.elementos;
-          setElementos(ecsItems);
+          setElementos(data.data.elementos);
 
-          // Generar código sugerido si no se ha escrito uno
-          const p = proyectos.find((item) => item.id === proyectoId);
-          if (p) {
-            setCodigo(`LB-${p.codigo}-v1.0`);
-            setNombre(`Línea Base Oficial - ${p.nombre}`);
-          }
-
-          // Preseleccionar la última versión aprobada de cada ECS disponible
-          const seleccionInicial: Record<string, string> = {};
-          ecsItems.forEach((item) => {
-            if (item.versiones.length > 0) {
-              seleccionInicial[item.id] = item.versiones[0].id;
+          // Preseleccionar por defecto la versión más reciente de cada ECS disponible
+          const preseleccion: Record<string, string> = {};
+          data.data.elementos.forEach((ecs: EcsConVersiones) => {
+            if (ecs.versiones && ecs.versiones.length > 0) {
+              preseleccion[ecs.id] = ecs.versiones[0].id; // la primera es la más reciente
             }
           });
-          setVersionesSeleccionadas(seleccionInicial);
+          setVersionesSeleccionadas(preseleccion);
+
+          // Generar sugerencia de código (ej. LB-PRY-001-01)
+          const p = proyectos.find((proj) => proj.id === proyectoId);
+          if (p) {
+            const fechaHoy = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+            setCodigo(`LB-${p.codigo}-${fechaHoy.slice(2, 6)}`);
+          }
         } else {
-          setErrorMsg(data.message || 'Error al obtener versiones del proyecto');
+          setErrorMsg(data.message || 'Error al obtener versiones aprobadas del proyecto');
         }
       } catch (err) {
-        console.error('Error al cargar versiones:', err);
-        setErrorMsg('Error de conexión al cargar las versiones aprobadas');
+        console.error('Error al cargar versiones aprobadas:', err);
+        setErrorMsg('Error de red al consultar elementos con versiones aprobadas');
       } finally {
         setLoadingEcs(false);
       }
     }
 
-    fetchVersionesAprobadas();
+    fetchEcsAprobados();
   }, [proyectoId, proyectos]);
 
-  // Manejar toggle o cambio de versión seleccionada para un ECS
-  const handleToggleEcs = (ecsId: string, versionId: string) => {
+  // Manejador para alternar la selección de un ECS
+  const handleToggleEcs = (ecsId: string, defaultVersionId?: string) => {
     setVersionesSeleccionadas((prev) => {
-      const copy = { ...prev };
-      if (copy[ecsId]) {
-        delete copy[ecsId];
-      } else {
-        copy[ecsId] = versionId;
+      const nuevo = { ...prev };
+      if (nuevo[ecsId]) {
+        delete nuevo[ecsId];
+      } else if (defaultVersionId) {
+        nuevo[ecsId] = defaultVersionId;
       }
-      return copy;
+      return nuevo;
     });
   };
 
+  // Manejador para cambiar la versión específica de un ECS seleccionado
   const handleSelectVersionForEcs = (ecsId: string, versionId: string) => {
     setVersionesSeleccionadas((prev) => ({
       ...prev,
@@ -164,54 +165,70 @@ export default function NuevaLineaBasePage() {
     }));
   };
 
+  // Seleccionar todas las versiones aprobadas disponibles
+  const handleSelectAll = () => {
+    const nuevo: Record<string, string> = {};
+    elementos.forEach((ecs) => {
+      if (ecs.versiones && ecs.versiones.length > 0) {
+        nuevo[ecs.id] = ecs.versiones[0].id;
+      }
+    });
+    setVersionesSeleccionadas(nuevo);
+  };
+
+  // Desmarcar todas
+  const handleDeselectAll = () => {
+    setVersionesSeleccionadas({});
+  };
+
   const totalSeleccionadas = Object.keys(versionesSeleccionadas).length;
 
-  // Validación previa antes del modal de confirmación
+  // Validación previa antes de abrir el modal de confirmación
   const handlePreSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
 
     if (!codigo.trim()) {
-      setErrorMsg('El código de la Línea Base es obligatorio (ej. LB-PRJ01-v1.0)');
+      setErrorMsg('El código de la línea base es obligatorio');
       return;
     }
     if (!nombre.trim()) {
-      setErrorMsg('El nombre descriptivo de la Línea Base es obligatorio');
+      setErrorMsg('El nombre descriptivo de la línea base es obligatorio');
       return;
     }
     if (totalSeleccionadas === 0) {
-      setErrorMsg('Debe seleccionar al menos una versión aprobada para congelar en la Línea Base');
+      setErrorMsg('Debes seleccionar al menos una versión aprobada para congelar en la Línea Base (RF-10)');
       return;
     }
 
     setConfirmModalOpen(true);
   };
 
-  // Envío formal a la API transaccional
+  // Envío real a la API con transacción ACID
   const handleConfirmSubmit = async () => {
     setSubmitting(true);
     setErrorMsg(null);
 
     try {
-      const payload = {
-        proyecto_id: proyectoId,
-        codigo: codigo.trim().toUpperCase(),
-        nombre: nombre.trim(),
-        descripcion: descripcion.trim() || null,
-        versiones_ids: Object.values(versionesSeleccionadas),
-        marcar_anteriores_obsoletas: marcarAnterioresObsoletas,
-      };
+      const version_ids = Object.values(versionesSeleccionadas);
 
       const res = await fetch('/api/lineas-base', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          codigo: codigo.trim().toUpperCase(),
+          nombre: nombre.trim(),
+          descripcion: descripcion.trim(),
+          proyecto_id: proyectoId,
+          version_ids,
+          marcar_anteriores_obsoletas: marcarAnterioresObsoletas,
+        }),
       });
 
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setErrorMsg(data.message || 'Error al procesar el establecimiento de la Línea Base');
+        setErrorMsg(data.message || 'Error al establecer la línea base');
         setConfirmModalOpen(false);
         setSubmitting(false);
         return;
@@ -229,68 +246,71 @@ export default function NuevaLineaBasePage() {
   const terminologia = getTerminologia(rubro);
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
-      {/* Top Navbar Mobile-First */}
-      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-xl sticky top-0 z-30">
-        <div className="max-w-6xl mx-auto px-3 sm:px-6 py-2.5 sm:py-0 sm:h-16 flex items-center justify-between gap-2.5">
-          <div className="flex items-center gap-2.5 min-w-0">
+    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased">
+      {/* Navbar Global Unificado */}
+      <NavbarPrincipal />
+
+      {/* Sub-header contextual */}
+      <div className="bg-[#0B1528] border-b border-white/10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <Link
               href="/lineas-base"
-              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30 shrink-0 shadow-sm"
+              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-amber-400 transition border border-white/10 shrink-0"
               title="Volver a Líneas Base"
             >
               <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </Link>
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="font-black text-xs sm:text-base text-white tracking-tight truncate">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="font-bold text-sm sm:text-base text-white tracking-tight truncate">
                   Establecer Nueva {terminologia.lineaBaseLabel}
-                </span>
-                <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase tracking-wider shrink-0 shadow-sm">
+                </h1>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 uppercase tracking-wider shrink-0">
                   Transacción ACID (RNF-08)
                 </span>
               </div>
-              <span className="text-[10px] sm:text-[11px] text-slate-300 block truncate">
+              <span className="text-xs text-slate-400 block truncate">
                 {terminologia.lineaBaseSubtitulo}
               </span>
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Form Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
         {errorMsg && (
-          <div className="mb-6 p-4 rounded-2xl bg-red-100 border-2 border-red-300 text-red-900 text-xs sm:text-sm flex items-start gap-3 shadow-md">
-            <AlertTriangle className="w-5 h-5 shrink-0 text-red-600 mt-0.5" />
-            <div className="flex-1 font-bold">{errorMsg}</div>
+          <div className="mb-6 p-4 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs sm:text-sm flex items-start gap-3 shadow-md">
+            <AlertTriangle className="w-5 h-5 shrink-0 text-rose-400 mt-0.5" />
+            <div className="flex-1 font-semibold">{errorMsg}</div>
           </div>
         )}
 
         <form onSubmit={handlePreSubmit} className="space-y-6">
           {/* Card 1: Selección del Proyecto y Metadatos */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-slate-300 shadow-md space-y-6">
-            <div className="flex items-center gap-2 text-upt-navy-800 font-black text-base border-b border-slate-200 pb-3">
-              <FolderGit2 className="w-5 h-5 text-upt-gold-600" />
+          <div className="bg-[#0C1527] p-6 sm:p-8 rounded-2xl border border-white/10 shadow-md space-y-6">
+            <div className="flex items-center gap-2 text-white font-bold text-base border-b border-white/10 pb-3">
+              <FolderGit2 className="w-5 h-5 text-amber-400" />
               <span>1. {terminologia.proyectoLabel} y Datos Generales</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Proyecto */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  {terminologia.proyectoLabel} <span className="text-red-500">*</span>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                  {terminologia.proyectoLabel} <span className="text-amber-400">*</span>
                 </label>
                 {loadingProyectos ? (
-                  <div className="h-10 bg-slate-100 rounded-2xl animate-pulse" />
+                  <div className="h-10 bg-[#070D18] rounded-xl animate-pulse" />
                 ) : (
                   <select
                     value={proyectoId}
                     onChange={(e) => setProyectoId(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition cursor-pointer"
+                    className="w-full px-4 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
                   >
                     {proyectos.map((p) => (
-                      <option key={p.id} value={p.id}>
+                      <option key={p.id} value={p.id} className="bg-[#0C1527] text-white">
                         {p.codigo} — {p.nombre}
                       </option>
                     ))}
@@ -301,164 +321,173 @@ export default function NuevaLineaBasePage() {
                 </span>
               </div>
 
-              {/* Código */}
+              {/* Código de la Línea Base */}
               <div>
-                <label className="block text-xs font-black text-slate-700 mb-1.5">
-                  Código Identificador <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <Lock className="w-4 h-4 absolute left-3.5 top-3.5 text-upt-gold-600" />
-                  <input
-                    type="text"
-                    value={codigo}
-                    onChange={(e) => setCodigo(e.target.value.toUpperCase())}
-                    placeholder={`Ej. ${terminologia.lineaBaseEjemploCodigo}`}
-                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-mono font-black uppercase text-slate-900 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition"
-                  />
-                </div>
-                <span className="text-[11px] text-slate-500 mt-1 block">
-                  Debe ser único dentro del registro.
-                </span>
-              </div>
-
-              {/* Nombre descriptivo */}
-              <div className="md:col-span-2">
-                <label className="block text-xs font-black text-slate-700 mb-1.5">
-                  Nombre Descriptivo ({terminologia.lineaBaseLabel}) <span className="text-red-500">*</span>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                  Código de Identificación Oficial <span className="text-amber-400">*</span>
                 </label>
                 <input
                   type="text"
+                  required
+                  value={codigo}
+                  onChange={(e) => setCodigo(e.target.value.toUpperCase())}
+                  placeholder="Ej. LB-CONSTR-01"
+                  className="w-full px-4 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-mono font-bold text-amber-300 uppercase placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
+                />
+                <span className="text-[11px] text-slate-500 mt-1 block">
+                  Identificador único inmutable según convención de configuración.
+                </span>
+              </div>
+
+              {/* Nombre de la Línea Base */}
+              <div className="md:col-span-2">
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                  Denominación del Hito / Línea Base <span className="text-amber-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
-                  placeholder={terminologia.lineaBaseEjemploNombre}
-                  className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-semibold text-slate-900 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition"
+                  placeholder="Ej. Línea Base Funcional del Sprint 1 / Cimentación Aprobada"
+                  className="w-full px-4 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
                 />
               </div>
 
-              {/* Justificación / Descripción */}
+              {/* Descripción */}
               <div className="md:col-span-2">
-                <label className="block text-xs font-black text-slate-700 mb-1.5">
-                  Justificación Técnica / Alcance del Congelamiento
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                  Descripción y Justificación del Congelamiento
                 </label>
                 <textarea
-                  rows={3}
+                  rows={2}
                   value={descripcion}
                   onChange={(e) => setDescripcion(e.target.value)}
-                  placeholder={`Detalle el motivo del congelamiento (ej. ${terminologia.lineaBaseExplicacion})`}
-                  className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-medium text-slate-900 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition"
+                  placeholder="Detalla el alcance de este hito o los entregables que quedan asegurados contra cambios..."
+                  className="w-full px-4 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
                 />
               </div>
             </div>
 
-            {/* Opción de Obsolescencia */}
-            <div className="pt-2 border-t border-slate-200">
-              <label className="flex items-start gap-3 cursor-pointer select-none">
+            {/* Checkbox de reemplazo de vigencia */}
+            <div className="pt-2 border-t border-white/5">
+              <label className="flex items-center gap-3 cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={marcarAnterioresObsoletas}
                   onChange={(e) => setMarcarAnterioresObsoletas(e.target.checked)}
-                  className="mt-1 w-4 h-4 text-upt-navy-700 rounded border-slate-300 focus:ring-upt-navy-500"
+                  className="w-4 h-4 rounded text-amber-500 focus:ring-amber-400 border-white/20 bg-[#070D18]"
                 />
                 <div>
-                  <span className="text-xs sm:text-sm font-black text-slate-900">
-                    Marcar líneas base anteriores de este proyecto como <span className="text-slate-500 font-bold">OBSOLETAS</span>
+                  <span className="text-xs font-bold text-slate-200 block">
+                    Marcar líneas base anteriores de este proyecto como OBSOLETAS
                   </span>
-                  <p className="text-[11px] text-slate-600 mt-0.5">
-                    Recomendado para mantener únicamente una Línea Base <strong className="text-emerald-700 font-bold">VIGENTE</strong> activa a la vez por proyecto.
-                  </p>
+                  <span className="text-[11px] text-slate-400 block">
+                    Recomendado: asegura que solo exista una Línea Base VIGENTE de referencia activa (RF-11).
+                  </span>
                 </div>
               </label>
             </div>
           </div>
 
-          {/* Card 2: Selección de Versiones Aprobadas (RF-09) */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-slate-300 shadow-md space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-              <div className="flex items-center gap-2 text-upt-navy-800 font-black text-base">
-                <FileCheck2 className="w-5 h-5 text-upt-gold-600" />
-                <span>2. Versiones Aprobadas para Congelar (RF-09)</span>
+          {/* Card 2: Selección de Versiones Aprobadas (El Corazón de la Línea Base) */}
+          <div className="bg-[#0C1527] p-6 sm:p-8 rounded-2xl border border-white/10 shadow-md space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+              <div>
+                <div className="flex items-center gap-2 text-white font-bold text-base">
+                  <FileCheck2 className="w-5 h-5 text-emerald-400" />
+                  <span>2. Selección de {terminologia.ecsLabelPlural} con Versión Aprobada</span>
+                </div>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Solo se pueden congelar versiones que cuenten con dictamen técnico APROBADO (RF-10).
+                </p>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-slate-700">Seleccionadas:</span>
-                <span className="text-xs font-black px-3 py-1 rounded-full bg-upt-gold text-upt-navy-950 shadow-sm">
-                  {totalSeleccionadas} de {elementos.filter((e) => e.versiones.length > 0).length} disponibles
+
+              {/* Botones de selección rápida */}
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={handleSelectAll}
+                  className="px-3 py-1 text-xs font-semibold rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition"
+                >
+                  Seleccionar Todos
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeselectAll}
+                  className="px-3 py-1 text-xs font-semibold rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 border border-white/10 transition"
+                >
+                  Deseleccionar
+                </button>
+                <span className="text-xs font-bold bg-amber-500/20 text-amber-300 px-3 py-1 rounded-xl border border-amber-500/30">
+                  {totalSeleccionadas} de {elementos.length} seleccionados
                 </span>
               </div>
             </div>
 
-            {/* Alerta de regla estricta */}
-            <div className="bg-upt-gold/10 border border-upt-gold/30 rounded-2xl p-4 flex items-start gap-3">
-              <Info className="w-4 h-4 text-upt-gold-600 mt-0.5 shrink-0" />
-              <p className="text-xs text-slate-700 leading-relaxed">
-                <strong>Regla de Aceptación SGCS (RF-09):</strong> Solo las versiones con dictamen formal 
-                <span className="text-emerald-700 font-bold"> APROBADA</span> por el Especialista Técnico 
-                pueden formar parte de la Línea Base. Los artefactos con versiones en estado <em>Pendiente</em> o <em>Rechazada</em> no se pueden incorporar hasta su debida aprobación técnica.
-              </p>
-            </div>
-
-            {/* Listado de ECS y sus versiones aprobadas */}
             {loadingEcs ? (
-              <div className="py-12 text-center">
-                <Loader2 className="w-8 h-8 animate-spin text-upt-navy-600 mx-auto mb-2" />
-                <p className="text-xs text-slate-500 font-medium">Buscando versiones aprobadas del proyecto...</p>
+              <div className="py-12 text-center space-y-2">
+                <Loader2 className="w-8 h-8 animate-spin text-amber-400 mx-auto" />
+                <p className="text-xs font-bold text-slate-400">
+                  Buscando artefactos con versiones aprobadas...
+                </p>
               </div>
             ) : elementos.length === 0 ? (
-              <div className="py-10 text-center border border-dashed border-slate-200 rounded-2xl">
-                <p className="text-xs text-slate-500 font-semibold">
-                  Este proyecto aún no tiene Elementos de Configuración (ECS) registrados.
+              <div className="py-12 text-center space-y-3 bg-[#070D18] rounded-xl border border-white/10 p-6">
+                <AlertTriangle className="w-10 h-10 text-amber-400 mx-auto" />
+                <h4 className="font-bold text-white text-sm">
+                  No hay artefactos con versiones APROBADAS en este proyecto
+                </h4>
+                <p className="text-xs text-slate-400 max-w-md mx-auto">
+                  Para poder congelar una Línea Base, el Tech Lead debe primero revisar y dictaminar como <strong>APROBADA</strong> al menos una versión en el módulo de Aprobaciones.
                 </p>
                 <Link
-                  href="/ecs"
-                  className="mt-3 inline-flex text-xs font-bold text-upt-navy-700 hover:text-upt-gold transition"
+                  href="/aprobaciones"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/10 transition"
                 >
-                  Ir al catálogo a crear un ECS &rarr;
+                  <span>Ir al Módulo de Dictamen</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
                 </Link>
               </div>
             ) : (
-              <div className="divide-y divide-slate-100">
+              <div className="space-y-3">
                 {elementos.map((item) => {
-                  const tieneAprobadas = item.versiones.length > 0;
                   const estaSeleccionado = !!versionesSeleccionadas[item.id];
-                  const versionActualId = versionesSeleccionadas[item.id] || (tieneAprobadas ? item.versiones[0].id : '');
+                  const tieneAprobadas = item.versiones && item.versiones.length > 0;
+                  const versionActualId = versionesSeleccionadas[item.id] || item.versiones?.[0]?.id;
 
                   return (
                     <div
                       key={item.id}
-                      className={`py-4 px-3 sm:px-4 rounded-2xl transition-all ${
-                        !tieneAprobadas
-                          ? 'opacity-50 bg-slate-50/50 cursor-not-allowed'
-                          : estaSeleccionado
-                          ? 'bg-upt-navy-50/40 border border-upt-navy-100 shadow-sm'
-                          : 'hover:bg-slate-50'
+                      className={`p-4 rounded-xl border transition-all ${
+                        estaSeleccionado
+                          ? 'bg-[#070D18] border-amber-400/40'
+                          : 'bg-[#070D18]/50 border-white/5 opacity-70 hover:opacity-100'
                       }`}
                     >
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        {/* Selector y metadatos del ECS */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        {/* Checkbox y Nombre del ECS */}
                         <div className="flex items-start gap-3">
                           <input
                             type="checkbox"
-                            disabled={!tieneAprobadas}
                             checked={estaSeleccionado}
-                            onChange={() => {
-                              if (tieneAprobadas) {
-                                handleToggleEcs(item.id, versionActualId);
-                              }
-                            }}
-                            className="mt-1 w-4 h-4 text-upt-navy-700 rounded border-slate-300 focus:ring-upt-navy-500 cursor-pointer disabled:cursor-not-allowed"
+                            disabled={!tieneAprobadas}
+                            onChange={() => handleToggleEcs(item.id, item.versiones?.[0]?.id)}
+                            className="mt-1 w-4 h-4 rounded text-amber-500 focus:ring-amber-400 border-white/20 bg-[#070D18] cursor-pointer"
                           />
                           <div>
                             <div className="flex flex-wrap items-center gap-2">
-                              <span className="font-mono text-xs font-bold text-upt-navy-700 bg-white px-2 py-0.5 rounded-lg border border-slate-200">
+                              <span className="font-mono text-xs font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
                                 {item.codigo}
                               </span>
-                              <span className="font-bold text-slate-900 text-xs sm:text-sm">
+                              <span className="font-bold text-white text-xs sm:text-sm">
                                 {item.nombre}
                               </span>
-                              <span className="text-[10px] uppercase font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
+                              <span className="text-[10px] uppercase font-bold text-slate-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">
                                 {item.tipo}
                               </span>
                             </div>
-                            <span className="text-[11px] text-slate-500 block mt-0.5">
+                            <span className="text-[11px] text-slate-400 block mt-0.5">
                               Responsable: {item.responsable.nombre_completo}
                             </span>
                           </div>
@@ -468,24 +497,24 @@ export default function NuevaLineaBasePage() {
                         <div className="pl-7 sm:pl-0 flex items-center gap-3">
                           {tieneAprobadas ? (
                             <div className="flex items-center gap-2">
-                              <label className="text-[11px] font-bold text-slate-600 shrink-0">
+                              <label className="text-[11px] font-semibold text-slate-400 shrink-0">
                                 Versión Aprobada:
                               </label>
                               <select
                                 value={versionActualId}
                                 disabled={!estaSeleccionado}
                                 onChange={(e) => handleSelectVersionForEcs(item.id, e.target.value)}
-                                className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-emerald-700 focus:ring-2 focus:ring-upt-navy-500 disabled:opacity-50 transition"
+                                className="px-3 py-1.5 bg-[#0C1527] border border-white/10 rounded-xl text-xs font-bold text-emerald-400 focus:outline-none focus:border-amber-400/50 disabled:opacity-50 transition cursor-pointer"
                               >
                                 {item.versiones.map((v) => (
-                                  <option key={v.id} value={v.id}>
+                                  <option key={v.id} value={v.id} className="bg-[#0C1527] text-white">
                                     v{v.numero_version} (Aprobada {new Date(v.fecha_aprobacion || v.created_at).toLocaleDateString('es-PE')})
                                   </option>
                                 ))}
                               </select>
                             </div>
                           ) : (
-                            <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
+                            <span className="text-[11px] font-semibold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
                               Sin versiones aprobadas
                             </span>
                           )}
@@ -502,14 +531,14 @@ export default function NuevaLineaBasePage() {
           <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-4">
             <Link
               href="/lineas-base"
-              className="w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition text-center"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-bold text-xs border border-white/10 transition text-center"
             >
               Cancelar
             </Link>
             <button
               type="submit"
               disabled={submitting || totalSeleccionadas === 0}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-2xl bg-upt-gold hover:bg-upt-gold-600 text-upt-navy-900 font-black text-xs sm:text-sm shadow-md transition disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs sm:text-sm shadow-md transition disabled:opacity-50 flex items-center justify-center gap-2"
             >
               <Lock className="w-4 h-4" />
               <span>Establecer y Congelar Línea Base ({totalSeleccionadas} ECS)</span>
@@ -519,23 +548,23 @@ export default function NuevaLineaBasePage() {
 
         {/* Modal de Confirmación de Inmutabilidad */}
         {confirmModalOpen && (
-          <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-5 animate-in fade-in zoom-in-95 duration-200">
-              <div className="w-12 h-12 rounded-2xl bg-upt-gold/20 text-upt-gold-600 flex items-center justify-center mx-auto border border-upt-gold/40">
+          <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-[#0C1527] rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-white/10 space-y-5 animate-in fade-in zoom-in-95 duration-200">
+              <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto border border-amber-500/20">
                 <Lock className="w-6 h-6" />
               </div>
 
               <div className="text-center space-y-2">
-                <h3 className="text-lg font-black text-slate-900">
+                <h3 className="text-lg font-bold text-white">
                   ¿Confirmar Congelamiento de Línea Base?
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Estás a punto de congelar permanentemente el código <strong className="text-upt-navy-700">{codigo}</strong> con <strong>{totalSeleccionadas} versiones aprobadas</strong>.
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Estás a punto de congelar permanentemente el código <strong className="text-amber-300">{codigo}</strong> con <strong>{totalSeleccionadas} versiones aprobadas</strong>.
                 </p>
               </div>
 
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs text-slate-600 space-y-2">
-                <div className="flex items-center gap-2 font-bold text-upt-garnet">
+              <div className="bg-[#070D18] p-4 rounded-xl border border-white/10 text-xs text-slate-300 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-amber-400">
                   <AlertTriangle className="w-4 h-4 shrink-0" />
                   <span>Principio de Inmutabilidad Estricta (RF-10)</span>
                 </div>
@@ -549,7 +578,7 @@ export default function NuevaLineaBasePage() {
                   type="button"
                   onClick={() => setConfirmModalOpen(false)}
                   disabled={submitting}
-                  className="px-4 py-2 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-100 transition"
+                  className="px-4 py-2 rounded-xl text-slate-300 font-bold text-xs hover:bg-white/5 transition"
                 >
                   Volver a revisar
                 </button>
@@ -557,11 +586,11 @@ export default function NuevaLineaBasePage() {
                   type="button"
                   onClick={handleConfirmSubmit}
                   disabled={submitting}
-                  className="px-5 py-2.5 rounded-xl bg-upt-navy-700 hover:bg-upt-navy-800 text-upt-gold font-black text-xs shadow-md transition flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs shadow-md transition flex items-center gap-2"
                 >
                   {submitting ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
                       <span>Congelando en Base de Datos...</span>
                     </>
                   ) : (
