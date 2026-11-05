@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -120,12 +120,37 @@ function getSecondaryNavItems(rubro?: string) {
   ];
 }
 
-export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps) {
+export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrincipalProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [guiaModalOpen, setGuiaModalOpen] = useState(false);
   const [dropdownHerramientas, setDropdownHerramientas] = useState(false);
+  const [currentUser, setCurrentUser] = useState<NavbarUser | null>(userProp || null);
+
+  // Si no se proporcionó user por props, cargarlo automáticamente desde /api/auth/me
+  useEffect(() => {
+    if (userProp) {
+      setCurrentUser(userProp);
+      return;
+    }
+
+    let isMounted = true;
+    fetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (isMounted && data.success && data.data?.user) {
+          setCurrentUser(data.data.user);
+        }
+      })
+      .catch((err) => console.error('Error al obtener usuario en Navbar:', err));
+
+    return () => {
+      isMounted = false;
+    };
+  }, [userProp]);
+
+  const user = currentUser || userProp;
 
   const coreNavItems = getCoreNavItems(user?.rubro);
   const secondaryNavItems = getSecondaryNavItems(user?.rubro);
@@ -274,7 +299,7 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
         </div>
 
         {/* NIVEL 2: Pestañas de Navegación Fluidas (Adaptable y con Scroll Suave en Laptops y Tablets) */}
-        <div className="bg-slate-50/90 border-b border-slate-200/90 shadow-2xs backdrop-blur-xs">
+        <div className="bg-[#071326] border-b border-white/10 shadow-sm backdrop-blur-md">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-11 flex items-center justify-between">
             
             {/* Navegación de Pestañas con Scroll Horizontal Táctil Automático */}
@@ -288,11 +313,11 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
                     href={item.href}
                     className={`px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
                       isActive
-                        ? 'bg-[#0B2545] text-white font-semibold shadow-xs border border-[#0B2545]'
-                        : 'text-slate-700 hover:text-slate-900 hover:bg-white hover:border-slate-300/80 border border-transparent font-medium'
+                        ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold shadow-xs'
+                        : 'text-slate-300 hover:text-white hover:bg-white/10 border border-transparent font-medium'
                     }`}
                   >
-                    <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-sky-300' : item.color}`} />
+                    <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-slate-950 stroke-[2.5]' : 'text-sky-300'}`} />
                     <span>{item.label}</span>
                   </Link>
                 );
@@ -304,11 +329,11 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
                   href="/usuarios"
                   className={`px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
                     pathname.startsWith('/usuarios')
-                      ? 'bg-[#0B2545] text-white font-semibold shadow-xs border border-[#0B2545]'
-                      : 'text-slate-700 hover:text-slate-900 hover:bg-white hover:border-slate-300/80 border border-transparent font-medium'
+                      ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold shadow-xs'
+                      : 'text-slate-300 hover:text-white hover:bg-white/10 border border-transparent font-medium'
                   }`}
                 >
-                  <Users className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                  <Users className={`w-3.5 h-3.5 shrink-0 ${pathname.startsWith('/usuarios') ? 'text-slate-950 stroke-[2.5]' : 'text-indigo-400'}`} />
                   <span>Personal</span>
                 </Link>
               )}
@@ -320,19 +345,19 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
                   onClick={() => setDropdownHerramientas(!dropdownHerramientas)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1 whitespace-nowrap ${
                     secondaryNavItems.some((s) => pathname.startsWith(s.href))
-                      ? 'bg-[#0B2545] text-white font-semibold shadow-xs border border-[#0B2545]'
-                      : 'text-slate-700 hover:text-slate-900 hover:bg-white hover:border-slate-300/80 border border-transparent'
+                      ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold shadow-xs'
+                      : 'text-slate-300 hover:text-white hover:bg-white/10 border border-transparent'
                   }`}
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-sky-600" />
+                  <Sparkles className={`w-3.5 h-3.5 ${secondaryNavItems.some((s) => pathname.startsWith(s.href)) ? 'text-slate-950' : 'text-sky-300'}`} />
                   <span>Herramientas</span>
-                  <ChevronDown className="w-3 h-3 text-slate-500" />
+                  <ChevronDown className="w-3 h-3 text-slate-400" />
                 </button>
 
                 {dropdownHerramientas && (
                   <>
                     <div className="fixed inset-0 z-30" onClick={() => setDropdownHerramientas(false)} />
-                    <div className="absolute left-0 mt-1.5 w-52 bg-white border border-slate-200 rounded-xl shadow-xl py-1.5 z-40 text-xs animate-in fade-in zoom-in-95 duration-100">
+                    <div className="absolute left-0 mt-1.5 w-52 bg-[#0B2545] border border-white/15 rounded-xl shadow-2xl py-1.5 z-40 text-xs animate-in fade-in zoom-in-95 duration-100">
                       {secondaryNavItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = pathname.startsWith(item.href);
@@ -343,11 +368,11 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
                             onClick={() => setDropdownHerramientas(false)}
                             className={`flex items-center gap-2.5 px-3 py-2 transition ${
                               isActive
-                                ? 'bg-sky-50 text-[#0B2545] font-bold'
-                                : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                                ? 'bg-white/15 text-upt-gold font-bold'
+                                : 'text-slate-200 hover:bg-white/10 hover:text-white'
                             }`}
                           >
-                            <Icon className="w-3.5 h-3.5 text-slate-500" />
+                            <Icon className="w-3.5 h-3.5 text-sky-300" />
                             <span>{item.fullLabel || item.label}</span>
                           </Link>
                         );

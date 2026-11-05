@@ -10,7 +10,6 @@ import {
   CheckCircle2, 
   GraduationCap,
   Sparkles,
-  Github,
   Lock,
   GitPullRequest,
   CalendarDays,
@@ -102,7 +101,7 @@ export default function HomePage() {
         </p>
 
         {/* Botonera de Acción */}
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+        <div className="mt-8 flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
           <Link
             href="/login"
             className="px-8 py-3.5 text-sm sm:text-base font-black text-slate-950 bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 rounded-2xl shadow-xl shadow-upt-gold/20 transition flex items-center justify-center gap-2 group active:scale-95"
@@ -110,15 +109,36 @@ export default function HomePage() {
             <span>Comenzar Ahora</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform stroke-[2.5]" />
           </Link>
-          <a
-            href="https://github.com/ClaraBQuispeChileno/G01_Gesti-n-de-la-Configuraci-n-de-S-ftware"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-7 py-3.5 text-sm sm:text-base font-bold text-slate-200 bg-white/5 hover:bg-white/10 border border-white/15 rounded-2xl transition flex items-center justify-center gap-2 backdrop-blur-md shadow-sm"
-          >
-            <Github className="w-4 h-4 text-white" />
-            <span>Repositorio Oficial GitHub</span>
-          </a>
+        </div>
+
+        {/* Accesos Rápidos de Demostración (Fast Demo Passwords) */}
+        <div className="mt-8 p-3 bg-white/[0.04] border border-white/10 rounded-2xl max-w-2xl w-full flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-300">
+          <span className="font-bold text-amber-300 flex items-center gap-1.5 shrink-0">
+            <Lock className="w-4 h-4 text-amber-400" /> Cuentas Demo Configuradas:
+          </span>
+          <div className="flex flex-wrap gap-2 justify-center sm:justify-end">
+            <Link
+              href="/login"
+              className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold transition flex items-center gap-1 border border-white/10"
+              title="admin.construccion@sgcs.com"
+            >
+              <span>🏗️ Caso Don Juan (Construcción)</span>
+            </Link>
+            <Link
+              href="/login"
+              className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold transition flex items-center gap-1 border border-white/10"
+              title="admin.software@sgcs.com"
+            >
+              <span>💻 Caso E-Learning (Software)</span>
+            </Link>
+            <Link
+              href="/login"
+              className="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold transition flex items-center gap-1 border border-amber-500/30"
+              title="superadmin@sgcs.com"
+            >
+              <span>🌐 SuperAdmin</span>
+            </Link>
+          </div>
         </div>
 
         {/* ========================================================
@@ -143,18 +163,28 @@ export default function HomePage() {
 
           {/* Cuerpo del Mockup: Pipeline Visual de 5 Pasos */}
           <div className="p-6 sm:p-8 space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/10">
               <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-upt-gold">
-                  Flujo Oficial Automatizado
+                <span className="text-[10px] font-black uppercase tracking-wider text-upt-gold bg-upt-gold/10 px-2.5 py-0.5 rounded-md border border-upt-gold/30 inline-block mb-1">
+                  Proyecto de Demostración Activo
                 </span>
-                <h3 className="text-lg font-black text-white">
-                  El Camino del Requerimiento a la Entrega sin Sorpresas
+                <h3 className="text-xl font-black text-white flex items-center gap-2.5">
+                  <span>Construcción Vivienda Residencial 2 Pisos</span>
+                  <span className="text-xs font-mono font-bold text-slate-400 bg-white/10 px-2 py-0.5 rounded-md">
+                    PRY-CASA-01
+                  </span>
                 </h3>
+                <p className="text-xs text-slate-400 mt-1">
+                  Cliente Oficial: <strong className="text-white">Don Juan Pérez (Propietario)</strong> • Constructora Los Andes S.A.C.
+                </p>
               </div>
-              <span className="text-xs font-mono text-slate-400">
-                Auditoría Append-Only Activa
-              </span>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-xl flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <span>Obra en Ejecución</span>
+                </span>
+              </div>
             </div>
 
             {/* Los 5 Pasos en Cuadrícula Interactiva */}
@@ -213,7 +243,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <span className="text-[10px] text-slate-400 uppercase font-mono block">Línea Base Oficial</span>
-                  <span className="text-xs font-bold text-white">Pacto Inmutable Vigente</span>
+                  <span className="text-xs font-bold text-white">LB-01 Inmutable Vigente</span>
                 </div>
               </div>
 
@@ -222,7 +252,7 @@ export default function HomePage() {
                   <Activity className="w-4 h-4" />
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-mono block">Bitácora de Campo</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-mono block">Bitácora de Obra</span>
                   <span className="text-xs font-bold text-white">0 Bloqueos Críticos Activos</span>
                 </div>
               </div>
@@ -236,6 +266,29 @@ export default function HomePage() {
                   <span className="text-xs font-bold text-white">100% Requisitos Cubiertos</span>
                 </div>
               </div>
+            </div>
+
+            {/* Acción en Vivo: Solicitud de Cambio de Don Juan */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-transparent border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-5 h-5 text-amber-300" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-black text-amber-400 uppercase tracking-wider block">
+                    Caso Vivo: Solicitud de Cambio RFC de Don Juan Pérez
+                  </span>
+                  <p className="text-xs font-medium text-slate-200">
+                    Don Juan solicitó una <strong>piscina temperada</strong>. El equipo estimó el sobrecosto (+12 días) y se evaluará en el Comité CCB formal.
+                  </p>
+                </div>
+              </div>
+              <Link
+                href="/login"
+                className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-black text-xs hover:brightness-110 transition shrink-0 shadow"
+              >
+                Ver en Vivo ➔
+              </Link>
             </div>
           </div>
         </div>
