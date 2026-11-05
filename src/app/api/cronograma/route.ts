@@ -118,7 +118,7 @@ export async function GET(request: NextRequest) {
         tipo: 'REUNION',
         fecha: r.fecha.toISOString(),
         titulo: `${r.titulo}${horaStr}`,
-        subtitulo: r.tipo === 'CLIENTE' ? `🤝 Con Cliente (${r.participantes})${convocanteStr}` : `👥 Con Equipo (${r.participantes})${convocanteStr}`,
+        subtitulo: r.tipo === 'CLIENTE' ? `Con Cliente (${r.participantes})${convocanteStr}` : `Con Equipo (${r.participantes})${convocanteStr}`,
         descripcion: `Acuerdos: ${r.acuerdos}${r.proximo_paso ? ` • Próximo paso: ${r.proximo_paso}` : ''}`,
         badge: r.tipo === 'CLIENTE' ? 'Cliente' : r.tipo === 'COMITE_CAMBIOS' ? 'Comité Cambios' : 'Equipo Interno',
         icono: r.tipo === 'CLIENTE' ? 'Users' : 'Briefcase',

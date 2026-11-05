@@ -398,8 +398,9 @@ export default function AprobacionesPage() {
 
                     <div className="pt-4 border-t border-slate-200 space-y-2">
                       {user?.rol === 'SOLICITANTE' ? (
-                        <div className="py-2 px-3 rounded-xl bg-slate-100 text-slate-600 font-bold text-[11px] text-center border border-slate-200">
-                          🔒 Dictamen reservado para el Especialista Aprobador
+                        <div className="py-2 px-3 rounded-xl bg-slate-100 text-slate-600 font-medium text-[11px] text-center border border-slate-200 flex items-center justify-center gap-1.5">
+                          <Lock className="w-3.5 h-3.5 text-slate-400" />
+                          <span>Dictamen reservado para el Especialista Aprobador</span>
                         </div>
                       ) : (
                         <div className="grid grid-cols-2 gap-2">

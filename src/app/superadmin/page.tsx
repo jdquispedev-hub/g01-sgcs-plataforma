@@ -483,10 +483,10 @@ export default function SuperAdminPage() {
                 {rubroKey === 'TODOS'
                   ? 'Todos'
                   : rubroKey === 'SOFTWARE'
-                  ? '💻 Software'
+                  ? 'Software'
                   : rubroKey === 'VETERINARIA'
-                  ? '🐾 Veterinaria'
-                  : '🏗️ Construcción'}
+                  ? 'Veterinaria'
+                  : 'Construcción'}
               </button>
             ))}
           </div>

@@ -404,9 +404,9 @@ export default function AgendarReunionModal({
                 className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
                 required
               >
-                <option value="CLIENTE">🤝 Con Cliente (Acuerdos)</option>
-                <option value="EQUIPO_INTERNO">👥 Interna de Equipo</option>
-                <option value="COMITE_CAMBIOS">⚖️ Comité de Cambios (CCB)</option>
+                <option value="CLIENTE">Reunión con Cliente (Acuerdos)</option>
+                <option value="EQUIPO_INTERNO">Interna de Equipo Técnico</option>
+                <option value="COMITE_CAMBIOS">Comité de Control de Cambios (CCB)</option>
               </select>
             </div>
 

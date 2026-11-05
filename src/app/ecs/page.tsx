@@ -18,6 +18,8 @@ import {
   ArrowLeft,
   ChevronRight,
   User,
+  UserCheck,
+  Upload,
   FolderGit2,
   AlertCircle,
   Loader2,
@@ -349,20 +351,21 @@ export default function EcsPage() {
 
           {/* Pestañas de Asignación Personal */}
           <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-200">
-            <span className="text-xs font-black text-slate-700 mr-1 flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Vista:
+            <span className="text-xs font-bold text-slate-500 mr-1 flex items-center gap-1">
+              <UserCheck className="w-3.5 h-3.5 text-slate-500" /> Vista:
             </span>
             <button
               type="button"
               onClick={() => setFiltroAsignacion('MIS_ASIGNACIONES')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-black transition flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                 filtroAsignacion === 'MIS_ASIGNACIONES'
-                  ? 'bg-upt-navy-900 text-upt-gold shadow border border-upt-gold/30'
+                  ? 'bg-slate-900 text-white shadow-sm'
                   : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
-              <span>⭐ Asignados a Mí</span>
-              <span className="text-[10px] px-2 py-0.2 rounded-full bg-upt-gold/20 text-upt-gold font-bold">
+              <UserCheck className="w-3.5 h-3.5" />
+              <span>Mis Asignaciones</span>
+              <span className="text-[10px] px-2 py-0.2 rounded-full bg-slate-800 text-slate-200 font-semibold">
                 {ecsList.filter((e) => e.responsable?.id === currentUser?.userId).length}
               </span>
             </button>
@@ -371,12 +374,13 @@ export default function EcsPage() {
               onClick={() => setFiltroAsignacion('TODOS')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                 filtroAsignacion === 'TODOS'
-                  ? 'bg-upt-navy-900 text-upt-gold shadow border border-upt-gold/30'
+                  ? 'bg-slate-900 text-white shadow-sm'
                   : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
+              <Layers className="w-3.5 h-3.5" />
               <span>Todos los Entregables</span>
-              <span className="text-[10px] px-2 py-0.2 rounded-full bg-slate-200 text-slate-700 font-bold">
+              <span className="text-[10px] px-2 py-0.2 rounded-full bg-slate-200 text-slate-700 font-semibold">
                 {ecsList.length}
               </span>
             </button>
@@ -495,37 +499,37 @@ export default function EcsPage() {
               return (
                 <div
                   key={item.id}
-                  className={`bg-white rounded-3xl border-2 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.12)] hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between overflow-hidden group ${
+                  className={`bg-white rounded-3xl border shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between overflow-hidden group ${
                     isMyEcs
-                      ? 'border-amber-400 ring-2 ring-amber-400/20 border-l-[6px] border-l-amber-500'
-                      : 'border-slate-300 border-l-[6px] border-l-upt-navy-700 hover:border-upt-gold/80'
+                      ? 'border-slate-300 border-l-4 border-l-sky-600'
+                      : 'border-slate-200 hover:border-slate-300'
                   }`}
                 >
                     <div>
                       {/* Header de la Tarjeta */}
-                      <div className="p-4 sm:p-5 pb-3 border-b border-slate-200/80 bg-gradient-to-br from-slate-50 to-white flex items-start justify-between gap-2.5">
+                      <div className="p-4 sm:p-5 pb-3 border-b border-slate-100 bg-slate-50/50 flex items-start justify-between gap-2.5">
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
-                            <span className="font-mono text-xs font-black text-upt-navy-950 bg-upt-gold/25 px-2.5 py-0.5 rounded-lg border border-upt-gold/50 flex items-center gap-1">
-                              <Layers className="w-3.5 h-3.5 text-upt-navy-900" />
+                            <span className="font-mono text-xs font-bold text-slate-800 bg-white px-2.5 py-0.5 rounded-lg border border-slate-200 flex items-center gap-1">
+                              <Layers className="w-3.5 h-3.5 text-slate-500" />
                               {item.codigo}
                             </span>
-                            <span className="text-[10px] font-black text-slate-700 bg-slate-200 px-2 py-0.5 rounded-md">
+                            <span className="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
                               {item.proyecto.codigo}
                             </span>
                             {isMyEcs && (
-                              <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-800 border border-amber-500/30 flex items-center gap-1 shadow-sm">
-                                <Sparkles className="w-3 h-3 text-amber-600" /> Asignado a Ti
+                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-sky-50 text-sky-800 border border-sky-200 flex items-center gap-1 shadow-xs">
+                                <UserCheck className="w-3 h-3 text-sky-600" /> A tu cargo
                               </span>
                             )}
                           </div>
-                          <h3 className="font-black text-slate-950 text-sm sm:text-base group-hover:text-upt-navy-800 transition leading-snug">
+                          <h3 className="font-black text-slate-900 text-sm sm:text-base group-hover:text-sky-700 transition leading-snug">
                             {item.nombre}
                           </h3>
                         </div>
 
                         {/* Pill de Tipo */}
-                        <span className={`inline-flex items-center gap-1 text-[10px] font-black px-2 py-1 rounded-xl border uppercase shrink-0 shadow-sm ${tipoInfo.color}`}>
+                        <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-xl border uppercase shrink-0 ${tipoInfo.color}`}>
                           <TipoIcon className="w-3 h-3" />
                           <span>{tipoInfo.label}</span>
                         </span>
@@ -533,20 +537,21 @@ export default function EcsPage() {
 
                       {/* Contenido de la Tarjeta */}
                       <div className="p-4 sm:p-5 py-4 space-y-3.5">
-                        <p className="text-xs text-slate-800 line-clamp-2 leading-relaxed">
+                        <p className="text-xs text-slate-700 line-clamp-2 leading-relaxed">
                           {item.descripcion || 'Sin descripción descriptiva registrada.'}
                         </p>
 
-                        <div className="text-[11px] text-slate-600 font-mono bg-slate-100 px-2.5 py-1.5 rounded-xl border border-slate-200 truncate">
-                          📍 {item.ubicacion}
+                        <div className="text-[11px] text-slate-600 font-mono bg-slate-100 px-2.5 py-1.5 rounded-xl border border-slate-200 truncate flex items-center gap-1.5">
+                          <FolderGit2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span className="truncate">{item.ubicacion}</span>
                         </div>
 
                         {/* Estado de la última versión */}
-                        <div className="bg-slate-100/90 rounded-2xl p-3 border border-slate-300 flex items-center justify-between text-xs">
+                        <div className="bg-slate-50 rounded-2xl p-3 border border-slate-200 flex items-center justify-between text-xs">
                           <div className="flex items-center gap-1.5">
-                            <span className="font-bold text-slate-800">Última Versión:</span>
+                            <span className="font-semibold text-slate-700">Última Versión:</span>
                             {ultimaVersion ? (
-                              <span className="font-mono font-black text-upt-navy-950 bg-white px-2 py-0.5 rounded-md border border-slate-300 shadow-sm">
+                              <span className="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded-md border border-slate-200 shadow-xs">
                                 v{ultimaVersion.numero_version}
                               </span>
                             ) : (
@@ -560,7 +565,7 @@ export default function EcsPage() {
                         <div className="flex items-center gap-1.5 text-[11px] text-slate-600 font-medium pt-1">
                           <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                           <span className="truncate">
-                            Responsable: <strong className="text-slate-900 font-bold">{item.responsable.nombre_completo}</strong>
+                            Responsable: <strong className="text-slate-800 font-semibold">{item.responsable.nombre_completo}</strong>
                           </span>
                         </div>
                       </div>
@@ -570,20 +575,28 @@ export default function EcsPage() {
                     <div className="p-4 pt-0">
                       <Link
                         href={`/ecs/${item.id}`}
-                        className={`w-full py-2.5 px-4 rounded-xl font-black text-xs transition flex items-center justify-between group/btn shadow-md active:scale-98 ${
-                          isMyEcs
-                            ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 font-black'
-                            : 'bg-upt-navy-900 hover:bg-upt-navy-800 text-white hover:text-upt-gold'
+                        className={`w-full py-2.5 px-4 rounded-xl font-bold text-xs transition flex items-center justify-between group/btn shadow-xs active:scale-98 ${
+                          isMyEcs && !ultimaVersion
+                            ? 'bg-sky-600 hover:bg-sky-700 text-white'
+                            : 'bg-slate-900 hover:bg-slate-800 text-white'
                         }`}
                       >
-                        <span>
-                          {isMyEcs && !ultimaVersion
-                            ? '🚀 Subir Primera Versión (v1.0.0)'
-                            : isMyEcs
-                            ? '⭐ Abrir Mi Entregable y Versiones'
-                            : 'Ver Ficha, Versiones y Dictamen'}
+                        <span className="flex items-center gap-1.5">
+                          {isMyEcs && !ultimaVersion ? (
+                            <>
+                              <Upload className="w-3.5 h-3.5 text-sky-200" />
+                              <span>Registrar Versión v1.0.0</span>
+                            </>
+                          ) : isMyEcs ? (
+                            <>
+                              <UserCheck className="w-3.5 h-3.5 text-sky-400" />
+                              <span>Abrir Mi Entregable y Versiones</span>
+                            </>
+                          ) : (
+                            <span>Ver Ficha, Versiones y Dictamen</span>
+                          )}
                         </span>
-                        <ChevronRight className={`w-4 h-4 group-hover/btn:translate-x-1.5 transition-transform ${isMyEcs ? 'text-slate-950' : 'text-upt-gold'}`} />
+                        <ChevronRight className="w-4 h-4 text-slate-400 group-hover/btn:translate-x-1 transition-transform" />
                       </Link>
                     </div>
                   </div>

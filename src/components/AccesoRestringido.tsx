@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ShieldAlert, ArrowLeft, Home, FileText, Activity } from 'lucide-react';
+import { ShieldAlert, ArrowLeft, Home, FileText, Activity, Briefcase } from 'lucide-react';
 
 interface AccesoRestringidoProps {
   modulo?: string;
@@ -53,7 +53,10 @@ export default function AccesoRestringido({
             </span>
             {user?.cargo && (
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-900 border border-purple-300">
-                💼 {user.cargo}
+                <span className="inline-flex items-center gap-1">
+                  <Briefcase className="w-3 h-3 text-purple-700" />
+                  {user.cargo}
+                </span>
               </span>
             )}
           </div>

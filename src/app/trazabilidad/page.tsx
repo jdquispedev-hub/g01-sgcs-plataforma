@@ -412,8 +412,9 @@ export default function TrazabilidadPage() {
                   {/* Cadena de Trazabilidad por Versiones */}
                   <div className="space-y-3">
                     {ecs.versiones.length === 0 ? (
-                      <div className="text-xs text-slate-500 italic bg-slate-50 p-3 rounded-2xl border border-slate-200">
-                        ⚠️ Este artefacto aún no cuenta con versiones registradas.
+                      <div className="text-xs text-slate-500 italic bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center gap-1.5">
+                        <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                        <span>Este artefacto aún no cuenta con versiones registradas.</span>
                       </div>
                     ) : (
                       ecs.versiones.map((v) => {

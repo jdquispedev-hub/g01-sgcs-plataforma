@@ -423,7 +423,7 @@ export default function BitacoraPage() {
                     }`}
                   >
                     <CheckCircle2 className="w-5 h-5" />
-                    <span>🟢 Sin Bloqueo (Normal)</span>
+                    <span>Sin Bloqueos (Normal)</span>
                   </button>
 
                   <button
@@ -436,7 +436,7 @@ export default function BitacoraPage() {
                     }`}
                   >
                     <AlertTriangle className="w-5 h-5" />
-                    <span>🔴 ¡Bloqueo Crítico!</span>
+                    <span>Bloqueo Crítico</span>
                   </button>
                 </div>
               </div>
@@ -456,7 +456,7 @@ export default function BitacoraPage() {
                     className="w-full px-3 py-2 bg-white border-2 border-red-300 rounded-xl font-bold text-red-950 placeholder:text-red-300 focus:outline-none focus:ring-2 focus:ring-red-400"
                   />
                   <span className="text-[10px] text-red-700 font-bold block">
-                    ⚠️ Al enviar, se emitirá una alerta gerencial roja inmediata en el Dashboard.
+                    Al enviar, se emitirá una alerta gerencial inmediata en el Dashboard.
                   </span>
                 </div>
               )}

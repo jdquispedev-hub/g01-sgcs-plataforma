@@ -32,6 +32,9 @@ import {
   Handshake,
   Building,
   User,
+  UserCheck,
+  Upload,
+  FolderGit2,
   GitPullRequest,
   ArrowUpRight,
 } from 'lucide-react';
@@ -380,20 +383,20 @@ export default function DashboardPage() {
         )}
 
         {/* Selector de Modo de Vista (Personal vs General) */}
-        <div className="bg-white p-2 rounded-2xl border-2 border-slate-300 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => setVistaTab('PERSONAL')}
-              className={`px-4 py-2 rounded-xl text-xs font-black transition flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
                 vistaTab === 'PERSONAL'
-                  ? 'bg-upt-navy-900 text-upt-gold shadow-md border border-upt-gold/30'
+                  ? 'bg-slate-900 text-white shadow-sm'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
-              <User className="w-4 h-4 text-upt-gold" />
+              <UserCheck className="w-4 h-4 text-emerald-400" />
               <span>Mi Espacio de Trabajo</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-upt-gold/20 text-upt-gold font-bold">
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 font-semibold">
                 {misEcs.length} a mi cargo
               </span>
             </button>
@@ -401,21 +404,21 @@ export default function DashboardPage() {
             <button
               type="button"
               onClick={() => setVistaTab('GENERAL')}
-              className={`px-4 py-2 rounded-xl text-xs font-black transition flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
                 vistaTab === 'GENERAL'
-                  ? 'bg-upt-navy-900 text-upt-gold shadow-md border border-upt-gold/30'
+                  ? 'bg-slate-900 text-white shadow-sm'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
-              <Compass className="w-4 h-4 text-upt-gold" />
+              <Compass className="w-4 h-4 text-sky-400" />
               <span>Visión General de la Obra</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 font-bold">
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-semibold border border-slate-200">
                 Pipeline Completo
               </span>
             </button>
           </div>
 
-          <div className="text-[11px] text-slate-500 font-semibold px-2">
+          <div className="text-[11px] text-slate-500 font-medium px-2">
             {vistaTab === 'PERSONAL'
               ? 'Mostrando tus asignaciones y entregas prioritarias'
               : 'Mostrando pipeline corporativo, minutas y líneas base'}
@@ -426,22 +429,22 @@ export default function DashboardPage() {
         {vistaTab === 'PERSONAL' && (
           <div className="space-y-6 animate-in fade-in duration-200">
             {/* Banner de Bienvenida del Colaborador */}
-            <div className="bg-gradient-to-r from-upt-navy-900 via-slate-900 to-upt-navy-800 rounded-3xl p-6 sm:p-7 text-white border-2 border-upt-navy-700 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="bg-slate-900 rounded-3xl p-6 sm:p-7 text-white border border-slate-800 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-upt-gold/20 border-2 border-upt-gold/40 flex items-center justify-center text-upt-gold shadow-lg shrink-0">
-                  <User className="w-7 h-7" />
+                <div className="w-13 h-13 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 shadow shrink-0">
+                  <UserCheck className="w-6 h-6 text-sky-400" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-black text-upt-gold uppercase tracking-wider">
+                    <span className="text-xs font-bold text-sky-400 tracking-wide uppercase">
                       Espacio Operativo de Colaborador
                     </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-slate-200 border border-white/20">
+                    <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
                       {displayRole}
                     </span>
                   </div>
                   <h2 className="text-xl sm:text-2xl font-black text-white mt-0.5">
-                    ¡Hola, {displayName}!
+                    Hola, {displayName}
                   </h2>
                   <p className="text-xs text-slate-300 mt-1">
                     Proyecto Activo: <strong className="text-white">{activeProyecto?.nombre || 'Obra Asignada'}</strong>
@@ -453,9 +456,9 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2">
                 <Link
                   href="/bitacora"
-                  className="px-4 py-2.5 rounded-xl bg-upt-gold hover:bg-amber-400 text-upt-navy-950 font-black text-xs shadow-lg transition active:scale-95 flex items-center gap-2"
+                  className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs shadow-sm transition active:scale-95 flex items-center gap-2"
                 >
-                  <Activity className="w-4 h-4 stroke-[2.5]" />
+                  <Activity className="w-4 h-4 text-emerald-600" />
                   <span>Reportar Bitácora de Hoy</span>
                 </Link>
               </div>
@@ -463,52 +466,52 @@ export default function DashboardPage() {
 
             {/* 3 KPIs Personales del Usuario */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-white p-5 rounded-2xl border-2 border-slate-300 shadow-sm flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-200">
-                  <Layers className="w-6 h-6" />
+              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                <div className="w-11 h-11 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">
+                  <Layers className="w-5 h-5 text-slate-700" />
                 </div>
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                     Mis {terminologia.ecsLabelPlural}
                   </p>
                   <p className="text-2xl font-black text-slate-900 mt-0.5">{misEcs.length}</p>
-                  <p className="text-[10px] text-slate-400 font-medium">Bajo tu responsabilidad técnica</p>
+                  <p className="text-[10px] text-slate-500 font-medium">Bajo tu responsabilidad técnica</p>
                 </div>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border-2 border-slate-300 shadow-sm flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-200">
-                  <Clock className="w-6 h-6" />
+              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 border border-amber-200">
+                  <Clock className="w-5 h-5 text-amber-600" />
                 </div>
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                     Entregas Pendientes
                   </p>
-                  <p className="text-2xl font-black text-amber-600 mt-0.5">{misEcsPendientes.length}</p>
-                  <p className="text-[10px] text-slate-400 font-medium">Requieren subir versión o dictamen</p>
+                  <p className="text-2xl font-black text-amber-700 mt-0.5">{misEcsPendientes.length}</p>
+                  <p className="text-[10px] text-slate-500 font-medium">Requieren subir versión o dictamen</p>
                 </div>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border-2 border-slate-300 shadow-sm flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-200">
-                  <CheckCircle2 className="w-6 h-6" />
+              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-200">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
                 </div>
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                     Bitácora de Campo
                   </p>
-                  <p className="text-base font-black text-emerald-700 mt-0.5">Semáforo Activo</p>
-                  <p className="text-[10px] text-slate-400 font-medium">Reporta jornada y bloqueos diarios</p>
+                  <p className="text-base font-bold text-emerald-700 mt-0.5">Semáforo Activo</p>
+                  <p className="text-[10px] text-slate-500 font-medium">Reporta jornada y bloqueos diarios</p>
                 </div>
               </div>
             </div>
 
             {/* Sección de Artefactos Asignados */}
-            <div className="bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-300 shadow-md space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+            <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
                 <div>
                   <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-                    <Layers className="w-5 h-5 text-upt-navy-900" />
+                    <Layers className="w-5 h-5 text-slate-700" />
                     <span>Mis {terminologia.ecsLabelPlural} Asignados</span>
                   </h3>
                   <p className="text-xs text-slate-500">
@@ -517,17 +520,18 @@ export default function DashboardPage() {
                 </div>
                 <Link
                   href="/ecs"
-                  className="text-xs font-black text-upt-navy-900 hover:text-upt-gold-600 flex items-center gap-1 shrink-0"
+                  className="text-xs font-bold text-slate-700 hover:text-slate-900 flex items-center gap-1 shrink-0"
                 >
-                  <span>Ver Catálogo Completo ➔</span>
+                  <span>Ver Catálogo Completo</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
                 </Link>
               </div>
 
               {misEcs.length === 0 ? (
-                <div className="bg-slate-50 rounded-2xl p-8 border-2 border-dashed border-slate-300 text-center space-y-3">
-                  <Layers className="w-12 h-12 text-slate-400 mx-auto" />
+                <div className="bg-slate-50 rounded-2xl p-8 border border-dashed border-slate-200 text-center space-y-3">
+                  <Layers className="w-10 h-10 text-slate-400 mx-auto" />
                   <div className="space-y-1">
-                    <h4 className="text-base font-bold text-slate-800">
+                    <h4 className="text-sm font-bold text-slate-800">
                       Aún no tienes {terminologia.ecsLabelPlural.toLowerCase()} asignados directamente
                     </h4>
                     <p className="text-xs text-slate-500 max-w-md mx-auto">
@@ -536,9 +540,9 @@ export default function DashboardPage() {
                   </div>
                   <Link
                     href="/ecs"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-upt-navy-900 text-upt-gold text-xs font-black shadow transition"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold shadow-sm hover:bg-slate-800 transition"
                   >
-                    <Compass className="w-4 h-4" />
+                    <Compass className="w-4 h-4 text-sky-400" />
                     <span>Explorar Catálogo de la Obra</span>
                   </Link>
                 </div>
@@ -552,19 +556,19 @@ export default function DashboardPage() {
                     return (
                       <div
                         key={ecs.id}
-                        className="bg-slate-50 hover:bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-upt-navy-900 transition shadow-sm space-y-3 flex flex-col justify-between"
+                        className="bg-slate-50/60 hover:bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-300 transition shadow-sm space-y-3 flex flex-col justify-between"
                       >
                         <div className="space-y-2">
                           <div className="flex items-center justify-between gap-2">
-                            <span className="font-mono text-xs font-black px-2 py-0.5 rounded-md bg-upt-navy-100 text-upt-navy-900 border border-upt-navy-300">
+                            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-md bg-white text-slate-800 border border-slate-200">
                               {ecs.codigo}
                             </span>
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 border border-amber-500/30 flex items-center gap-1">
-                              <Sparkles className="w-3 h-3" /> Asignado a Ti
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 flex items-center gap-1">
+                              <UserCheck className="w-3 h-3 text-slate-500" /> A tu cargo
                             </span>
                           </div>
 
-                          <h4 className="text-base font-black text-slate-900 leading-snug">
+                          <h4 className="text-sm font-black text-slate-900 leading-snug">
                             {ecs.nombre}
                           </h4>
                           {ecs.descripcion && (
@@ -573,19 +577,19 @@ export default function DashboardPage() {
                             </p>
                           )}
 
-                          <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
-                            <span className="text-slate-500 font-semibold">Estado de Entrega:</span>
+                          <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                            <span className="text-slate-500 font-medium">Estado de Entrega:</span>
                             {sinVersiones ? (
-                              <span className="font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md">
-                                ⚠️ Sin versión entregada
+                              <span className="font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md inline-flex items-center gap-1 text-[11px]">
+                                <Clock className="w-3 h-3 text-amber-600" /> Sin versión registrada
                               </span>
                             ) : esAprobada ? (
-                              <span className="font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md flex items-center gap-1">
-                                <CheckCircle2 className="w-3.5 h-3.5" /> Aprobada v{ultimaVersion.numero_version}
+                              <span className="font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md inline-flex items-center gap-1 text-[11px]">
+                                <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Aprobada v{ultimaVersion.numero_version}
                               </span>
                             ) : (
-                              <span className="font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md flex items-center gap-1">
-                                <Clock className="w-3.5 h-3.5" /> En Dictamen v{ultimaVersion.numero_version}
+                              <span className="font-semibold text-sky-800 bg-sky-50 border border-sky-200 px-2 py-0.5 rounded-md inline-flex items-center gap-1 text-[11px]">
+                                <Clock className="w-3 h-3 text-sky-600" /> En Dictamen v{ultimaVersion.numero_version}
                               </span>
                             )}
                           </div>
@@ -594,10 +598,19 @@ export default function DashboardPage() {
                         <div className="pt-2 flex items-center gap-2">
                           <Link
                             href={`/ecs/${ecs.id}`}
-                            className="flex-1 py-2 px-3 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-bold text-xs transition flex items-center justify-center gap-1.5 shadow"
+                            className="flex-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-sm"
                           >
-                            <span>{sinVersiones ? '🚀 Subir Primera Versión (v1.0.0)' : 'Ver Expediente Completo'}</span>
-                            <ArrowRight className="w-3.5 h-3.5" />
+                            {sinVersiones ? (
+                              <>
+                                <Upload className="w-3.5 h-3.5 text-sky-400" />
+                                <span>Registrar Versión v1.0.0</span>
+                              </>
+                            ) : (
+                              <>
+                                <span>Ver Expediente Completo</span>
+                                <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+                              </>
+                            )}
                           </Link>
                         </div>
                       </div>
@@ -608,29 +621,29 @@ export default function DashboardPage() {
             </div>
 
             {/* Tarjeta de Bitácora Diaria y Semáforo de Bloqueo */}
-            <div className="bg-gradient-to-r from-emerald-900 to-teal-950 rounded-3xl p-6 text-white border-2 border-emerald-700 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="bg-slate-900 rounded-3xl p-6 text-white border border-slate-800 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
-                  <Activity className="w-6 h-6 text-emerald-300" />
+                <div className="w-11 h-11 rounded-2xl bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700">
+                  <Activity className="w-5 h-5 text-emerald-400" />
                 </div>
                 <div>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-full inline-block">
-                    Control de Campo en Tiempo Real (Fase 5)
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded-full inline-block">
+                    Control de Campo en Tiempo Real
                   </span>
                   <h4 className="text-base font-black text-white mt-0.5">
                     Reporte Diario de Jornada y Detección de Bloqueos
                   </h4>
-                  <p className="text-xs text-emerald-100">
-                    Informa tus avances de hoy y activa el semáforo rojo si tu trabajo está detenido por falta de insumos o planos.
+                  <p className="text-xs text-slate-300">
+                    Informa tus avances de hoy y activa el indicador si tu trabajo está detenido por falta de insumos o planos.
                   </p>
                 </div>
               </div>
               <Link
                 href="/bitacora"
-                className="px-5 py-2.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-950 font-black text-xs shadow-md transition active:scale-95 flex items-center justify-center gap-2 shrink-0"
+                className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs shadow-sm transition active:scale-95 flex items-center justify-center gap-2 shrink-0"
               >
                 <span>Ir a la Bitácora Diaria</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 text-slate-600" />
               </Link>
             </div>
           </div>
@@ -794,7 +807,7 @@ export default function DashboardPage() {
                     <span className="text-[9px] font-black">3. {terminologia.aprobadorRolLabel.toUpperCase()}</span>
                     <span className="text-xs font-black truncate">Dictamen</span>
                     <span className="text-[9px]">
-                      {versionesPendientes > 0 ? `${versionesPendientes} Por Ver` : '✓ Al día'}
+                      {versionesPendientes > 0 ? `${versionesPendientes} Por Ver` : 'Al día'}
                     </span>
                   </Link>
                   <Link
@@ -833,7 +846,8 @@ export default function DashboardPage() {
                 href="/cronograma"
                 className="text-xs font-black text-upt-navy-900 hover:text-upt-gold-600 flex items-center gap-1"
               >
-                <span>Abrir Línea de Tiempo / Canvas ➔</span>
+                <span>Abrir Línea de Tiempo / Canvas</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </section>
@@ -872,11 +886,12 @@ export default function DashboardPage() {
                     >
                       <div className="flex items-center justify-between">
                         <span
-                          className={`text-[9px] font-black px-2 py-0.5 rounded-full ${
+                          className={`text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1 ${
                             isCliente ? 'bg-emerald-500 text-white' : 'bg-blue-500 text-white'
                           }`}
                         >
-                          {isCliente ? '🤝 Con Cliente' : '👥 Equipo'}
+                          {isCliente ? <Handshake className="w-3 h-3 inline" /> : <Users className="w-3 h-3 inline" />}
+                          <span>{isCliente ? 'Con Cliente' : 'Equipo'}</span>
                         </span>
                         <span className="font-mono text-[10px] text-upt-gold font-bold">
                           {fechaStr} • {r.hora || '10:00'}

@@ -452,8 +452,9 @@ export default function CronogramaPage() {
                         key={r.id}
                         className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-1.5"
                       >
-                        <span className="text-[10px] font-mono text-slate-500 block">
-                          📅 {new Date(r.fecha).toLocaleDateString()}
+                        <span className="text-[10px] font-mono text-slate-500 flex items-center gap-1">
+                          <Calendar className="w-3 h-3 text-slate-400" />
+                          <span>{new Date(r.fecha).toLocaleDateString()}</span>
                         </span>
                         <h4 className="text-xs font-black text-slate-900 leading-snug">
                           {r.titulo}

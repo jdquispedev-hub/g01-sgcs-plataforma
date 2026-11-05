@@ -21,6 +21,8 @@ import {
   CheckCircle2,
   Lock,
   Briefcase,
+  Edit3,
+  Info,
   Sparkles,
 } from 'lucide-react';
 
@@ -407,7 +409,10 @@ export default function UsuariosPage() {
                           )}`}
                           title="Haga clic para editar rol o cargo"
                         >
-                          {u.rol} ✏️
+                          <span className="flex items-center gap-1">
+                            <span>{u.rol}</span>
+                            <Edit3 className="w-3 h-3 opacity-60" />
+                          </span>
                         </button>
                       </td>
                       <td className="py-3 px-4">
@@ -526,8 +531,9 @@ export default function UsuariosPage() {
                 
                 {/* Sugerencias Rápidas según el rubro */}
                 <div className="pt-1">
-                  <span className="text-[10px] font-black text-purple-900 uppercase tracking-wider block mb-1.5">
-                    💡 Cargos frecuentes de {rubro === 'CONSTRUCCION' ? 'Construcción' : rubro === 'SOFTWARE' ? 'Software' : 'Veterinaria'}:
+                  <span className="flex items-center gap-1.5 text-[10px] font-black text-purple-900 uppercase tracking-wider mb-1.5">
+                    <Info className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                    <span>Cargos frecuentes de {rubro === 'CONSTRUCCION' ? 'Construcción' : rubro === 'SOFTWARE' ? 'Software' : 'Veterinaria'}:</span>
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {sugerencias.map((sug) => (

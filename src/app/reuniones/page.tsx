@@ -22,6 +22,9 @@ import {
   Handshake,
   Building,
   User,
+  Scale,
+  MessageSquare,
+  Target,
   Sparkles,
   List,
   CalendarDays,
@@ -208,22 +211,22 @@ export default function ReunionesPage() {
     switch (tipo) {
       case 'CLIENTE':
         return {
-          chip: 'bg-emerald-100 hover:bg-emerald-200 text-emerald-950 border-emerald-300',
-          badge: 'bg-emerald-600 text-white',
-          label: '🤝 Con Cliente',
+          chip: 'bg-emerald-50 hover:bg-emerald-100 text-emerald-950 border-emerald-300',
+          badge: 'bg-emerald-700 text-white',
+          label: 'Con Cliente',
         };
       case 'EQUIPO_INTERNO':
         return {
-          chip: 'bg-blue-100 hover:bg-blue-200 text-blue-950 border-blue-300',
-          badge: 'bg-blue-600 text-white',
-          label: '👥 Equipo',
+          chip: 'bg-blue-50 hover:bg-blue-100 text-blue-950 border-blue-300',
+          badge: 'bg-blue-700 text-white',
+          label: 'Equipo Técnico',
         };
       case 'COMITE_CAMBIOS':
       default:
         return {
-          chip: 'bg-amber-100 hover:bg-amber-200 text-amber-950 border-amber-300',
-          badge: 'bg-amber-500 text-slate-950 font-black',
-          label: '⚖️ Comité RFC',
+          chip: 'bg-amber-50 hover:bg-amber-100 text-amber-950 border-amber-300',
+          badge: 'bg-amber-600 text-white font-semibold',
+          label: 'Comité RFC',
         };
     }
   };
@@ -363,23 +366,25 @@ export default function ReunionesPage() {
               </button>
               <button
                 onClick={() => setTipoFiltro('CLIENTE')}
-                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                   tipoFiltro === 'CLIENTE'
                     ? 'bg-emerald-600 text-white shadow'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
-                🤝 Clientes
+                <Handshake className="w-3.5 h-3.5" />
+                <span>Clientes</span>
               </button>
               <button
                 onClick={() => setTipoFiltro('EQUIPO_INTERNO')}
-                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                   tipoFiltro === 'EQUIPO_INTERNO'
                     ? 'bg-blue-600 text-white shadow'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
-                👥 Equipo
+                <Users className="w-3.5 h-3.5" />
+                <span>Equipo</span>
               </button>
             </div>
           </div>
@@ -639,7 +644,10 @@ export default function ReunionesPage() {
 
             {/* Temas Tratados */}
             <div className="space-y-1 text-xs">
-              <strong className="text-slate-900 block">💬 Temas Discutidos en la Sesión:</strong>
+              <strong className="text-slate-900 flex items-center gap-1.5">
+                <MessageSquare className="w-3.5 h-3.5 text-slate-500" />
+                <span>Temas Discutidos en la Sesión:</span>
+              </strong>
               <p className="text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-2xl border border-slate-200">
                 {selectedReunion.temas_tratados}
               </p>
@@ -658,8 +666,9 @@ export default function ReunionesPage() {
 
             {/* Próximo Paso */}
             {selectedReunion.proximo_paso && (
-              <div className="text-xs bg-amber-50 p-3 rounded-2xl border border-amber-300 text-amber-950">
-                🎯 <strong>Siguiente Hito Comprometido:</strong> {selectedReunion.proximo_paso}
+              <div className="text-xs bg-amber-50 p-3 rounded-2xl border border-amber-300 text-amber-950 flex items-start gap-2">
+                <Target className="w-4 h-4 text-amber-800 shrink-0 mt-0.5" />
+                <span><strong>Siguiente Hito Comprometido:</strong> {selectedReunion.proximo_paso}</span>
               </div>
             )}
 
