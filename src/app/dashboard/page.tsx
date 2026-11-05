@@ -322,7 +322,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] text-slate-900 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#EEF2F6] text-slate-900 flex flex-col antialiased">
       {/* Top Navbar Responsivo con Drawer Móvil */}
       <NavbarPrincipal user={user} onLogout={handleLogout} />
 
@@ -711,12 +711,13 @@ export default function DashboardPage() {
                 {/* Selector de Proyecto Activo */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
                   <div>
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200 inline-block mb-1">
-                      {terminologia.proyectoLabel} Seleccionado
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-sky-800 bg-sky-50 px-2.5 py-0.5 rounded-md border border-sky-200 inline-flex items-center gap-1.5 mb-1 shadow-2xs">
+                      <Building className="w-3 h-3 text-sky-600" />
+                      <span>{terminologia.proyectoLabel} Seleccionado</span>
                     </span>
                     <h2 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
                       <span>{activeProyecto?.nombre}</span>
-                      <span className="text-xs font-mono font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+                      <span className="text-xs font-mono font-bold text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-md border border-slate-300">
                         {activeProyecto?.codigo}
                       </span>
                     </h2>
@@ -729,7 +730,7 @@ export default function DashboardPage() {
                     <select
                       value={selectedProyectoId}
                       onChange={(e) => setSelectedProyectoId(e.target.value)}
-                      className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:bg-white focus:border-slate-400 transition cursor-pointer max-w-[200px] truncate"
+                      className="px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:bg-white focus:border-[#0B2545] transition cursor-pointer max-w-[200px] truncate"
                     >
                       {proyectos.map((p) => (
                         <option key={p.id} value={p.id}>
@@ -740,7 +741,7 @@ export default function DashboardPage() {
                     {isAdmin && (
                       <button
                         onClick={() => setCrearProyectoModalOpen(true)}
-                        className="p-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white transition shadow-xs shrink-0 active:scale-95"
+                        className="p-1.5 rounded-xl bg-[#0B2545] hover:bg-[#133A66] text-white transition shadow-xs shrink-0 active:scale-95 flex items-center justify-center"
                         title={`Registrar Nuevo(a) ${terminologia.proyectoLabel}`}
                       >
                         <Plus className="w-4 h-4" />
@@ -750,15 +751,15 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Siguiente Paso Recomendado */}
-                <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 border border-sky-200 flex items-center justify-center shrink-0 mt-0.5">
-                    <Clock className="w-4 h-4" />
+                <div className="bg-sky-50/90 border border-sky-200/90 rounded-xl p-3.5 flex items-start gap-3 shadow-2xs">
+                  <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 border border-sky-300 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                    <Clock className="w-4 h-4 text-sky-700" />
                   </div>
                   <div className="space-y-0.5">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-sky-900 block">
                       Acción Recomendada Ahora:
                     </span>
-                    <p className="text-xs font-semibold text-slate-800 leading-snug">
+                    <p className="text-xs font-semibold text-slate-900 leading-snug">
                       {versionesPendientes > 0
                         ? terminologia.recomendaciones.pendientesAprobacion(versionesPendientes)
                         : lineasVigentes === 0
@@ -770,63 +771,90 @@ export default function DashboardPage() {
               </>
             )}
 
-              {/* Pipeline Guiado de 5 Pasos Interactivos */}
+              {/* Pipeline Guiado de 5 Pasos Interactivos con Iconografía Rica */}
               <div>
                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-2">
                   Flujo Contractual del Proyecto:
                 </span>
-                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-2.5">
                   <Link
                     href="/reuniones"
-                    className="p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 transition flex flex-col justify-between shadow-xs active:scale-95"
+                    className="p-3 rounded-xl bg-amber-50/70 hover:bg-amber-100/80 border border-amber-200/90 text-slate-900 transition flex flex-col justify-between shadow-2xs active:scale-95 group"
                   >
-                    <span className="text-[9px] font-bold text-slate-500 uppercase">1. Minutas</span>
-                    <span className="text-xs font-bold truncate">Reuniones</span>
-                    <span className="text-[10px] text-slate-400">Pactos</span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] font-bold text-amber-800 uppercase tracking-wider">1. Minutas</span>
+                      <CalendarDays className="w-3.5 h-3.5 text-amber-600 group-hover:scale-110 transition-transform" />
+                    </div>
+                    <span className="text-xs font-bold text-slate-900 mt-1">Reuniones</span>
+                    <span className="text-[10px] text-amber-700/90 font-medium">Pactos</span>
                   </Link>
+
                   <Link
                     href="/ecs"
-                    className="p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 transition flex flex-col justify-between shadow-xs active:scale-95"
+                    className="p-3 rounded-xl bg-teal-50/70 hover:bg-teal-100/80 border border-teal-200/90 text-slate-900 transition flex flex-col justify-between shadow-2xs active:scale-95 group"
                   >
-                    <span className="text-[9px] font-bold text-slate-500 uppercase">2. Inventario</span>
-                    <span className="text-xs font-bold truncate">Entregables</span>
-                    <span className="text-[10px] text-slate-400">{totalEcs} ECS</span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] font-bold text-teal-800 uppercase tracking-wider">2. Catálogo</span>
+                      <Layers className="w-3.5 h-3.5 text-teal-600 group-hover:scale-110 transition-transform" />
+                    </div>
+                    <span className="text-xs font-bold text-slate-900 mt-1">Entregables</span>
+                    <span className="text-[10px] text-teal-700/90 font-medium">{totalEcs} ECS</span>
                   </Link>
+
                   <Link
                     href="/aprobaciones"
-                    className={`p-2.5 rounded-xl border transition flex flex-col justify-between shadow-xs active:scale-95 ${
+                    className={`p-3 rounded-xl border transition flex flex-col justify-between shadow-2xs active:scale-95 group ${
                       versionesPendientes > 0
-                        ? 'bg-amber-50/70 hover:bg-amber-100/70 border-amber-300 text-amber-950'
-                        : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-900'
+                        ? 'bg-amber-100 hover:bg-amber-100/90 border-amber-300 text-amber-950 font-bold'
+                        : 'bg-emerald-50/70 hover:bg-emerald-100/80 border-emerald-200/90 text-slate-900'
                     }`}
                   >
-                    <span className="text-[9px] font-bold uppercase text-slate-500">3. Dictamen</span>
-                    <span className="text-xs font-bold truncate">Aprobación</span>
-                    <span className="text-[10px]">
+                    <div className="flex items-center justify-between">
+                      <span className={`text-[9px] font-bold uppercase tracking-wider ${
+                        versionesPendientes > 0 ? 'text-amber-900 font-extrabold' : 'text-emerald-800'
+                      }`}>
+                        3. Dictamen
+                      </span>
+                      <ShieldCheck className={`w-3.5 h-3.5 ${
+                        versionesPendientes > 0 ? 'text-amber-700 animate-pulse' : 'text-emerald-600'
+                      } group-hover:scale-110 transition-transform`} />
+                    </div>
+                    <span className="text-xs font-bold mt-1">Aprobación</span>
+                    <span className={`text-[10px] font-semibold ${
+                      versionesPendientes > 0 ? 'text-amber-900' : 'text-emerald-700'
+                    }`}>
                       {versionesPendientes > 0 ? `${versionesPendientes} Por Ver` : 'Al día'}
                     </span>
                   </Link>
+
                   <Link
                     href="/lineas-base"
-                    className={`p-2.5 rounded-xl border transition flex flex-col justify-between shadow-xs active:scale-95 ${
+                    className={`p-3 rounded-xl border transition flex flex-col justify-between shadow-2xs active:scale-95 group ${
                       lineasVigentes > 0
-                        ? 'bg-purple-50/70 hover:bg-purple-100/70 border-purple-200 text-purple-950'
+                        ? 'bg-purple-50/80 hover:bg-purple-100/80 border-purple-200 text-purple-950'
                         : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
                     }`}
                   >
-                    <span className="text-[9px] font-bold uppercase text-slate-500">4. Hito</span>
-                    <span className="text-xs font-bold truncate">Línea Base</span>
-                    <span className="text-[10px]">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-purple-800">4. Hito</span>
+                      <Lock className="w-3.5 h-3.5 text-purple-600 group-hover:scale-110 transition-transform" />
+                    </div>
+                    <span className="text-xs font-bold text-slate-900 mt-1">Línea Base</span>
+                    <span className="text-[10px] text-purple-700 font-medium">
                       {lineasVigentes > 0 ? `${lineasVigentes} Vigente` : 'Pendiente'}
                     </span>
                   </Link>
+
                   <Link
                     href="/cambios"
-                    className="col-span-2 sm:col-span-3 xl:col-span-1 p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 transition flex flex-col justify-between shadow-xs active:scale-95"
+                    className="col-span-2 sm:col-span-3 xl:col-span-1 p-3 rounded-xl bg-orange-50/70 hover:bg-orange-100/80 border border-orange-200/90 text-slate-900 transition flex flex-col justify-between shadow-2xs active:scale-95 group"
                   >
-                    <span className="text-[9px] font-bold uppercase text-slate-500">5. Control</span>
-                    <span className="text-xs font-bold truncate">Cambios RFC</span>
-                    <span className="text-[10px] text-slate-400">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-orange-800">5. Control</span>
+                      <AlertTriangle className="w-3.5 h-3.5 text-orange-600 group-hover:scale-110 transition-transform" />
+                    </div>
+                    <span className="text-xs font-bold text-slate-900 mt-1">Cambios RFC</span>
+                    <span className="text-[10px] text-orange-700 font-medium">
                       {rfcPendientes > 0 ? `${rfcPendientes} Activos` : '0 RFCs'}
                     </span>
                   </Link>
@@ -849,19 +877,19 @@ export default function DashboardPage() {
           </section>
 
           {/* Lado Derecho: Widget de Agenda de Reuniones (5 cols) */}
-          <section className="lg:col-span-5 bg-[#0B2545] rounded-2xl p-6 text-white border border-[#133A66] shadow-sm flex flex-col justify-between space-y-4">
+          <section className="lg:col-span-5 bg-gradient-to-br from-[#0B2545] via-[#0D3058] to-[#133A66] rounded-2xl p-6 text-white border border-[#1E4D7B] shadow-md flex flex-col justify-between space-y-4">
             <div className="space-y-3">
-              <div className="flex items-center justify-between border-b border-[#133A66] pb-3">
+              <div className="flex items-center justify-between border-b border-white/15 pb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#133A66] flex items-center justify-center text-sky-300 border border-sky-400/30">
+                  <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-sky-300 border border-white/20">
                     <CalendarDays className="w-4 h-4" />
                   </div>
                   <div>
                     <h3 className="font-bold text-sm text-white">Agenda de Sesiones</h3>
-                    <p className="text-[10px] text-sky-200/70">Reuniones de coordinación y cliente</p>
+                    <p className="text-[10px] text-sky-200/80">Reuniones de coordinación y cliente</p>
                   </div>
                 </div>
-                <span className="text-[10px] font-semibold bg-[#133A66] text-sky-200 px-2.5 py-0.5 rounded-full border border-sky-400/20">
+                <span className="text-[10px] font-semibold bg-white/10 text-sky-200 px-2.5 py-0.5 rounded-full border border-white/20">
                   {activeReuniones.length} sesiones
                 </span>
               </div>
@@ -878,7 +906,7 @@ export default function DashboardPage() {
                   return (
                     <div
                       key={r.id}
-                      className="bg-white/10 hover:bg-white/15 p-3 rounded-2xl border border-white/10 transition space-y-1"
+                      className="bg-white/10 hover:bg-white/15 p-3 rounded-xl border border-white/15 transition space-y-1"
                     >
                       <div className="flex items-center justify-between">
                         <span
@@ -914,7 +942,7 @@ export default function DashboardPage() {
             <div className="pt-2 border-t border-white/10 flex items-center justify-between gap-2">
               <Link
                 href="/reuniones"
-                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition flex items-center gap-1.5"
+                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition flex items-center gap-1.5 border border-white/10"
               >
                 <span>Ver Calendario</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -933,19 +961,19 @@ export default function DashboardPage() {
         </div>
 
         {/* ========================================================
-           ACCIONES RÁPIDAS (Atajos de 1 clic)
+           ACCIONES RÁPIDAS (Atajos de 1 clic) con Iconos Vivos
            ======================================================== */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <button
             type="button"
             onClick={() => setAgendarModalOpen(true)}
-            className="p-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 shadow-xs transition flex items-center gap-3 text-left"
+            className="p-4 rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200/90 hover:border-amber-300 shadow-xs hover:shadow-sm transition flex items-center gap-3 text-left group"
           >
-            <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">
-              <CalendarDays className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-amber-100/80 text-amber-800 flex items-center justify-center shrink-0 border border-amber-300/80 shadow-2xs group-hover:scale-105 transition-transform">
+              <CalendarDays className="w-5 h-5 text-amber-700" />
             </div>
             <div>
-              <span className="font-bold text-xs text-slate-900 block">
+              <span className="font-bold text-xs text-slate-900 block group-hover:text-amber-850 transition">
                 Agendar Reunión
               </span>
               <span className="text-[10px] text-slate-500">Minuta con cliente o equipo</span>
@@ -954,13 +982,13 @@ export default function DashboardPage() {
 
           <Link
             href="/cronograma"
-            className="p-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 shadow-xs transition flex items-center gap-3"
+            className="p-4 rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200/90 hover:border-sky-300 shadow-xs hover:shadow-sm transition flex items-center gap-3 group"
           >
-            <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">
-              <Sparkles className="w-5 h-5 text-sky-600" />
+            <div className="w-10 h-10 rounded-xl bg-sky-100/80 text-sky-800 flex items-center justify-center shrink-0 border border-sky-300/80 shadow-2xs group-hover:scale-105 transition-transform">
+              <Sparkles className="w-5 h-5 text-sky-700" />
             </div>
             <div>
-              <span className="font-bold text-xs text-slate-900 block">
+              <span className="font-bold text-xs text-slate-900 block group-hover:text-sky-850 transition">
                 Línea de Tiempo (Canvas)
               </span>
               <span className="text-[10px] text-slate-500">Roadmap cronológico</span>
@@ -969,13 +997,13 @@ export default function DashboardPage() {
 
           <Link
             href="/ecs"
-            className="p-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 shadow-xs transition flex items-center gap-3"
+            className="p-4 rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200/90 hover:border-teal-300 shadow-xs hover:shadow-sm transition flex items-center gap-3 group"
           >
-            <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">
-              <Layers className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-teal-100/80 text-teal-800 flex items-center justify-center shrink-0 border border-teal-300/80 shadow-2xs group-hover:scale-105 transition-transform">
+              <Layers className="w-5 h-5 text-teal-700" />
             </div>
             <div>
-              <span className="font-bold text-xs text-slate-900 block">
+              <span className="font-bold text-xs text-slate-900 block group-hover:text-teal-850 transition">
                 Catálogo de Entregables
               </span>
               <span className="text-[10px] text-slate-500">{terminologia.modulos.ecsAtajoSubtitulo}</span>
@@ -984,13 +1012,13 @@ export default function DashboardPage() {
 
           <Link
             href="/lineas-base/nueva"
-            className="p-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 shadow-xs transition flex items-center gap-3"
+            className="p-4 rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200/90 hover:border-purple-300 shadow-xs hover:shadow-sm transition flex items-center gap-3 group"
           >
-            <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">
-              <Lock className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-purple-100/80 text-purple-800 flex items-center justify-center shrink-0 border border-purple-300/80 shadow-2xs group-hover:scale-105 transition-transform">
+              <Lock className="w-5 h-5 text-purple-700" />
             </div>
             <div>
-              <span className="font-bold text-xs text-slate-900 block">
+              <span className="font-bold text-xs text-slate-900 block group-hover:text-purple-850 transition">
                 Congelar Hito Oficial
               </span>
               <span className="text-[10px] text-slate-500">{terminologia.lineaBaseLabel}</span>
@@ -1046,13 +1074,13 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               
               {/* Card Reuniones */}
-              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-amber-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center">
-                      <CalendarDays className="w-4.5 h-4.5" />
+                    <div className="w-10 h-10 rounded-xl bg-amber-100/80 text-amber-800 border border-amber-300/80 flex items-center justify-center shadow-2xs">
+                      <CalendarDays className="w-5 h-5 text-amber-700" />
                     </div>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200">
                       Paso 1
                     </span>
                   </div>
@@ -1068,7 +1096,7 @@ export default function DashboardPage() {
                 <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/reuniones"
-                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition shadow-2xs"
                   >
                     <span>Abrir Calendario</span>
                     <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
@@ -1077,13 +1105,13 @@ export default function DashboardPage() {
               </div>
 
               {/* Card Canvas */}
-              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-sky-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center">
-                      <Sparkles className="w-4.5 h-4.5 text-sky-600" />
+                    <div className="w-10 h-10 rounded-xl bg-sky-100/80 text-sky-800 border border-sky-300/80 flex items-center justify-center shadow-2xs">
+                      <Sparkles className="w-5 h-5 text-sky-700" />
                     </div>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-sky-50 text-sky-800 border border-sky-200">
                       Roadmap
                     </span>
                   </div>
@@ -1099,7 +1127,7 @@ export default function DashboardPage() {
                 <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/cronograma"
-                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition shadow-2xs"
                   >
                     <span>Ver Canvas Vivo</span>
                     <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
@@ -1108,13 +1136,13 @@ export default function DashboardPage() {
               </div>
 
               {/* Card Entregables ECS */}
-              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-teal-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center">
-                      <Layers className="w-4.5 h-4.5 text-slate-700" />
+                    <div className="w-10 h-10 rounded-xl bg-teal-100/80 text-teal-800 border border-teal-300/80 flex items-center justify-center shadow-2xs">
+                      <Layers className="w-5 h-5 text-teal-700" />
                     </div>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-teal-50 text-teal-800 border border-teal-200">
                       Paso 2
                     </span>
                   </div>
@@ -1126,14 +1154,14 @@ export default function DashboardPage() {
                       {terminologia.modulos.ecs.descripcion}
                     </p>
                   </div>
-                  <div className="text-[11px] text-slate-600 font-medium bg-slate-50 p-2 rounded-lg border border-slate-100">
+                  <div className="text-[11px] text-teal-800 font-semibold bg-teal-50/60 p-2 rounded-lg border border-teal-100">
                     Total: {totalEcs} entregables registrados
                   </div>
                 </div>
                 <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/ecs"
-                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition shadow-2xs"
                   >
                     <span>Explorar Entregables</span>
                     <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
@@ -1142,13 +1170,13 @@ export default function DashboardPage() {
               </div>
 
               {/* Card Aprobaciones */}
-              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-emerald-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center">
-                      <ShieldCheck className="w-4.5 h-4.5 text-emerald-600" />
+                    <div className="w-10 h-10 rounded-xl bg-emerald-100/80 text-emerald-800 border border-emerald-300/80 flex items-center justify-center shadow-2xs">
+                      <ShieldCheck className="w-5 h-5 text-emerald-700" />
                     </div>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
                       Paso 3
                     </span>
                   </div>
@@ -1160,14 +1188,14 @@ export default function DashboardPage() {
                       {terminologia.modulos.aprobaciones.descripcion}
                     </p>
                   </div>
-                  <div className="text-[11px] text-slate-600 font-medium bg-slate-50 p-2 rounded-lg border border-slate-100">
+                  <div className="text-[11px] text-amber-800 font-semibold bg-amber-50/60 p-2 rounded-lg border border-amber-100">
                     Pendientes: {versionesPendientes} versiones
                   </div>
                 </div>
                 <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/aprobaciones"
-                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition shadow-2xs"
                   >
                     <span>Bandeja Técnica</span>
                     <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
@@ -1176,13 +1204,13 @@ export default function DashboardPage() {
               </div>
 
               {/* Card Líneas Base */}
-              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-purple-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center">
-                      <Lock className="w-4.5 h-4.5 text-purple-600" />
+                    <div className="w-10 h-10 rounded-xl bg-purple-100/80 text-purple-800 border border-purple-300/80 flex items-center justify-center shadow-2xs">
+                      <Lock className="w-5 h-5 text-purple-700" />
                     </div>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-purple-50 text-purple-800 border border-purple-200">
                       Paso 4
                     </span>
                   </div>
@@ -1194,14 +1222,14 @@ export default function DashboardPage() {
                       {terminologia.modulos.lineasBase.descripcion}
                     </p>
                   </div>
-                  <div className="text-[11px] text-slate-600 font-medium bg-slate-50 p-2 rounded-lg border border-slate-100">
+                  <div className="text-[11px] text-purple-800 font-semibold bg-purple-50/60 p-2 rounded-lg border border-purple-100">
                     Vigentes: {lineasVigentes} de {totalLineasBase}
                   </div>
                 </div>
                 <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/lineas-base"
-                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition shadow-2xs"
                   >
                     <span>Ver Líneas Base</span>
                     <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
@@ -1210,13 +1238,13 @@ export default function DashboardPage() {
               </div>
 
               {/* Card Cambios RFC */}
-              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-orange-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center">
-                      <AlertTriangle className="w-4.5 h-4.5 text-rose-600" />
+                    <div className="w-10 h-10 rounded-xl bg-orange-100/80 text-orange-800 border border-orange-300/80 flex items-center justify-center shadow-2xs">
+                      <AlertTriangle className="w-5 h-5 text-orange-700" />
                     </div>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-orange-50 text-orange-800 border border-orange-200">
                       Paso 5
                     </span>
                   </div>
@@ -1228,14 +1256,14 @@ export default function DashboardPage() {
                       {terminologia.modulos.cambios.descripcion}
                     </p>
                   </div>
-                  <div className="text-[11px] text-slate-600 font-medium bg-slate-50 p-2 rounded-lg border border-slate-100">
+                  <div className="text-[11px] text-orange-800 font-semibold bg-orange-50/60 p-2 rounded-lg border border-orange-100">
                     Pendientes: {rfcPendientes} de {totalRfc}
                   </div>
                 </div>
                 <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/cambios"
-                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition shadow-2xs"
                   >
                     <span>Gestionar Cambios</span>
                     <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
@@ -1251,10 +1279,10 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               
               {/* Bitácora de Campo */}
-              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-red-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
-                  <div className="w-9 h-9 rounded-xl bg-red-50 text-red-700 border border-red-200 flex items-center justify-center">
-                    <Activity className="w-4.5 h-4.5 text-red-600" />
+                  <div className="w-10 h-10 rounded-xl bg-red-100/80 text-red-800 border border-red-300/80 flex items-center justify-center shadow-2xs">
+                    <Activity className="w-5 h-5 text-red-700" />
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-slate-900">
@@ -1268,7 +1296,7 @@ export default function DashboardPage() {
                 <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/bitacora"
-                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition shadow-2xs"
                   >
                     <span>Abrir Bitácora</span>
                     <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
@@ -1277,10 +1305,10 @@ export default function DashboardPage() {
               </div>
 
               {/* Matriz de Trazabilidad */}
-              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-blue-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
-                  <div className="w-9 h-9 rounded-xl bg-sky-50 text-sky-700 border border-sky-200 flex items-center justify-center">
-                    <Network className="w-4.5 h-4.5 text-sky-600" />
+                  <div className="w-10 h-10 rounded-xl bg-blue-100/80 text-blue-800 border border-blue-300/80 flex items-center justify-center shadow-2xs">
+                    <Network className="w-5 h-5 text-blue-700" />
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-slate-900">
@@ -1294,7 +1322,7 @@ export default function DashboardPage() {
                 <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/trazabilidad"
-                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition shadow-2xs"
                   >
                     <span>Explorar Trazabilidad</span>
                     <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
@@ -1303,10 +1331,10 @@ export default function DashboardPage() {
               </div>
 
               {/* Reportes Oficiales */}
-              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-amber-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
-                  <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center">
-                    <Printer className="w-4.5 h-4.5 text-amber-600" />
+                  <div className="w-10 h-10 rounded-xl bg-amber-100/80 text-amber-800 border border-amber-300/80 flex items-center justify-center shadow-2xs">
+                    <Printer className="w-5 h-5 text-amber-700" />
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-slate-900">
@@ -1320,7 +1348,7 @@ export default function DashboardPage() {
                 <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/reportes"
-                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition shadow-2xs"
                   >
                     <span>Generar Reportes</span>
                     <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
@@ -1331,10 +1359,10 @@ export default function DashboardPage() {
               {isAdmin ? (
                 <>
                   {/* Auditoría de Seguridad (Solo Administradores) */}
-                  <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+                  <div className="bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-emerald-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                     <div className="space-y-3">
-                      <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center">
-                        <Terminal className="w-4.5 h-4.5 text-emerald-600" />
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100/80 text-emerald-800 border border-emerald-300/80 flex items-center justify-center shadow-2xs">
+                        <Terminal className="w-5 h-5 text-emerald-700" />
                       </div>
                       <div>
                         <h3 className="text-sm font-bold text-slate-900">
@@ -1348,7 +1376,7 @@ export default function DashboardPage() {
                     <div className="pt-3 mt-3 border-t border-slate-100">
                       <Link
                         href="/auditoria"
-                        className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
+                        className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition shadow-2xs"
                       >
                         <span>Ver Logs de Auditoría</span>
                         <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
@@ -1357,10 +1385,10 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Personal y Roles (Solo Administradores) */}
-                  <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+                  <div className="bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-indigo-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                     <div className="space-y-3">
-                      <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-700 border border-purple-200 flex items-center justify-center">
-                        <Users className="w-4.5 h-4.5 text-purple-600" />
+                      <div className="w-10 h-10 rounded-xl bg-indigo-100/80 text-indigo-800 border border-indigo-300/80 flex items-center justify-center shadow-2xs">
+                        <Users className="w-5 h-5 text-indigo-700" />
                       </div>
                       <div>
                         <h3 className="text-sm font-bold text-slate-900">
@@ -1374,7 +1402,7 @@ export default function DashboardPage() {
                     <div className="pt-3 mt-3 border-t border-slate-100">
                       <Link
                         href="/usuarios"
-                        className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
+                        className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition shadow-2xs"
                       >
                         <span>Administrar Personal</span>
                         <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
@@ -1385,10 +1413,10 @@ export default function DashboardPage() {
               ) : (
                 <>
                   {/* Bitácora Diaria de Campo (Para Colaboradores Operativos) */}
-                  <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+                  <div className="bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-teal-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                     <div className="space-y-3">
-                      <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center">
-                        <Activity className="w-4.5 h-4.5 text-teal-600" />
+                      <div className="w-10 h-10 rounded-xl bg-teal-100/80 text-teal-800 border border-teal-300/80 flex items-center justify-center shadow-2xs">
+                        <Activity className="w-5 h-5 text-teal-700" />
                       </div>
                       <div>
                         <h3 className="text-sm font-bold text-slate-900">
@@ -1402,7 +1430,7 @@ export default function DashboardPage() {
                     <div className="pt-3 mt-3 border-t border-slate-100">
                       <Link
                         href="/bitacora"
-                        className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
+                        className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition shadow-2xs"
                       >
                         <span>Ir a Mi Bitácora</span>
                         <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
@@ -1411,10 +1439,10 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Solicitudes de Cambio RFC (Para Colaboradores Operativos) */}
-                  <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+                  <div className="bg-white rounded-2xl p-5 border border-slate-200/90 hover:border-rose-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                     <div className="space-y-3">
-                      <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 flex items-center justify-center">
-                        <AlertTriangle className="w-4.5 h-4.5 text-rose-600" />
+                      <div className="w-10 h-10 rounded-xl bg-rose-100/80 text-rose-800 border border-rose-300/80 flex items-center justify-center shadow-2xs">
+                        <AlertTriangle className="w-5 h-5 text-rose-700" />
                       </div>
                       <div>
                         <h3 className="text-sm font-bold text-slate-900">
@@ -1428,7 +1456,7 @@ export default function DashboardPage() {
                     <div className="pt-3 mt-3 border-t border-slate-100">
                       <Link
                         href="/cambios"
-                        className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
+                        className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition shadow-2xs"
                       >
                         <span>Ver Solicitudes de Cambio</span>
                         <ChevronRight className="w-3.5 h-3.5 text-sky-300" />

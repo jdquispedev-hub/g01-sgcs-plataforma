@@ -51,42 +51,49 @@ function getCoreNavItems(rubro?: string) {
       href: '/dashboard',
       label: 'Inicio',
       icon: Compass,
+      color: 'text-sky-600',
     },
     {
       href: '/reuniones',
       label: 'Minutas',
       fullLabel: isConstruccion ? 'Minutas de Obra' : isVeterinaria ? 'Juntas Médicas' : 'Reuniones y Minutas',
       icon: CalendarDays,
+      color: 'text-amber-600',
     },
     {
       href: '/ecs',
       label: isConstruccion ? 'Planos (ECS)' : isVeterinaria ? 'Fichas (ECS)' : 'Entregables (ECS)',
       fullLabel: isConstruccion ? 'Planos Estructurales (ECS)' : isVeterinaria ? 'Fichas Clínicas (ECS)' : 'Entregables (ECS)',
       icon: Layers,
+      color: 'text-teal-600',
     },
     {
       href: '/aprobaciones',
       label: 'Dictamen',
       fullLabel: isConstruccion ? 'Dictamen de Residencia' : isVeterinaria ? 'Dictamen Veterinario' : 'Aprobaciones',
       icon: ShieldCheck,
+      color: 'text-emerald-600',
     },
     {
       href: '/lineas-base',
       label: 'Líneas Base',
       fullLabel: 'Líneas Base / Hitos Contractuales',
       icon: Lock,
+      color: 'text-purple-600',
     },
     {
       href: '/cambios',
       label: isConstruccion ? 'Adicionales' : 'Cambios (RFC)',
       fullLabel: isConstruccion ? 'Órdenes de Cambio (RFC)' : 'Solicitudes de Cambio (RFC)',
       icon: AlertTriangle,
+      color: 'text-orange-600',
     },
     {
       href: '/bitacora',
       label: 'Bitácora',
       fullLabel: isConstruccion ? 'Parte Diario de Faena' : isVeterinaria ? 'Cuaderno Clínico' : 'Bitácora de Campo',
       icon: Activity,
+      color: 'text-rose-600',
     },
   ];
 }
@@ -101,12 +108,14 @@ function getSecondaryNavItems(rubro?: string) {
       label: 'Línea de Tiempo',
       fullLabel: 'Línea de Tiempo y Canvas',
       icon: Sparkles,
+      color: 'text-sky-600',
     },
     {
       href: '/trazabilidad',
       label: 'Matriz RTV',
       fullLabel: 'Matriz de Trazabilidad',
       icon: Network,
+      color: 'text-blue-600',
     },
   ];
 }
@@ -265,7 +274,7 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
         </div>
 
         {/* NIVEL 2: Pestañas de Navegación Fluidas (Adaptable y con Scroll Suave en Laptops y Tablets) */}
-        <div className="bg-white border-b border-slate-200 shadow-2xs">
+        <div className="bg-slate-50/90 border-b border-slate-200/90 shadow-2xs backdrop-blur-xs">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-11 flex items-center justify-between">
             
             {/* Navegación de Pestañas con Scroll Horizontal Táctil Automático */}
@@ -279,11 +288,11 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
                     href={item.href}
                     className={`px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
                       isActive
-                        ? 'bg-[#0B2545] text-white font-semibold shadow-xs'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'
+                        ? 'bg-[#0B2545] text-white font-semibold shadow-xs border border-[#0B2545]'
+                        : 'text-slate-700 hover:text-slate-900 hover:bg-white hover:border-slate-300/80 border border-transparent font-medium'
                     }`}
                   >
-                    <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-sky-300' : 'text-slate-500'}`} />
+                    <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-sky-300' : item.color}`} />
                     <span>{item.label}</span>
                   </Link>
                 );
@@ -295,11 +304,11 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
                   href="/usuarios"
                   className={`px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
                     pathname.startsWith('/usuarios')
-                      ? 'bg-[#0B2545] text-white font-semibold shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'
+                      ? 'bg-[#0B2545] text-white font-semibold shadow-xs border border-[#0B2545]'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-white hover:border-slate-300/80 border border-transparent font-medium'
                   }`}
                 >
-                  <Users className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                  <Users className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
                   <span>Personal</span>
                 </Link>
               )}
@@ -311,10 +320,11 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
                   onClick={() => setDropdownHerramientas(!dropdownHerramientas)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1 whitespace-nowrap ${
                     secondaryNavItems.some((s) => pathname.startsWith(s.href))
-                      ? 'bg-[#0B2545] text-white font-semibold shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                      ? 'bg-[#0B2545] text-white font-semibold shadow-xs border border-[#0B2545]'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-white hover:border-slate-300/80 border border-transparent'
                   }`}
                 >
+                  <Sparkles className="w-3.5 h-3.5 text-sky-600" />
                   <span>Herramientas</span>
                   <ChevronDown className="w-3 h-3 text-slate-500" />
                 </button>
