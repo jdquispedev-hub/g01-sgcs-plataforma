@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import NavbarPrincipal from '@/components/NavbarPrincipal';
 import { getTerminologia } from '@/lib/terminologia';
 import { 
   ShieldCheck, 
@@ -52,6 +53,7 @@ interface EcsDetail {
 export default function EcsDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [ecs, setEcs] = useState<EcsDetail | null>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [currentUserRole, setCurrentUserRole] = useState<string>('');
   const [currentUserId, setCurrentUserId] = useState<string>('');
   const [rubro, setRubro] = useState<string>('CONSTRUCCION');
@@ -90,10 +92,12 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
         setEditUbicacion(dataEcs.data.ubicacion);
       }
       if (dataMe.success) {
-        setCurrentUserRole(dataMe.data?.user?.rol || '');
-        setCurrentUserId(dataMe.data?.user?.userId || dataMe.data?.user?.id || '');
-        if (dataMe.data?.user?.rubro) {
-          setRubro(dataMe.data.user.rubro);
+        const u = dataMe.data?.user || dataMe.user;
+        setCurrentUser(u);
+        setCurrentUserRole(u?.rol || '');
+        setCurrentUserId(u?.userId || u?.id || '');
+        if (u?.rubro) {
+          setRubro(u.rubro);
         }
       }
     } catch (err) {
@@ -222,77 +226,80 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
-      {/* Top Navbar Mobile-First */}
-      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-xl sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-0 sm:h-16 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
+      {/* Top Navbar Global Unificado */}
+      <NavbarPrincipal user={currentUser} />
+
+      {/* Sub-Header y Acciones del Entregable */}
+      <div className="bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <Link
               href="/ecs"
-              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30 shrink-0 shadow-sm"
+              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition border border-slate-200"
               title="Volver al Catálogo ECS"
             >
-              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+              <ArrowLeft className="w-4 h-4" />
             </Link>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="font-mono text-xs font-black text-upt-gold bg-upt-navy-800 px-2 py-0.5 rounded border border-upt-gold/30 shrink-0">
+                <span className="font-mono text-xs font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200 shrink-0">
                   {ecs.codigo}
                 </span>
-                <span className="font-black text-xs sm:text-base tracking-tight truncate text-white">
+                <span className="font-bold text-sm sm:text-base tracking-tight truncate text-slate-900">
                   {ecs.nombre}
                 </span>
               </div>
-              <span className="text-[10px] sm:text-[11px] text-slate-300 block truncate">
-                Gestión de versiones y dictamen técnico (RF-07, RF-08)
+              <span className="text-[11px] text-slate-500 block truncate">
+                Expediente de versiones y dictamen técnico
               </span>
             </div>
           </div>
 
-          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0 border-t border-white/10 sm:border-t-0">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setModalEditOpen(true)}
-              className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition flex items-center gap-1.5 border border-white/10"
+              className="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-medium text-xs transition flex items-center gap-1.5 border border-slate-200"
             >
-              <Edit3 className="w-3.5 h-3.5 text-upt-gold" />
-              <span>Editar</span>
+              <Edit3 className="w-3.5 h-3.5 text-slate-500" />
+              <span>Editar Datos</span>
             </button>
             <button
               onClick={() => setModalVersionOpen(true)}
-              className="px-3.5 py-1.5 rounded-xl bg-upt-gold hover:bg-upt-gold-500 text-upt-navy-950 font-black text-xs shadow-md transition flex items-center gap-1.5"
+              className="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-xs transition flex items-center gap-1.5 active:scale-95"
             >
-              <Plus className="w-3.5 h-3.5 stroke-[3]" />
+              <Plus className="w-4 h-4" />
               <span>Nueva Versión</span>
             </button>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
         {/* Ficha Resumen del ECS */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-slate-300 shadow-md">
+        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Tipo de Elemento</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Tipo de Elemento</p>
               <p className="text-sm font-bold text-slate-900 mt-1">{ecs.tipo}</p>
             </div>
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Proyecto Asociado</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Proyecto Asociado</p>
               <p className="text-sm font-bold text-slate-900 mt-1">{ecs.proyecto.nombre}</p>
               <span className="font-mono text-[10px] text-slate-400">{ecs.proyecto.codigo}</span>
             </div>
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Responsable Técnico</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Responsable Técnico</p>
               <p className="text-sm font-bold text-slate-900 mt-1">{ecs.responsable.nombre_completo}</p>
               <span className="text-[11px] text-slate-500">{ecs.responsable.email}</span>
             </div>
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Ubicación / Repo</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Ubicación / Repo</p>
               <a
                 href={ecs.ubicacion.startsWith('http') ? ecs.ubicacion : '#'}
                 target={ecs.ubicacion.startsWith('http') ? '_blank' : '_self'}
                 rel="noopener noreferrer"
-                className="text-xs font-semibold text-upt-navy-600 hover:text-upt-gold-600 mt-1 flex items-center gap-1 truncate"
+                className="text-xs font-medium text-sky-600 hover:underline mt-1 flex items-center gap-1 truncate"
               >
                 <span>{ecs.ubicacion}</span>
                 <ExternalLink className="w-3.5 h-3.5 shrink-0" />
@@ -301,8 +308,8 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
           </div>
 
           {ecs.descripcion && (
-            <div className="mt-5 pt-5 border-t border-slate-100">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Descripción del Artefacto</p>
+            <div className="mt-4 pt-4 border-t border-slate-100">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Descripción del Artefacto</p>
               <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">{ecs.descripcion}</p>
             </div>
           )}
@@ -371,7 +378,7 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
               {ecs.versiones.map((v) => (
                 <div
                   key={v.id}
-                  className="bg-white rounded-3xl p-6 border-2 border-slate-300 shadow-md hover:shadow-xl transition flex flex-col md:flex-row justify-between gap-4 items-start md:items-center"
+                  className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col md:flex-row justify-between gap-4 items-start md:items-center"
                 >
                   <div className="space-y-2 flex-1">
                     <div className="flex items-center gap-3">

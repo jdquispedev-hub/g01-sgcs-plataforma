@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { getTerminologia } from '@/lib/terminologia';
 import Link from 'next/link';
+import NavbarPrincipal from '@/components/NavbarPrincipal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShieldCheck, 
@@ -222,104 +223,102 @@ export default function EcsPage() {
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
-      {/* Top Navbar Mobile-First */}
-      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-xl sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-0 sm:h-16 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
-          
+      {/* Navbar Global Unificado */}
+      <NavbarPrincipal user={currentUser} />
+
+      {/* Sub-Header y Acciones del Catálogo */}
+      <div className="bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <Link
               href="/dashboard"
-              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30 shrink-0 shadow-sm"
+              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition border border-slate-200"
               title="Volver al Dashboard"
             >
-              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+              <ArrowLeft className="w-4 h-4" />
             </Link>
             <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-black text-sm sm:text-base text-white tracking-tight truncate">
-                  Entregables de Configuración (ECS)
-                </span>
-                <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase tracking-wider shrink-0 shadow-sm">
-                  Paso 2: Inventario Técnico
-                </span>
-              </div>
-              <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
-                {terminologia.ecsSubtitulo} aprobados por el {terminologia.aprobadorCargo}
+              <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight truncate">
+                Catálogo de Entregables (ECS)
+              </h1>
+              <p className="text-xs text-slate-500 truncate">
+                {terminologia.ecsSubtitulo} validados técnicamente
               </p>
             </div>
           </div>
 
-          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0 border-t border-white/10 sm:border-t-0">
+          <div className="flex items-center gap-2 shrink-0">
             <Link
               href="/aprobaciones"
-              className="px-2.5 py-1.5 text-xs font-bold rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
+              className="px-3 py-1.5 text-xs font-medium rounded-lg text-slate-700 hover:bg-slate-100 border border-slate-200 transition flex items-center gap-1.5"
             >
-              <CheckCircle2 className="w-3.5 h-3.5 text-upt-gold" /> Dictaminar
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Dictaminar</span>
             </Link>
             <Link
               href="/lineas-base"
-              className="px-2.5 py-1.5 text-xs font-bold rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5"
+              className="px-3 py-1.5 text-xs font-medium rounded-lg text-slate-700 hover:bg-slate-100 border border-slate-200 transition flex items-center gap-1.5"
             >
-              <Lock className="w-3.5 h-3.5 text-upt-gold" /> Hitos Congelados
+              <Lock className="w-3.5 h-3.5 text-purple-600" />
+              <span>Hitos Oficiales</span>
             </Link>
             <button
               onClick={() => setModalOpen(true)}
-              className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-500 hover:from-amber-400 hover:to-upt-gold text-upt-navy-950 font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition flex items-center gap-1.5 shrink-0 active:scale-95"
+              className="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-xs transition flex items-center gap-1.5 active:scale-95"
             >
-              <Plus className="w-4 h-4 stroke-[3]" />
-              <span className="hidden sm:inline">Nuevo Entregable</span>
-              <span className="sm:hidden font-bold">Nuevo</span>
+              <Plus className="w-4 h-4" />
+              <span>Nuevo Entregable</span>
             </button>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
         
         {/* Banner de Contexto: ¿Qué es un ECS? */}
-        <div className="bg-gradient-to-r from-upt-navy-900 to-slate-800 rounded-3xl p-6 text-white border border-upt-navy-700 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-upt-gold text-xs font-bold uppercase tracking-wider">
+            <div className="flex items-center gap-1.5 text-sky-600 text-xs font-semibold uppercase tracking-wider">
               <Layers className="w-4 h-4" />
-              <span>Paso 2 del Proceso Oficial</span>
+              <span>Fase 2: Catálogo de Artefactos de Obra</span>
             </div>
-            <h2 className="text-xl font-black text-white">
-              ¿Qué es un Entregable o Componente (ECS)?
+            <h2 className="text-base sm:text-lg font-bold text-slate-900">
+              ¿Qué es un Entregable o Componente de Configuración (ECS)?
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Es cualquier pieza clave del proyecto (un módulo de código, una base de datos o un documento de requisitos).
-              Cada versión propuesta debe ser revisada y <strong className="text-emerald-400">APROBADA</strong> por el especialista antes de poder incluirse en un Hito Congelado (Línea Base).
+            <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
+              Es cualquier pieza técnica o entregable auditado (un plano estructural, memoria de cálculo o especificación técnica).
+              Cada versión propuesta debe ser revisada y <strong className="text-emerald-700">APROBADA</strong> por el responsable de calidad antes de incluirse en un Hito Oficial (Línea Base).
             </p>
           </div>
-          <div className="bg-white/10 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/10 text-center shrink-0">
-            <span className="text-[10px] text-slate-300 uppercase font-black block">Entregables Activos</span>
-            <span className="text-2xl font-black text-upt-gold">{ecsList.length}</span>
+          <div className="bg-slate-50 px-4 py-3 rounded-xl border border-slate-200 text-center shrink-0">
+            <span className="text-[10px] text-slate-500 uppercase font-bold block">Entregables Totales</span>
+            <span className="text-2xl font-bold text-slate-900">{ecsList.length}</span>
           </div>
         </div>
 
         {/* Consola de Búsqueda y Filtros de Alto Contraste */}
-        <div className="bg-white p-5 rounded-3xl border-2 border-slate-300 shadow-md space-y-4">
+        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-              <Search className="w-4 h-4 text-upt-gold-600" />
-              <span>Buscador y Filtros de Artefactos</span>
+            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+              <Search className="w-4 h-4 text-slate-400" />
+              <span>Búsqueda de Entregables</span>
             </span>
-            <span className="text-xs font-bold text-slate-500">
-              Mostrando {ecsList.length} elementos encontrados
+            <span className="text-xs text-slate-500">
+              {ecsList.length} resultados encontrados
             </span>
           </div>
 
-          <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-3">
-            {/* Input de Búsqueda con Alto Contraste */}
+          <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-2.5">
+            {/* Input de Búsqueda */}
             <div className="relative flex-1">
-              <Search className="w-5 h-5 absolute left-3.5 top-3 text-upt-gold-600" />
+              <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Escribe el código (ej. ECS-MOD-PAGOS) o nombre del artefacto..."
-                className="w-full pl-11 pr-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 placeholder:font-normal focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition"
+                placeholder="Escribe el código (ej. PLN-EST-01) o nombre del entregable..."
+                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-slate-400 transition"
               />
             </div>
 
@@ -328,23 +327,23 @@ export default function EcsPage() {
               <select
                 value={tipoFiltro}
                 onChange={(e) => setTipoFiltro(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-2xl text-xs sm:text-sm font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 focus:ring-4 focus:ring-upt-gold/20 transition cursor-pointer"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-800 focus:bg-white focus:border-slate-400 transition cursor-pointer"
               >
                 <option value="">Todos los Tipos de ECS</option>
-                <option value="DOCUMENTO">Documentos / Requisitos</option>
-                <option value="CODIGO_FUENTE">Código Fuente / Módulos</option>
-                <option value="DISENO">Diseño / UI / Planos</option>
+                <option value="DOCUMENTO">Documentos / Memorias</option>
+                <option value="CODIGO_FUENTE">Código / Módulos</option>
+                <option value="DISENO">Planos / Modelos BIM</option>
                 <option value="BASE_DATOS">Base de Datos / Tablas</option>
-                <option value="CASO_PRUEBA">Casos de Prueba</option>
+                <option value="CASO_PRUEBA">Ensayos / Pruebas</option>
               </select>
             </div>
 
             {/* Botón Buscar */}
             <button
               type="submit"
-              className="px-6 py-2.5 rounded-2xl bg-upt-navy-700 hover:bg-upt-navy-800 text-upt-gold font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 shrink-0"
+              className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs sm:text-sm transition flex items-center justify-center gap-1.5 shrink-0"
             >
-              <Search className="w-4 h-4" />
+              <Search className="w-3.5 h-3.5" />
               <span>Buscar</span>
             </button>
           </form>

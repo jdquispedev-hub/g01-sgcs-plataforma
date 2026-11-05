@@ -382,46 +382,43 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Selector de Modo de Vista (Personal vs General) */}
-        <div className="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
+        {/* Selector de Modo de Vista (Segmented Control Estilo Linear / macOS) */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white p-2 rounded-2xl border border-slate-200 shadow-xs">
+          <div className="bg-slate-100 p-1 rounded-xl inline-flex items-center gap-1">
             <button
               type="button"
               onClick={() => setVistaTab('PERSONAL')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
                 vistaTab === 'PERSONAL'
-                  ? 'bg-slate-900 text-white shadow-sm'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <UserCheck className="w-4 h-4 text-emerald-400" />
-              <span>Mi Espacio de Trabajo</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-200 font-semibold">
-                {misEcs.length} a mi cargo
+              <UserCheck className="w-3.5 h-3.5 text-sky-600" />
+              <span>Mi Trabajo a Cargo</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-slate-100 text-slate-700 font-semibold border border-slate-200">
+                {misEcs.length}
               </span>
             </button>
 
             <button
               type="button"
               onClick={() => setVistaTab('GENERAL')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
                 vistaTab === 'GENERAL'
-                  ? 'bg-slate-900 text-white shadow-sm'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Compass className="w-4 h-4 text-sky-400" />
-              <span>Visión General de la Obra</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-semibold border border-slate-200">
-                Pipeline Completo
-              </span>
+              <Compass className="w-3.5 h-3.5 text-slate-500" />
+              <span>Panorama de la Obra</span>
             </button>
           </div>
 
           <div className="text-[11px] text-slate-500 font-medium px-2">
             {vistaTab === 'PERSONAL'
-              ? 'Mostrando tus asignaciones y entregas prioritarias'
-              : 'Mostrando pipeline corporativo, minutas y líneas base'}
+              ? 'Tus entregables y bitácora técnica prioritaria'
+              : 'Pipeline contractual, agenda de reuniones y líneas base'}
           </div>
         </div>
 
@@ -656,55 +653,50 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
           {/* Lado Izquierdo: Ficha del Proyecto y Pipeline de 5 Pasos (7 cols) */}
-          <section className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-300 shadow-md flex flex-col justify-between space-y-5">
-            <div className="space-y-3">
+          <section className="lg:col-span-7 bg-white rounded-2xl p-6 border border-slate-200 shadow-xs flex flex-col justify-between space-y-5">
+            <div className="space-y-4">
             {proyectos.length === 0 ? (
-              <div className="bg-slate-50 rounded-2xl p-6 sm:p-8 border-2 border-dashed border-slate-300 text-center space-y-3">
-                <div className="w-14 h-14 rounded-2xl bg-upt-gold/20 text-upt-navy-950 flex items-center justify-center mx-auto border border-upt-gold/40 shadow-inner">
+              <div className="bg-slate-50 rounded-xl p-6 sm:p-8 border border-dashed border-slate-200 text-center space-y-3">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center mx-auto border border-slate-200">
                   {user?.rubro === 'CONSTRUCCION' ? (
-                    <Building className="w-7 h-7 text-upt-navy-900" />
+                    <Building className="w-6 h-6 text-slate-700" />
                   ) : (
-                    <Briefcase className="w-7 h-7 text-upt-navy-900" />
+                    <Briefcase className="w-6 h-6 text-slate-700" />
                   )}
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-upt-gold bg-upt-navy-950 px-2.5 py-0.5 rounded-full inline-block">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-600 bg-slate-200/80 px-2 py-0.5 rounded-md inline-block">
                     {terminologia.badgeIndustria}
                   </span>
-                  <h3 className="text-lg font-black text-slate-900">
-                    No hay {terminologia.proyectoLabelPlural.toLowerCase()} registrados en esta organización
+                  <h3 className="text-base font-bold text-slate-900">
+                    No hay {terminologia.proyectoLabelPlural.toLowerCase()} registrados
                   </h3>
-                  <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
+                  <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
                     {terminologia.recomendaciones.sinProyectos}
                   </p>
                 </div>
-                <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
+                <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
                   {isAdmin ? (
                     <>
                       <button
                         onClick={() => setCrearProyectoModalOpen(true)}
-                        className="px-5 py-2.5 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-black text-xs shadow-md transition active:scale-95 inline-flex items-center gap-2 border border-upt-gold/40"
+                        className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-xs transition active:scale-95 inline-flex items-center gap-2"
                       >
-                        <Plus className="w-4 h-4 stroke-[3]" />
-                        <span>
-                          Registrar Primer(a) {terminologia.proyectoLabel}
-                        </span>
+                        <Plus className="w-4 h-4" />
+                        <span>Registrar {terminologia.proyectoLabel}</span>
                       </button>
                       <Link
                         href="/usuarios"
-                        className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs shadow-sm transition active:scale-95 inline-flex items-center gap-2 border-2 border-slate-300"
+                        className="px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-medium text-xs shadow-xs transition active:scale-95 inline-flex items-center gap-2 border border-slate-200"
                       >
                         <Users className="w-4 h-4 text-purple-600" />
-                        <span>Gestionar Personal & Roles</span>
+                        <span>Gestionar Personal</span>
                       </Link>
                     </>
                   ) : (
-                    <div className="bg-white rounded-2xl p-4 border border-slate-200 text-center max-w-sm">
-                      <p className="text-xs text-slate-700 font-bold">
+                    <div className="bg-white rounded-xl p-3 border border-slate-200 text-center max-w-sm">
+                      <p className="text-xs text-slate-700 font-semibold">
                         Tu organización aún no tiene {terminologia.proyectoLabel.toLowerCase()} activo asignado.
-                      </p>
-                      <p className="text-[11px] text-slate-500 mt-0.5">
-                        Comunícate con el Administrador de tu empresa para que aperture o te asigne a uno.
                       </p>
                     </div>
                   )}
@@ -713,19 +705,19 @@ export default function DashboardPage() {
             ) : (
               <>
                 {/* Selector de Proyecto Activo */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-slate-200 pb-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
                   <div>
-                    <span className="text-[10px] font-black uppercase tracking-wider text-upt-navy-700 bg-upt-navy-50 px-2.5 py-0.5 rounded-md border border-upt-navy-200 inline-block mb-1">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200 inline-block mb-1">
                       {terminologia.proyectoLabel} Seleccionado
                     </span>
-                    <h2 className="text-lg sm:text-xl font-black text-slate-900 flex items-center gap-2">
+                    <h2 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
                       <span>{activeProyecto?.nombre}</span>
-                      <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
+                      <span className="text-xs font-mono font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
                         {activeProyecto?.codigo}
                       </span>
                     </h2>
-                    <p className="text-xs text-slate-600 mt-0.5">
-                      Cliente Oficial: <strong className="text-slate-900">{activeProyecto?.cliente_nombre || 'Cliente sin asignar'}</strong>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Cliente Oficial: <strong className="text-slate-800">{activeProyecto?.cliente_nombre || 'Sin cliente asignado'}</strong>
                     </p>
                   </div>
 
@@ -733,7 +725,7 @@ export default function DashboardPage() {
                     <select
                       value={selectedProyectoId}
                       onChange={(e) => setSelectedProyectoId(e.target.value)}
-                      className="px-3 py-1.5 bg-slate-100 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 transition cursor-pointer max-w-[200px] truncate"
+                      className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:bg-white focus:border-slate-400 transition cursor-pointer max-w-[200px] truncate"
                     >
                       {proyectos.map((p) => (
                         <option key={p.id} value={p.id}>
@@ -744,25 +736,25 @@ export default function DashboardPage() {
                     {isAdmin && (
                       <button
                         onClick={() => setCrearProyectoModalOpen(true)}
-                        className="p-1.5 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold transition shadow-sm border border-upt-gold/30 shrink-0 active:scale-95"
+                        className="p-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white transition shadow-xs shrink-0 active:scale-95"
                         title={`Registrar Nuevo(a) ${terminologia.proyectoLabel}`}
                       >
-                        <Plus className="w-4 h-4 stroke-[3]" />
+                        <Plus className="w-4 h-4" />
                       </button>
                     )}
                   </div>
                 </div>
 
                 {/* Siguiente Paso Recomendado */}
-                <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-3.5 flex items-start gap-3 shadow-sm">
-                  <div className="w-8 h-8 rounded-xl bg-amber-200 text-amber-900 flex items-center justify-center shrink-0 mt-0.5">
-                    <Sparkles className="w-4 h-4 text-amber-800" />
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 border border-sky-200 flex items-center justify-center shrink-0 mt-0.5">
+                    <Clock className="w-4 h-4" />
                   </div>
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 block">
+                  <div className="space-y-0.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
                       Acción Recomendada Ahora:
                     </span>
-                    <p className="text-xs font-bold text-slate-900 leading-snug">
+                    <p className="text-xs font-semibold text-slate-800 leading-snug">
                       {versionesPendientes > 0
                         ? terminologia.recomendaciones.pendientesAprobacion(versionesPendientes)
                         : lineasVigentes === 0
@@ -776,96 +768,96 @@ export default function DashboardPage() {
 
               {/* Pipeline Guiado de 5 Pasos Interactivos */}
               <div>
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider block mb-2">
-                  Flujo Oficial del Proyecto (Haz clic para navegar):
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-2">
+                  Flujo Contractual del Proyecto:
                 </span>
                 <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-2">
                   <Link
                     href="/reuniones"
-                    className="p-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-300 text-emerald-950 transition flex flex-col justify-between shadow-sm active:scale-95"
+                    className="p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 transition flex flex-col justify-between shadow-xs active:scale-95"
                   >
-                    <span className="text-[9px] font-black text-emerald-700">1. CLIENTE</span>
-                    <span className="text-xs font-black truncate">Reuniones</span>
-                    <span className="text-[9px] text-slate-500">Minutas</span>
+                    <span className="text-[9px] font-bold text-slate-500 uppercase">1. Minutas</span>
+                    <span className="text-xs font-bold truncate">Reuniones</span>
+                    <span className="text-[10px] text-slate-400">Pactos</span>
                   </Link>
                   <Link
                     href="/ecs"
-                    className="p-2.5 rounded-2xl bg-blue-50 hover:bg-blue-100 border-2 border-blue-300 text-blue-950 transition flex flex-col justify-between shadow-sm active:scale-95"
+                    className="p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 transition flex flex-col justify-between shadow-xs active:scale-95"
                   >
-                    <span className="text-[9px] font-black text-blue-700">2. EQUIPO</span>
-                    <span className="text-xs font-black truncate">Entregables</span>
-                    <span className="text-[9px] text-slate-500">{totalEcs} ECS</span>
+                    <span className="text-[9px] font-bold text-slate-500 uppercase">2. Inventario</span>
+                    <span className="text-xs font-bold truncate">Entregables</span>
+                    <span className="text-[10px] text-slate-400">{totalEcs} ECS</span>
                   </Link>
                   <Link
                     href="/aprobaciones"
-                    className={`p-2.5 rounded-2xl border-2 transition flex flex-col justify-between shadow-sm active:scale-95 ${
+                    className={`p-2.5 rounded-xl border transition flex flex-col justify-between shadow-xs active:scale-95 ${
                       versionesPendientes > 0
-                        ? 'bg-amber-50 hover:bg-amber-100 border-amber-400 text-amber-950'
-                        : 'bg-emerald-50 hover:bg-emerald-100 border-emerald-300 text-emerald-950'
+                        ? 'bg-amber-50/70 hover:bg-amber-100/70 border-amber-300 text-amber-950'
+                        : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-900'
                     }`}
                   >
-                    <span className="text-[9px] font-black">3. {terminologia.aprobadorRolLabel.toUpperCase()}</span>
-                    <span className="text-xs font-black truncate">Dictamen</span>
-                    <span className="text-[9px]">
+                    <span className="text-[9px] font-bold uppercase text-slate-500">3. Dictamen</span>
+                    <span className="text-xs font-bold truncate">Aprobación</span>
+                    <span className="text-[10px]">
                       {versionesPendientes > 0 ? `${versionesPendientes} Por Ver` : 'Al día'}
                     </span>
                   </Link>
                   <Link
                     href="/lineas-base"
-                    className={`p-2.5 rounded-2xl border-2 transition flex flex-col justify-between shadow-sm active:scale-95 ${
+                    className={`p-2.5 rounded-xl border transition flex flex-col justify-between shadow-xs active:scale-95 ${
                       lineasVigentes > 0
-                        ? 'bg-purple-50 hover:bg-purple-100 border-purple-300 text-purple-950'
-                        : 'bg-slate-50 hover:bg-slate-100 border-slate-300 text-slate-700'
+                        ? 'bg-purple-50/70 hover:bg-purple-100/70 border-purple-200 text-purple-950'
+                        : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
                     }`}
                   >
-                    <span className="text-[9px] font-black">4. PACTO</span>
-                    <span className="text-xs font-black truncate">Línea Base</span>
-                    <span className="text-[9px]">
+                    <span className="text-[9px] font-bold uppercase text-slate-500">4. Hito</span>
+                    <span className="text-xs font-bold truncate">Línea Base</span>
+                    <span className="text-[10px]">
                       {lineasVigentes > 0 ? `${lineasVigentes} Vigente` : 'Pendiente'}
                     </span>
                   </Link>
                   <Link
                     href="/cambios"
-                    className="col-span-2 sm:col-span-3 xl:col-span-1 p-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 border-2 border-rose-300 text-rose-950 transition flex flex-col justify-between shadow-sm active:scale-95"
+                    className="col-span-2 sm:col-span-3 xl:col-span-1 p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 transition flex flex-col justify-between shadow-xs active:scale-95"
                   >
-                    <span className="text-[9px] font-black text-rose-700">{user?.rubro === 'CONSTRUCCION' ? '5. ADICIONALES' : '5. CAMBIOS'}</span>
-                    <span className="text-xs font-black truncate">Modificaciones</span>
-                    <span className="text-[9px] text-slate-500">
-                      {rfcPendientes > 0 ? `${rfcPendientes} RFCs` : '0 RFCs'}
+                    <span className="text-[9px] font-bold uppercase text-slate-500">5. Control</span>
+                    <span className="text-xs font-bold truncate">Cambios RFC</span>
+                    <span className="text-[10px] text-slate-400">
+                      {rfcPendientes > 0 ? `${rfcPendientes} Activos` : '0 RFCs'}
                     </span>
                   </Link>
                 </div>
               </div>
             </div>
 
-            <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
-              <span className="text-xs text-slate-500 font-bold">
-                ¿Deseas ver la historia viva en el tiempo?
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span className="text-xs text-slate-500">
+                Línea de tiempo cronológica completa
               </span>
               <Link
                 href="/cronograma"
-                className="text-xs font-black text-upt-navy-900 hover:text-upt-gold-600 flex items-center gap-1"
+                className="text-xs font-semibold text-slate-800 hover:text-slate-950 flex items-center gap-1"
               >
-                <span>Abrir Línea de Tiempo / Canvas</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <span>Ver Canvas Vivo</span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
               </Link>
             </div>
           </section>
 
           {/* Lado Derecho: Widget de Agenda de Reuniones (5 cols) */}
-          <section className="lg:col-span-5 bg-gradient-to-br from-upt-navy-900 to-slate-900 rounded-3xl p-6 text-white border-2 border-upt-navy-700 shadow-xl flex flex-col justify-between space-y-4">
+          <section className="lg:col-span-5 bg-slate-900 rounded-2xl p-6 text-white border border-slate-800 shadow-xs flex flex-col justify-between space-y-4">
             <div className="space-y-3">
-              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-upt-gold/20 flex items-center justify-center text-upt-gold">
+                  <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300 border border-slate-700">
                     <CalendarDays className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="font-black text-sm text-white">Agenda de Reuniones</h3>
-                    <p className="text-[10px] text-slate-300">Hoy y próximas sesiones citadas</p>
+                    <h3 className="font-bold text-sm text-white">Agenda de Sesiones</h3>
+                    <p className="text-[10px] text-slate-400">Reuniones de coordinación y cliente</p>
                   </div>
                 </div>
-                <span className="text-[10px] font-black bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                <span className="text-[10px] font-semibold bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full border border-slate-700">
                   {activeReuniones.length} sesiones
                 </span>
               </div>
@@ -943,14 +935,14 @@ export default function DashboardPage() {
           <button
             type="button"
             onClick={() => setAgendarModalOpen(true)}
-            className="p-4 rounded-2xl bg-white hover:bg-slate-50 border-2 border-slate-300 hover:border-emerald-500 shadow-sm transition flex items-center gap-3 group text-left"
+            className="p-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 shadow-xs transition flex items-center gap-3 text-left"
           >
-            <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">
               <CalendarDays className="w-5 h-5" />
             </div>
             <div>
-              <span className="font-black text-xs text-slate-900 block group-hover:text-emerald-700 transition">
-                + Agendar Reunión
+              <span className="font-bold text-xs text-slate-900 block">
+                Agendar Reunión
               </span>
               <span className="text-[10px] text-slate-500">Minuta con cliente o equipo</span>
             </div>
@@ -958,13 +950,13 @@ export default function DashboardPage() {
 
           <Link
             href="/cronograma"
-            className="p-4 rounded-2xl bg-white hover:bg-slate-50 border-2 border-slate-300 hover:border-upt-gold shadow-sm transition flex items-center gap-3 group"
+            className="p-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 shadow-xs transition flex items-center gap-3"
           >
-            <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-              <Sparkles className="w-5 h-5 text-upt-gold-700" />
+            <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">
+              <Sparkles className="w-5 h-5 text-sky-600" />
             </div>
             <div>
-              <span className="font-black text-xs text-slate-900 block group-hover:text-upt-gold-800 transition">
+              <span className="font-bold text-xs text-slate-900 block">
                 Línea de Tiempo (Canvas)
               </span>
               <span className="text-[10px] text-slate-500">Roadmap cronológico</span>
@@ -973,14 +965,14 @@ export default function DashboardPage() {
 
           <Link
             href="/ecs"
-            className="p-4 rounded-2xl bg-white hover:bg-slate-50 border-2 border-slate-300 hover:border-blue-500 shadow-sm transition flex items-center gap-3 group"
+            className="p-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 shadow-xs transition flex items-center gap-3"
           >
-            <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">
               <Layers className="w-5 h-5" />
             </div>
             <div>
-              <span className="font-black text-xs text-slate-900 block group-hover:text-blue-700 transition">
-                + Subir Entregable (ECS)
+              <span className="font-bold text-xs text-slate-900 block">
+                Catálogo de Entregables
               </span>
               <span className="text-[10px] text-slate-500">{terminologia.modulos.ecsAtajoSubtitulo}</span>
             </div>
@@ -988,14 +980,14 @@ export default function DashboardPage() {
 
           <Link
             href="/lineas-base/nueva"
-            className="p-4 rounded-2xl bg-white hover:bg-slate-50 border-2 border-slate-300 hover:border-purple-500 shadow-sm transition flex items-center gap-3 group"
+            className="p-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 shadow-xs transition flex items-center gap-3"
           >
-            <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">
               <Lock className="w-5 h-5" />
             </div>
             <div>
-              <span className="font-black text-xs text-slate-900 block group-hover:text-purple-700 transition">
-                + Congelar Hito Oficial
+              <span className="font-bold text-xs text-slate-900 block">
+                Congelar Hito Oficial
               </span>
               <span className="text-[10px] text-slate-500">{terminologia.lineaBaseLabel}</span>
             </div>
@@ -1008,24 +1000,24 @@ export default function DashboardPage() {
            SECCIÓN DE MÓDULOS ORGANIZADOS EN PESTAÑAS LIMPIAS
            ======================================================== */}
         <section className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-slate-300 pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
             <div>
-              <h2 className="text-lg font-black text-slate-900 tracking-tight">
+              <h2 className="text-base font-bold text-slate-900 tracking-tight">
                 Módulos de Trabajo y Control
               </h2>
-              <p className="text-xs text-slate-600">
-                Accede a las herramientas de gestión según la etapa de tu jornada
+              <p className="text-xs text-slate-500">
+                Herramientas del sistema según la etapa de tu jornada técnica
               </p>
             </div>
 
             {/* Pestañas de Organización */}
-            <div className="flex items-center gap-2">
+            <div className="bg-slate-100 p-1 rounded-xl inline-flex items-center gap-1">
               <button
                 onClick={() => setTabModulo('OPERACION')}
-                className={`px-4 py-2 rounded-2xl text-xs font-black transition flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
                   tabModulo === 'OPERACION'
-                    ? 'bg-upt-navy-900 text-upt-gold shadow'
-                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-300'
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <Briefcase className="w-3.5 h-3.5" />
@@ -1033,10 +1025,10 @@ export default function DashboardPage() {
               </button>
               <button
                 onClick={() => setTabModulo('SUPERVISION')}
-                className={`px-4 py-2 rounded-2xl text-xs font-black transition flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
                   tabModulo === 'SUPERVISION'
-                    ? 'bg-upt-navy-900 text-upt-gold shadow'
-                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-300'
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
@@ -1047,202 +1039,202 @@ export default function DashboardPage() {
 
           {/* Pestaña 1: Operación del Proyecto */}
           {tabModulo === 'OPERACION' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               
               {/* Card Reuniones */}
-              <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-emerald-600 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center">
-                      <CalendarDays className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center">
+                      <CalendarDays className="w-4.5 h-4.5" />
                     </div>
-                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
                       Paso 1
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-base font-black text-slate-900">
+                    <h3 className="text-sm font-bold text-slate-900">
                       {terminologia.modulos.reuniones.titulo}
                     </h3>
-                    <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                       {terminologia.modulos.reuniones.descripcion}
                     </p>
                   </div>
                 </div>
-                <div className="pt-4 mt-4 border-t border-slate-200">
+                <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/reuniones"
-                    className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center justify-between transition"
                   >
                     <span>Abrir Calendario</span>
-                    <ChevronRight className="w-4 h-4 text-upt-gold" />
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   </Link>
                 </div>
               </div>
 
               {/* Card Canvas */}
-              <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-upt-gold shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="w-10 h-10 rounded-2xl bg-amber-50 text-upt-gold-700 border border-upt-gold/30 flex items-center justify-center">
-                      <Sparkles className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center">
+                      <Sparkles className="w-4.5 h-4.5 text-sky-600" />
                     </div>
-                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
                       Roadmap
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-base font-black text-slate-900">
+                    <h3 className="text-sm font-bold text-slate-900">
                       {terminologia.modulos.canvas.titulo}
                     </h3>
-                    <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                       {terminologia.modulos.canvas.descripcion}
                     </p>
                   </div>
                 </div>
-                <div className="pt-4 mt-4 border-t border-slate-200">
+                <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/cronograma"
-                    className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center justify-between transition"
                   >
                     <span>Ver Canvas Vivo</span>
-                    <ChevronRight className="w-4 h-4 text-upt-gold" />
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   </Link>
                 </div>
               </div>
 
               {/* Card Entregables ECS */}
-              <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-blue-600 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center">
-                      <Layers className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center">
+                      <Layers className="w-4.5 h-4.5 text-slate-700" />
                     </div>
-                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-blue-100 text-blue-900">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
                       Paso 2
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-base font-black text-slate-900">
+                    <h3 className="text-sm font-bold text-slate-900">
                       {terminologia.modulos.ecs.titulo}
                     </h3>
-                    <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                       {terminologia.modulos.ecs.descripcion}
                     </p>
                   </div>
-                  <div className="text-xs text-slate-600 font-bold bg-slate-100 p-2 rounded-xl">
+                  <div className="text-[11px] text-slate-600 font-medium bg-slate-50 p-2 rounded-lg border border-slate-100">
                     Total: {totalEcs} entregables registrados
                   </div>
                 </div>
-                <div className="pt-4 mt-4 border-t border-slate-200">
+                <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/ecs"
-                    className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center justify-between transition"
                   >
                     <span>Explorar Entregables</span>
-                    <ChevronRight className="w-4 h-4 text-upt-gold" />
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   </Link>
                 </div>
               </div>
 
               {/* Card Aprobaciones */}
-              <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-teal-600 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="w-10 h-10 rounded-2xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center">
-                      <ShieldCheck className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center">
+                      <ShieldCheck className="w-4.5 h-4.5 text-emerald-600" />
                     </div>
-                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-teal-100 text-teal-900">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
                       Paso 3
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-base font-black text-slate-900">
+                    <h3 className="text-sm font-bold text-slate-900">
                       {terminologia.modulos.aprobaciones.titulo}
                     </h3>
-                    <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                       {terminologia.modulos.aprobaciones.descripcion}
                     </p>
                   </div>
-                  <div className="text-xs text-slate-600 font-bold bg-slate-100 p-2 rounded-xl">
+                  <div className="text-[11px] text-slate-600 font-medium bg-slate-50 p-2 rounded-lg border border-slate-100">
                     Pendientes: {versionesPendientes} versiones
                   </div>
                 </div>
-                <div className="pt-4 mt-4 border-t border-slate-200">
+                <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/aprobaciones"
-                    className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center justify-between transition"
                   >
                     <span>Bandeja Técnica</span>
-                    <ChevronRight className="w-4 h-4 text-upt-gold" />
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   </Link>
                 </div>
               </div>
 
               {/* Card Líneas Base */}
-              <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-purple-600 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-700 border border-purple-200 flex items-center justify-center">
-                      <Lock className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center">
+                      <Lock className="w-4.5 h-4.5 text-purple-600" />
                     </div>
-                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-purple-100 text-purple-900">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
                       Paso 4
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-base font-black text-slate-900">
+                    <h3 className="text-sm font-bold text-slate-900">
                       {terminologia.modulos.lineasBase.titulo}
                     </h3>
-                    <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                       {terminologia.modulos.lineasBase.descripcion}
                     </p>
                   </div>
-                  <div className="text-xs text-slate-600 font-bold bg-slate-100 p-2 rounded-xl">
+                  <div className="text-[11px] text-slate-600 font-medium bg-slate-50 p-2 rounded-lg border border-slate-100">
                     Vigentes: {lineasVigentes} de {totalLineasBase}
                   </div>
                 </div>
-                <div className="pt-4 mt-4 border-t border-slate-200">
+                <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/lineas-base"
-                    className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center justify-between transition"
                   >
                     <span>Ver Líneas Base</span>
-                    <ChevronRight className="w-4 h-4 text-upt-gold" />
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   </Link>
                 </div>
               </div>
 
               {/* Card Cambios RFC */}
-              <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-rose-600 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-700 border border-rose-200 flex items-center justify-center">
-                      <AlertTriangle className="w-5 h-5" />
+                    <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center">
+                      <AlertTriangle className="w-4.5 h-4.5 text-rose-600" />
                     </div>
-                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-100 text-rose-900">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
                       Paso 5
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-base font-black text-slate-900">
+                    <h3 className="text-sm font-bold text-slate-900">
                       {terminologia.modulos.cambios.titulo}
                     </h3>
-                    <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                       {terminologia.modulos.cambios.descripcion}
                     </p>
                   </div>
-                  <div className="text-xs text-slate-600 font-bold bg-slate-100 p-2 rounded-xl">
+                  <div className="text-[11px] text-slate-600 font-medium bg-slate-50 p-2 rounded-lg border border-slate-100">
                     Pendientes: {rfcPendientes} de {totalRfc}
                   </div>
                 </div>
-                <div className="pt-4 mt-4 border-t border-slate-200">
+                <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/cambios"
-                    className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center justify-between transition"
                   >
                     <span>Gestionar Cambios</span>
-                    <ChevronRight className="w-4 h-4 text-upt-gold" />
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   </Link>
                 </div>
               </div>
