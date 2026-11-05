@@ -22,6 +22,8 @@ import {
   User,
   ChevronDown,
   Users,
+  Building2,
+  FolderGit2,
 } from 'lucide-react';
 import GuiaFlujoModal from '@/components/GuiaFlujoModal';
 
@@ -58,7 +60,7 @@ function getCoreNavItems(rubro?: string) {
     },
     {
       href: '/ecs',
-      label: isConstruccion ? 'Planos' : isVeterinaria ? 'Fichas' : 'ECS',
+      label: isConstruccion ? 'Planos (ECS)' : isVeterinaria ? 'Fichas (ECS)' : 'Entregables (ECS)',
       fullLabel: isConstruccion ? 'Planos Estructurales (ECS)' : isVeterinaria ? 'Fichas Clínicas (ECS)' : 'Entregables (ECS)',
       icon: Layers,
     },
@@ -70,15 +72,21 @@ function getCoreNavItems(rubro?: string) {
     },
     {
       href: '/lineas-base',
-      label: 'Hitos',
-      fullLabel: 'Líneas Base / Hitos',
+      label: 'Líneas Base',
+      fullLabel: 'Líneas Base / Hitos Contractuales',
       icon: Lock,
     },
     {
       href: '/cambios',
-      label: isConstruccion ? 'Adicionales' : 'Cambios',
+      label: isConstruccion ? 'Adicionales' : 'Cambios (RFC)',
       fullLabel: isConstruccion ? 'Órdenes de Cambio (RFC)' : 'Solicitudes de Cambio (RFC)',
       icon: AlertTriangle,
+    },
+    {
+      href: '/bitacora',
+      label: 'Bitácora',
+      fullLabel: isConstruccion ? 'Parte Diario de Faena' : isVeterinaria ? 'Cuaderno Clínico' : 'Bitácora de Campo',
+      icon: Activity,
     },
   ];
 }
@@ -93,12 +101,6 @@ function getSecondaryNavItems(rubro?: string) {
       label: 'Línea de Tiempo',
       fullLabel: 'Línea de Tiempo y Canvas',
       icon: Sparkles,
-    },
-    {
-      href: '/bitacora',
-      label: 'Bitácora Diaria',
-      fullLabel: isConstruccion ? 'Parte Diario de Faena' : isVeterinaria ? 'Cuaderno Clínico' : 'Bitácora de Campo',
-      icon: Activity,
     },
     {
       href: '/trazabilidad',
@@ -186,152 +188,165 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
         </div>
       )}
 
-      {/* Header Principal Adaptativo */}
-      <header className="bg-slate-900/95 backdrop-blur-md text-white border-b border-slate-800 shadow-sm sticky top-0 z-40">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-15 flex items-center justify-between gap-3">
-          
-          {/* Brand & Organización */}
-          <div className="flex items-center gap-3 shrink-0 min-w-0">
-            <Link href="/dashboard" className="flex items-center gap-2.5 group min-w-0">
-              <div className="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-sky-400 shadow-xs group-hover:border-slate-600 transition shrink-0">
-                <ShieldCheck className="w-4.5 h-4.5" />
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-sm text-white tracking-tight truncate max-w-[140px] sm:max-w-[200px]">
-                    {user?.organizacionNombre || 'SGCS Plataforma'}
+      {/* Header en Dos Niveles Adaptativo (Estilo Industrial / GitHub / Linear) */}
+      <header className="sticky top-0 z-40 shadow-xs">
+        {/* NIVEL 1: Identidad Corporativa, Proyecto Activo y Sesión */}
+        <div className="bg-[#0B2545] text-white border-b border-[#133A66]">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-13 sm:h-14 flex items-center justify-between gap-3">
+            
+            {/* Lado Izquierdo: Brand e Identidad */}
+            <div className="flex items-center gap-3 min-w-0">
+              <Link href="/dashboard" className="flex items-center gap-2.5 group shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-[#133A66] border border-sky-400/30 flex items-center justify-center text-sky-300 shadow-xs group-hover:border-sky-300 transition">
+                  <ShieldCheck className="w-4.5 h-4.5" />
+                </div>
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-sm text-white tracking-tight leading-tight truncate max-w-[150px] sm:max-w-[220px]">
+                      {user?.organizacionNombre || 'SGCS Plataforma'}
+                    </span>
+                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#133A66] text-sky-200 border border-sky-400/20 uppercase tracking-wider shrink-0 hidden sm:inline-block">
+                      {user?.rubro || 'SISTEMA'}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-sky-200/70 hidden sm:block">
+                    Gestión de Configuración y Control Contractual
                   </span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 uppercase tracking-wider shrink-0 hidden sm:inline-block">
-                    {user?.rubro || 'SISTEMA'}
+                </div>
+              </Link>
+            </div>
+
+            {/* Lado Derecho: Acciones de Sesión y Perfil */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              {/* Botón Guía Rápida */}
+              <button
+                onClick={() => setGuiaModalOpen(true)}
+                className="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-sky-100 hover:text-white text-xs font-medium transition flex items-center gap-1.5 border border-white/10 active:scale-95"
+                title="Guía del Flujo Contractual"
+              >
+                <HelpCircle className="w-3.5 h-3.5 text-sky-300" />
+                <span className="hidden sm:inline">Guía de Flujo</span>
+              </button>
+
+              {/* Ficha de Usuario Compacta */}
+              <div className="flex items-center gap-2 pl-2 sm:pl-3 border-l border-[#133A66]">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#133A66] text-sky-200 border border-sky-400/30 flex items-center justify-center font-bold text-xs shrink-0">
+                  {userInitials || <User className="w-3.5 h-3.5" />}
+                </div>
+                <div className="hidden md:block text-left">
+                  <p className="font-semibold text-white text-xs leading-tight truncate max-w-[130px] xl:max-w-[170px]">
+                    {displayName}
+                  </p>
+                  <span className="text-[10px] text-sky-200/80 block truncate max-w-[130px] xl:max-w-[170px]">
+                    {displayRole}
                   </span>
                 </div>
               </div>
-            </Link>
-          </div>
 
-          {/* Navegación Desktop & Laptop Elástica (Visible >= lg: 1024px) */}
-          <nav className="hidden lg:flex items-center gap-1 bg-slate-950/60 p-1 rounded-xl border border-slate-800/80">
-            {coreNavItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 whitespace-nowrap ${
-                    isActive
-                      ? 'bg-slate-800 text-white font-semibold shadow-xs'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                  }`}
-                >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-sky-400' : 'text-slate-400'}`} />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-
-            {isAdmin && (
-              <Link
-                href="/usuarios"
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 whitespace-nowrap ${
-                  pathname.startsWith('/usuarios')
-                    ? 'bg-slate-800 text-white font-semibold shadow-xs'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                }`}
-              >
-                <Users className="w-3.5 h-3.5 text-purple-400" />
-                <span>Personal</span>
-              </Link>
-            )}
-
-            {/* Dropdown de Herramientas Secundarias */}
-            <div className="relative">
+              {/* Logout */}
               <button
-                type="button"
-                onClick={() => setDropdownHerramientas(!dropdownHerramientas)}
-                className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1 whitespace-nowrap ${
-                  secondaryNavItems.some((s) => pathname.startsWith(s.href))
-                    ? 'bg-slate-800 text-white font-semibold shadow-xs'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                }`}
+                onClick={handleDefaultLogout}
+                className="p-1.5 sm:p-2 rounded-lg bg-white/10 hover:bg-rose-500/20 text-sky-200 hover:text-rose-200 transition border border-white/10 shrink-0"
+                title="Cerrar sesión"
               >
-                <span>Herramientas</span>
-                <ChevronDown className="w-3 h-3 text-slate-400" />
+                <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
 
-              {dropdownHerramientas && (
-                <>
-                  <div className="fixed inset-0 z-30" onClick={() => setDropdownHerramientas(false)} />
-                  <div className="absolute right-0 mt-1.5 w-48 bg-slate-900 border border-slate-800 rounded-xl shadow-xl py-1 z-40 text-xs">
-                    {secondaryNavItems.map((item) => {
-                      const Icon = item.icon;
-                      const isActive = pathname.startsWith(item.href);
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          onClick={() => setDropdownHerramientas(false)}
-                          className={`flex items-center gap-2 px-3 py-2 transition ${
-                            isActive
-                              ? 'bg-slate-800 text-sky-400 font-semibold'
-                              : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
-                          }`}
-                        >
-                          <Icon className="w-3.5 h-3.5 text-slate-400" />
-                          <span>{item.fullLabel || item.label}</span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </>
+              {/* Menú Móvil Botón (< lg) */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="lg:hidden p-1.5 rounded-lg bg-white/10 text-white border border-white/10 transition active:scale-95"
+                aria-label="Abrir menú"
+              >
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* NIVEL 2: Pestañas de Navegación Fluidas (Adaptable y con Scroll Suave en Laptops y Tablets) */}
+        <div className="bg-white border-b border-slate-200 shadow-2xs">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-11 flex items-center justify-between">
+            
+            {/* Navegación de Pestañas con Scroll Horizontal Táctil Automático */}
+            <nav className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] py-1 w-full">
+              {coreNavItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                      isActive
+                        ? 'bg-[#0B2545] text-white font-semibold shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'
+                    }`}
+                  >
+                    <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-sky-300' : 'text-slate-500'}`} />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+
+              {/* Acceso para Administrador: Personal */}
+              {isAdmin && (
+                <Link
+                  href="/usuarios"
+                  className={`px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                    pathname.startsWith('/usuarios')
+                      ? 'bg-[#0B2545] text-white font-semibold shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'
+                  }`}
+                >
+                  <Users className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                  <span>Personal</span>
+                </Link>
               )}
-            </div>
-          </nav>
 
-          {/* Acciones Derecha (Ayuda, Usuario y Logout) */}
-          <div className="flex items-center gap-2 shrink-0">
-            {/* Botón Guía Discreto */}
-            <button
-              onClick={() => setGuiaModalOpen(true)}
-              className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-medium transition flex items-center gap-1.5 border border-slate-700/80 active:scale-95"
-              title="Guía del Flujo"
-            >
-              <HelpCircle className="w-3.5 h-3.5 text-slate-400" />
-              <span className="hidden xl:inline">Guía</span>
-            </button>
+              {/* Menú de Más Herramientas Técnicas */}
+              <div className="relative shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setDropdownHerramientas(!dropdownHerramientas)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1 whitespace-nowrap ${
+                    secondaryNavItems.some((s) => pathname.startsWith(s.href))
+                      ? 'bg-[#0B2545] text-white font-semibold shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <span>Herramientas</span>
+                  <ChevronDown className="w-3 h-3 text-slate-500" />
+                </button>
 
-            {/* Ficha de Usuario Compacta */}
-            <div className="hidden sm:flex items-center gap-2 pl-2 border-l border-slate-800">
-              <div className="w-7 h-7 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 flex items-center justify-center font-bold text-xs">
-                {userInitials || <User className="w-3.5 h-3.5" />}
+                {dropdownHerramientas && (
+                  <>
+                    <div className="fixed inset-0 z-30" onClick={() => setDropdownHerramientas(false)} />
+                    <div className="absolute left-0 mt-1.5 w-52 bg-white border border-slate-200 rounded-xl shadow-xl py-1.5 z-40 text-xs animate-in fade-in zoom-in-95 duration-100">
+                      {secondaryNavItems.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = pathname.startsWith(item.href);
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setDropdownHerramientas(false)}
+                            className={`flex items-center gap-2.5 px-3 py-2 transition ${
+                              isActive
+                                ? 'bg-sky-50 text-[#0B2545] font-bold'
+                                : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                            }`}
+                          >
+                            <Icon className="w-3.5 h-3.5 text-slate-500" />
+                            <span>{item.fullLabel || item.label}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
               </div>
-              <div className="hidden md:block text-left">
-                <p className="font-semibold text-white text-xs leading-tight truncate max-w-[110px] xl:max-w-[150px]">
-                  {displayName}
-                </p>
-                <span className="text-[10px] text-slate-400 block truncate max-w-[110px] xl:max-w-[150px]">
-                  {displayRole}
-                </span>
-              </div>
-            </div>
-
-            {/* Logout */}
-            <button
-              onClick={handleDefaultLogout}
-              className="p-1.5 sm:p-2 rounded-lg bg-slate-800/80 hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 transition border border-slate-700/80 shrink-0"
-              title="Cerrar sesión"
-            >
-              <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            </button>
-
-            {/* Menú Móvil (< lg) */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-1.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 transition active:scale-95"
-              aria-label="Abrir menú"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5 text-white" /> : <Menu className="w-5 h-5 text-white" />}
-            </button>
+            </nav>
           </div>
         </div>
       </header>
@@ -344,40 +359,40 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
             onClick={() => setMobileMenuOpen(false)}
           />
 
-          <div className="fixed top-0 right-0 bottom-0 w-72 max-w-[80vw] bg-slate-900 border-l border-slate-800 text-white shadow-2xl flex flex-col z-50 animate-in slide-in-from-right duration-150">
-            {/* Header del Drawer */}
-            <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-sky-400">
-                  <ShieldCheck className="w-4 h-4" />
+          <div className="fixed top-0 right-0 bottom-0 w-72 max-w-[85vw] bg-white border-l border-slate-200 text-slate-900 shadow-2xl flex flex-col z-50 animate-in slide-in-from-right duration-150">
+            {/* Header del Drawer Móvil */}
+            <div className="p-4 border-b border-[#133A66] flex items-center justify-between bg-[#0B2545] text-white">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-[#133A66] border border-sky-400/30 flex items-center justify-center text-sky-300">
+                  <ShieldCheck className="w-4.5 h-4.5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-xs text-white">Navegación</h3>
-                  <span className="text-[10px] text-slate-400 uppercase">{user?.rubro || 'SISTEMA'}</span>
+                  <h3 className="font-bold text-xs text-white leading-tight">Menú de Trabajo</h3>
+                  <span className="text-[10px] text-sky-200 uppercase">{user?.rubro || 'SISTEMA'}</span>
                 </div>
               </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white transition"
+                className="p-1.5 rounded-lg text-sky-200 hover:text-white transition"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Ficha de Usuario en Móvil */}
-            <div className="p-4 bg-slate-800/40 border-b border-slate-800 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 font-bold text-xs shrink-0">
+            <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-[#0B2545] text-sky-200 border border-sky-300/30 flex items-center justify-center font-bold text-xs shrink-0">
                 {userInitials || <User className="w-4 h-4" />}
               </div>
               <div className="min-w-0">
-                <p className="font-bold text-xs text-white truncate">{displayName}</p>
-                <span className="text-[10px] text-slate-400 block truncate">{displayRole}</span>
+                <p className="font-bold text-xs text-slate-900 truncate">{displayName}</p>
+                <span className="text-[10px] text-slate-500 block truncate">{displayRole}</span>
               </div>
             </div>
 
             {/* Lista de Enlaces en Móvil */}
             <div className="flex-1 overflow-y-auto p-3 space-y-1">
-              <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+              <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 Módulos Principales
               </div>
 
@@ -389,20 +404,20 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-2.5 p-2 rounded-lg text-xs font-medium transition ${
+                    className={`flex items-center gap-2.5 p-2.5 rounded-xl text-xs font-medium transition ${
                       isActive
-                        ? 'bg-slate-800 text-sky-400 font-semibold'
-                        : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
+                        ? 'bg-[#0B2545] text-white font-semibold shadow-xs'
+                        : 'text-slate-700 hover:bg-slate-100'
                     }`}
                   >
-                    <Icon className="w-4 h-4 text-slate-400" />
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-sky-300' : 'text-slate-500'}`} />
                     <span className="truncate">{item.fullLabel || item.label}</span>
                   </Link>
                 );
               })}
 
-              <div className="px-2 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
-                Herramientas
+              <div className="px-2 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                Herramientas Técnicas
               </div>
 
               {secondaryNavItems.map((item) => {
@@ -413,13 +428,13 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-2.5 p-2 rounded-lg text-xs font-medium transition ${
+                    className={`flex items-center gap-2.5 p-2.5 rounded-xl text-xs font-medium transition ${
                       isActive
-                        ? 'bg-slate-800 text-sky-400 font-semibold'
-                        : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
+                        ? 'bg-[#0B2545] text-white font-semibold shadow-xs'
+                        : 'text-slate-700 hover:bg-slate-100'
                     }`}
                   >
-                    <Icon className="w-4 h-4 text-slate-400" />
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-sky-300' : 'text-slate-500'}`} />
                     <span className="truncate">{item.fullLabel || item.label}</span>
                   </Link>
                 );
@@ -427,19 +442,19 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
 
               {isAdmin && (
                 <>
-                  <div className="px-2 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                  <div className="px-2 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                     Administración
                   </div>
                   <Link
                     href="/usuarios"
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-2.5 p-2 rounded-lg text-xs font-medium transition ${
+                    className={`flex items-center gap-2.5 p-2.5 rounded-xl text-xs font-medium transition ${
                       pathname.startsWith('/usuarios')
-                        ? 'bg-slate-800 text-purple-300 font-semibold'
-                        : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
+                        ? 'bg-[#0B2545] text-white font-semibold shadow-xs'
+                        : 'text-slate-700 hover:bg-slate-100'
                     }`}
                   >
-                    <Users className="w-4 h-4 text-purple-400" />
+                    <Users className="w-4 h-4 text-purple-600" />
                     <span>Personal y Roles</span>
                   </Link>
                 </>
@@ -447,23 +462,23 @@ export default function NavbarPrincipal({ user, onLogout }: NavbarPrincipalProps
             </div>
 
             {/* Footer del Drawer */}
-            <div className="p-3 border-t border-slate-800 bg-slate-950 space-y-2">
+            <div className="p-3 border-t border-slate-200 bg-slate-50 space-y-2">
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   setGuiaModalOpen(true);
                 }}
-                className="w-full py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-xs flex items-center justify-center gap-2 transition"
+                className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-slate-100 text-slate-800 font-semibold text-xs flex items-center justify-center gap-2 border border-slate-200 transition"
               >
-                <HelpCircle className="w-3.5 h-3.5" />
+                <HelpCircle className="w-4 h-4 text-sky-600" />
                 <span>¿Cómo funciona el sistema?</span>
               </button>
 
               <button
                 onClick={handleDefaultLogout}
-                className="w-full py-2 px-3 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 font-medium text-xs flex items-center justify-center gap-2 border border-rose-500/20 transition"
+                className="w-full py-2.5 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold text-xs flex items-center justify-center gap-2 border border-rose-200 transition"
               >
-                <LogOut className="w-3.5 h-3.5" />
+                <LogOut className="w-4 h-4" />
                 <span>Cerrar Sesión</span>
               </button>
             </div>

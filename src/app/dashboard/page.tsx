@@ -322,7 +322,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#F4F6F9] text-slate-900 flex flex-col antialiased">
       {/* Top Navbar Responsivo con Drawer Móvil */}
       <NavbarPrincipal user={user} onLogout={handleLogout} />
 
@@ -383,20 +383,24 @@ export default function DashboardPage() {
         )}
 
         {/* Selector de Modo de Vista (Segmented Control Estilo Linear / macOS) */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white p-2 rounded-2xl border border-slate-200 shadow-xs">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white p-2 rounded-2xl border border-slate-200/90 shadow-xs">
           <div className="bg-slate-100 p-1 rounded-xl inline-flex items-center gap-1">
             <button
               type="button"
               onClick={() => setVistaTab('PERSONAL')}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
                 vistaTab === 'PERSONAL'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#0B2545] text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
               }`}
             >
-              <UserCheck className="w-3.5 h-3.5 text-sky-600" />
+              <UserCheck className={`w-3.5 h-3.5 ${vistaTab === 'PERSONAL' ? 'text-sky-300' : 'text-slate-500'}`} />
               <span>Mi Trabajo a Cargo</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-slate-100 text-slate-700 font-semibold border border-slate-200">
+              <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-semibold border ${
+                vistaTab === 'PERSONAL'
+                  ? 'bg-white/20 text-white border-white/20'
+                  : 'bg-white text-slate-700 border-slate-200'
+              }`}>
                 {misEcs.length}
               </span>
             </button>
@@ -406,11 +410,11 @@ export default function DashboardPage() {
               onClick={() => setVistaTab('GENERAL')}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
                 vistaTab === 'GENERAL'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#0B2545] text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
               }`}
             >
-              <Compass className="w-3.5 h-3.5 text-slate-500" />
+              <Compass className={`w-3.5 h-3.5 ${vistaTab === 'GENERAL' ? 'text-sky-300' : 'text-slate-500'}`} />
               <span>Panorama de la Obra</span>
             </button>
           </div>
@@ -426,24 +430,24 @@ export default function DashboardPage() {
         {vistaTab === 'PERSONAL' && (
           <div className="space-y-6 animate-in fade-in duration-200">
             {/* Banner de Bienvenida del Colaborador */}
-            <div className="bg-slate-900 rounded-3xl p-6 sm:p-7 text-white border border-slate-800 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="bg-[#0B2545] rounded-3xl p-6 sm:p-7 text-white border border-[#133A66] shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-13 h-13 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 shadow shrink-0">
-                  <UserCheck className="w-6 h-6 text-sky-400" />
+                <div className="w-13 h-13 rounded-2xl bg-[#133A66] border border-sky-400/30 flex items-center justify-center text-sky-300 shadow shrink-0">
+                  <UserCheck className="w-6 h-6 text-sky-300" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-bold text-sky-400 tracking-wide uppercase">
+                    <span className="text-xs font-bold text-sky-300 tracking-wide uppercase">
                       Espacio Operativo de Colaborador
                     </span>
-                    <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                    <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#133A66] text-sky-200 border border-sky-400/20">
                       {displayRole}
                     </span>
                   </div>
                   <h2 className="text-xl sm:text-2xl font-black text-white mt-0.5">
                     Hola, {displayName}
                   </h2>
-                  <p className="text-xs text-slate-300 mt-1">
+                  <p className="text-xs text-sky-100/90 mt-1">
                     Proyecto Activo: <strong className="text-white">{activeProyecto?.nombre || 'Obra Asignada'}</strong>
                     {activeProyecto?.cliente_nombre ? ` • Cliente: ${activeProyecto.cliente_nombre}` : ''}
                   </p>
@@ -453,7 +457,7 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2">
                 <Link
                   href="/bitacora"
-                  className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs shadow-sm transition active:scale-95 flex items-center gap-2"
+                  className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-[#0B2545] font-bold text-xs shadow-sm transition active:scale-95 flex items-center gap-2"
                 >
                   <Activity className="w-4 h-4 text-emerald-600" />
                   <span>Reportar Bitácora de Hoy</span>
@@ -463,9 +467,9 @@ export default function DashboardPage() {
 
             {/* 3 KPIs Personales del Usuario */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-11 h-11 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">
-                  <Layers className="w-5 h-5 text-slate-700" />
+              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex items-center gap-4">
+                <div className="w-11 h-11 rounded-xl bg-sky-50 text-sky-800 flex items-center justify-center shrink-0 border border-sky-200">
+                  <Layers className="w-5 h-5 text-sky-700" />
                 </div>
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
@@ -476,9 +480,9 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 border border-amber-200">
-                  <Clock className="w-5 h-5 text-amber-600" />
+              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex items-center gap-4">
+                <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center shrink-0 border border-amber-200">
+                  <Clock className="w-5 h-5 text-amber-700" />
                 </div>
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
@@ -489,8 +493,8 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-200">
+              <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm flex items-center gap-4">
+                <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center shrink-0 border border-emerald-200">
                   <CheckCircle2 className="w-5 h-5 text-emerald-600" />
                 </div>
                 <div>
@@ -845,19 +849,19 @@ export default function DashboardPage() {
           </section>
 
           {/* Lado Derecho: Widget de Agenda de Reuniones (5 cols) */}
-          <section className="lg:col-span-5 bg-slate-900 rounded-2xl p-6 text-white border border-slate-800 shadow-xs flex flex-col justify-between space-y-4">
+          <section className="lg:col-span-5 bg-[#0B2545] rounded-2xl p-6 text-white border border-[#133A66] shadow-sm flex flex-col justify-between space-y-4">
             <div className="space-y-3">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center justify-between border-b border-[#133A66] pb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300 border border-slate-700">
+                  <div className="w-8 h-8 rounded-lg bg-[#133A66] flex items-center justify-center text-sky-300 border border-sky-400/30">
                     <CalendarDays className="w-4 h-4" />
                   </div>
                   <div>
                     <h3 className="font-bold text-sm text-white">Agenda de Sesiones</h3>
-                    <p className="text-[10px] text-slate-400">Reuniones de coordinación y cliente</p>
+                    <p className="text-[10px] text-sky-200/70">Reuniones de coordinación y cliente</p>
                   </div>
                 </div>
-                <span className="text-[10px] font-semibold bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full border border-slate-700">
+                <span className="text-[10px] font-semibold bg-[#133A66] text-sky-200 px-2.5 py-0.5 rounded-full border border-sky-400/20">
                   {activeReuniones.length} sesiones
                 </span>
               </div>
@@ -878,21 +882,21 @@ export default function DashboardPage() {
                     >
                       <div className="flex items-center justify-between">
                         <span
-                          className={`text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-1 ${
-                            isCliente ? 'bg-emerald-500 text-white' : 'bg-blue-500 text-white'
+                          className={`text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${
+                            isCliente ? 'bg-emerald-600 text-white' : 'bg-sky-600 text-white'
                           }`}
                         >
                           {isCliente ? <Handshake className="w-3 h-3 inline" /> : <Users className="w-3 h-3 inline" />}
                           <span>{isCliente ? 'Con Cliente' : 'Equipo'}</span>
                         </span>
-                        <span className="font-mono text-[10px] text-upt-gold font-bold">
+                        <span className="font-mono text-[10px] text-sky-200 font-bold">
                           {fechaStr} • {r.hora || '10:00'}
                         </span>
                       </div>
                       <h4 className="text-xs font-bold text-white leading-snug truncate">
                         {r.titulo}
                       </h4>
-                      <p className="text-[10px] text-slate-300 truncate">
+                      <p className="text-[10px] text-sky-100/70 truncate">
                         Citada por: {r.convocante?.nombre_completo || 'Carlos Mendoza'}
                       </p>
                     </div>
@@ -900,7 +904,7 @@ export default function DashboardPage() {
                 })}
 
                 {activeReuniones.length === 0 && (
-                  <div className="text-center py-6 text-slate-400 text-xs">
+                  <div className="text-center py-6 text-sky-200/60 text-xs">
                     No hay reuniones registradas para este proyecto.
                   </div>
                 )}
@@ -918,7 +922,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setAgendarModalOpen(true)}
-                className="px-3.5 py-2 rounded-xl bg-upt-gold hover:bg-amber-400 text-upt-navy-950 text-xs font-black transition flex items-center gap-1.5 shadow active:scale-95"
+                className="px-3.5 py-2 rounded-xl bg-sky-400 hover:bg-sky-300 text-[#0B2545] text-xs font-bold transition flex items-center gap-1.5 shadow-sm active:scale-95"
               >
                 <Plus className="w-3.5 h-3.5 stroke-[3]" />
                 <span>+ Agendar</span>
@@ -1016,22 +1020,22 @@ export default function DashboardPage() {
                 onClick={() => setTabModulo('OPERACION')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
                   tabModulo === 'OPERACION'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-[#0B2545] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                 }`}
               >
-                <Briefcase className="w-3.5 h-3.5" />
+                <Briefcase className={`w-3.5 h-3.5 ${tabModulo === 'OPERACION' ? 'text-sky-300' : 'text-slate-500'}`} />
                 <span>Operación del Proyecto (6)</span>
               </button>
               <button
                 onClick={() => setTabModulo('SUPERVISION')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
                   tabModulo === 'SUPERVISION'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-[#0B2545] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                 }`}
               >
-                <ShieldCheck className="w-3.5 h-3.5" />
+                <ShieldCheck className={`w-3.5 h-3.5 ${tabModulo === 'SUPERVISION' ? 'text-sky-300' : 'text-slate-500'}`} />
                 <span>Supervisión & Bitácora (5)</span>
               </button>
             </div>
@@ -1064,10 +1068,10 @@ export default function DashboardPage() {
                 <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/reuniones"
-                    className="w-full py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
                   >
                     <span>Abrir Calendario</span>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                    <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
                   </Link>
                 </div>
               </div>
@@ -1095,10 +1099,10 @@ export default function DashboardPage() {
                 <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/cronograma"
-                    className="w-full py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
                   >
                     <span>Ver Canvas Vivo</span>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                    <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
                   </Link>
                 </div>
               </div>
@@ -1129,10 +1133,10 @@ export default function DashboardPage() {
                 <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/ecs"
-                    className="w-full py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
                   >
                     <span>Explorar Entregables</span>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                    <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
                   </Link>
                 </div>
               </div>
@@ -1163,10 +1167,10 @@ export default function DashboardPage() {
                 <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/aprobaciones"
-                    className="w-full py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
                   >
                     <span>Bandeja Técnica</span>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                    <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
                   </Link>
                 </div>
               </div>
@@ -1197,10 +1201,10 @@ export default function DashboardPage() {
                 <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/lineas-base"
-                    className="w-full py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
                   >
                     <span>Ver Líneas Base</span>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                    <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
                   </Link>
                 </div>
               </div>
@@ -1231,10 +1235,10 @@ export default function DashboardPage() {
                 <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/cambios"
-                    className="w-full py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
                   >
                     <span>Gestionar Cambios</span>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                    <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
                   </Link>
                 </div>
               </div>
@@ -1244,76 +1248,82 @@ export default function DashboardPage() {
 
           {/* Pestaña 2: Supervisión y Control */}
           {tabModulo === 'SUPERVISION' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               
               {/* Bitácora de Campo */}
-              <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-red-600 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
-                  <div className="w-10 h-10 rounded-2xl bg-red-50 text-red-700 flex items-center justify-center">
-                    <Activity className="w-5 h-5" />
+                  <div className="w-9 h-9 rounded-xl bg-red-50 text-red-700 border border-red-200 flex items-center justify-center">
+                    <Activity className="w-4.5 h-4.5 text-red-600" />
                   </div>
-                  <h3 className="text-base font-black text-slate-900">
-                    {terminologia.modulos.bitacora.titulo}
-                  </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    {terminologia.modulos.bitacora.descripcion}
-                  </p>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">
+                      {terminologia.modulos.bitacora.titulo}
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                      {terminologia.modulos.bitacora.descripcion}
+                    </p>
+                  </div>
                 </div>
-                <div className="pt-4 mt-4 border-t border-slate-200">
+                <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/bitacora"
-                    className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
                   >
                     <span>Abrir Bitácora</span>
-                    <ChevronRight className="w-4 h-4 text-upt-gold" />
+                    <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
                   </Link>
                 </div>
               </div>
 
               {/* Matriz de Trazabilidad */}
-              <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-sky-600 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
-                  <div className="w-10 h-10 rounded-2xl bg-sky-50 text-sky-700 flex items-center justify-center">
-                    <Network className="w-5 h-5" />
+                  <div className="w-9 h-9 rounded-xl bg-sky-50 text-sky-700 border border-sky-200 flex items-center justify-center">
+                    <Network className="w-4.5 h-4.5 text-sky-600" />
                   </div>
-                  <h3 className="text-base font-black text-slate-900">
-                    {terminologia.modulos.trazabilidad.titulo}
-                  </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    {terminologia.modulos.trazabilidad.descripcion}
-                  </p>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">
+                      {terminologia.modulos.trazabilidad.titulo}
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                      {terminologia.modulos.trazabilidad.descripcion}
+                    </p>
+                  </div>
                 </div>
-                <div className="pt-4 mt-4 border-t border-slate-200">
+                <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/trazabilidad"
-                    className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
                   >
                     <span>Explorar Trazabilidad</span>
-                    <ChevronRight className="w-4 h-4 text-upt-gold" />
+                    <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
                   </Link>
                 </div>
               </div>
 
               {/* Reportes Oficiales */}
-              <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-upt-gold shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+              <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                 <div className="space-y-3">
-                  <div className="w-10 h-10 rounded-2xl bg-amber-50 text-upt-gold-700 flex items-center justify-center">
-                    <Printer className="w-5 h-5" />
+                  <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center">
+                    <Printer className="w-4.5 h-4.5 text-amber-600" />
                   </div>
-                  <h3 className="text-base font-black text-slate-900">
-                    {terminologia.modulos.reportes.titulo}
-                  </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    {terminologia.modulos.reportes.descripcion}
-                  </p>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">
+                      {terminologia.modulos.reportes.titulo}
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                      {terminologia.modulos.reportes.descripcion}
+                    </p>
+                  </div>
                 </div>
-                <div className="pt-4 mt-4 border-t border-slate-200">
+                <div className="pt-3 mt-3 border-t border-slate-100">
                   <Link
                     href="/reportes"
-                    className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                    className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
                   >
                     <span>Generar Reportes</span>
-                    <ChevronRight className="w-4 h-4 text-upt-gold" />
+                    <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
                   </Link>
                 </div>
               </div>
@@ -1321,49 +1331,53 @@ export default function DashboardPage() {
               {isAdmin ? (
                 <>
                   {/* Auditoría de Seguridad (Solo Administradores) */}
-                  <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-emerald-600 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+                  <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                     <div className="space-y-3">
-                      <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
-                        <Terminal className="w-5 h-5" />
+                      <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center">
+                        <Terminal className="w-4.5 h-4.5 text-emerald-600" />
                       </div>
-                      <h3 className="text-base font-black text-slate-900">
-                        Historial de Auditoría
-                      </h3>
-                      <p className="text-xs text-slate-600 leading-relaxed">
-                        Registro de solo inserción (append-only) de cada acción del sistema: usuario, fecha, IPs y diffs.
-                      </p>
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-900">
+                          Historial de Auditoría
+                        </h3>
+                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                          Registro inmutable append-only de cada acción del sistema: usuario, fecha, IPs y diffs.
+                        </p>
+                      </div>
                     </div>
-                    <div className="pt-4 mt-4 border-t border-slate-200">
+                    <div className="pt-3 mt-3 border-t border-slate-100">
                       <Link
                         href="/auditoria"
-                        className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                        className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
                       >
                         <span>Ver Logs de Auditoría</span>
-                        <ChevronRight className="w-4 h-4 text-upt-gold" />
+                        <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
                       </Link>
                     </div>
                   </div>
 
                   {/* Personal y Roles (Solo Administradores) */}
-                  <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-purple-600 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+                  <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                     <div className="space-y-3">
-                      <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center">
-                        <Users className="w-5 h-5" />
+                      <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-700 border border-purple-200 flex items-center justify-center">
+                        <Users className="w-4.5 h-4.5 text-purple-600" />
                       </div>
-                      <h3 className="text-base font-black text-slate-900">
-                        Personal & Colaboradores
-                      </h3>
-                      <p className="text-xs text-slate-600 leading-relaxed">
-                        Directorio del equipo: roles (Administrador, Aprobador, Solicitante) y control de accesos.
-                      </p>
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-900">
+                          Personal & Colaboradores
+                        </h3>
+                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                          Directorio del equipo: roles (Administrador, Aprobador, Solicitante) y control de accesos.
+                        </p>
+                      </div>
                     </div>
-                    <div className="pt-4 mt-4 border-t border-slate-200">
+                    <div className="pt-3 mt-3 border-t border-slate-100">
                       <Link
                         href="/usuarios"
-                        className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                        className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
                       >
                         <span>Administrar Personal</span>
-                        <ChevronRight className="w-4 h-4 text-upt-gold" />
+                        <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
                       </Link>
                     </div>
                   </div>
@@ -1371,49 +1385,53 @@ export default function DashboardPage() {
               ) : (
                 <>
                   {/* Bitácora Diaria de Campo (Para Colaboradores Operativos) */}
-                  <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-teal-600 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+                  <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                     <div className="space-y-3">
-                      <div className="w-10 h-10 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center">
-                        <Activity className="w-5 h-5" />
+                      <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center">
+                        <Activity className="w-4.5 h-4.5 text-teal-600" />
                       </div>
-                      <h3 className="text-base font-black text-slate-900">
-                        {terminologia.modulos.bitacora.titulo}
-                      </h3>
-                      <p className="text-xs text-slate-600 leading-relaxed">
-                        {terminologia.modulos.bitacora.descripcion}
-                      </p>
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-900">
+                          {terminologia.modulos.bitacora.titulo}
+                        </h3>
+                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                          {terminologia.modulos.bitacora.descripcion}
+                        </p>
+                      </div>
                     </div>
-                    <div className="pt-4 mt-4 border-t border-slate-200">
+                    <div className="pt-3 mt-3 border-t border-slate-100">
                       <Link
                         href="/bitacora"
-                        className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                        className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
                       >
                         <span>Ir a Mi Bitácora</span>
-                        <ChevronRight className="w-4 h-4 text-upt-gold" />
+                        <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
                       </Link>
                     </div>
                   </div>
 
                   {/* Solicitudes de Cambio RFC (Para Colaboradores Operativos) */}
-                  <div className="bg-white rounded-3xl p-6 border-2 border-slate-300 border-l-[6px] border-l-rose-600 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+                  <div className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
                     <div className="space-y-3">
-                      <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-700 flex items-center justify-center">
-                        <AlertTriangle className="w-5 h-5" />
+                      <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 flex items-center justify-center">
+                        <AlertTriangle className="w-4.5 h-4.5 text-rose-600" />
                       </div>
-                      <h3 className="text-base font-black text-slate-900">
-                        {terminologia.modulos.cambios.titulo}
-                      </h3>
-                      <p className="text-xs text-slate-600 leading-relaxed">
-                        {terminologia.modulos.cambios.descripcion}
-                      </p>
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-900">
+                          {terminologia.modulos.cambios.titulo}
+                        </h3>
+                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                          {terminologia.modulos.cambios.descripcion}
+                        </p>
+                      </div>
                     </div>
-                    <div className="pt-4 mt-4 border-t border-slate-200">
+                    <div className="pt-3 mt-3 border-t border-slate-100">
                       <Link
                         href="/cambios"
-                        className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-between transition"
+                        className="w-full py-2 px-3 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-medium text-xs flex items-center justify-between transition"
                       >
                         <span>Ver Solicitudes de Cambio</span>
-                        <ChevronRight className="w-4 h-4 text-upt-gold" />
+                        <ChevronRight className="w-3.5 h-3.5 text-sky-300" />
                       </Link>
                     </div>
                   </div>
@@ -1448,14 +1466,14 @@ export default function DashboardPage() {
 
       {/* Modal Registrar Nuevo Proyecto / Obra Civil */}
       {crearProyectoModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border-2 border-slate-300 space-y-4 animate-in fade-in zoom-in-95 duration-150 my-6">
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200 space-y-4 animate-in fade-in zoom-in-95 duration-150 my-6">
             <div className="flex items-start justify-between border-b border-slate-200 pb-3">
               <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-upt-gold bg-upt-navy-950 px-2.5 py-0.5 rounded-full inline-block mb-1">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-sky-200 bg-[#0B2545] px-2.5 py-0.5 rounded-full inline-block mb-1">
                   Nuevo(a) {terminologia.proyectoLabel}
                 </span>
-                <h3 className="text-lg font-black text-slate-900">
+                <h3 className="text-lg font-bold text-slate-900">
                   Registrar Nuevo(a) {terminologia.proyectoLabel}
                 </h3>
               </div>
@@ -1468,7 +1486,7 @@ export default function DashboardPage() {
             </div>
 
             {errorCrearProy && (
-              <div className="p-3 rounded-xl bg-red-100 border border-red-300 text-red-900 text-xs font-bold flex items-center gap-2">
+              <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs font-semibold flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 shrink-0 text-red-600" />
                 <span>{errorCrearProy}</span>
               </div>
@@ -1476,7 +1494,7 @@ export default function DashboardPage() {
 
             <form onSubmit={handleCrearProyecto} className="space-y-3.5 text-xs">
               <div>
-                <label className="font-extrabold text-slate-800 block mb-1">
+                <label className="font-semibold text-slate-800 block mb-1">
                   Código Único ({terminologia.proyectoLabel}) *
                 </label>
                 <input
@@ -1485,12 +1503,12 @@ export default function DashboardPage() {
                   value={nuevoProyCodigo}
                   onChange={(e) => setNuevoProyCodigo(e.target.value.toUpperCase())}
                   placeholder={`Ej: ${terminologia.proyectoCodigoEjemplo}`}
-                  className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 font-mono font-bold text-slate-900 focus:border-upt-navy-700 focus:bg-white bg-slate-50 transition"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:border-[#0B2545] focus:bg-white bg-slate-50 transition outline-hidden"
                 />
               </div>
 
               <div>
-                <label className="font-extrabold text-slate-800 block mb-1">
+                <label className="font-semibold text-slate-800 block mb-1">
                   Nombre Completo ({terminologia.proyectoLabel}) *
                 </label>
                 <input
@@ -1499,12 +1517,12 @@ export default function DashboardPage() {
                   value={nuevoProyNombre}
                   onChange={(e) => setNuevoProyNombre(e.target.value)}
                   placeholder={terminologia.proyectoPlaceholder}
-                  className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 font-bold text-slate-900 focus:border-upt-navy-700 focus:bg-white bg-slate-50 transition"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-medium text-slate-900 focus:border-[#0B2545] focus:bg-white bg-slate-50 transition outline-hidden"
                 />
               </div>
 
               <div>
-                <label className="font-extrabold text-slate-800 block mb-1">
+                <label className="font-semibold text-slate-800 block mb-1">
                   {terminologia.clienteLabel} *
                 </label>
                 <input
@@ -1513,7 +1531,7 @@ export default function DashboardPage() {
                   value={nuevoProyCliente}
                   onChange={(e) => setNuevoProyCliente(e.target.value)}
                   placeholder={terminologia.clientePlaceholder}
-                  className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 font-medium text-slate-900 focus:border-upt-navy-700 focus:bg-white bg-slate-50 transition"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-medium text-slate-900 focus:border-[#0B2545] focus:bg-white bg-slate-50 transition outline-hidden"
                 />
               </div>
 
@@ -1521,20 +1539,20 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   onClick={() => setCrearProyectoModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition"
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={creandoProy}
-                  className="px-5 py-2 rounded-xl bg-upt-navy-900 hover:bg-upt-navy-800 text-upt-gold font-black transition shadow-md active:scale-95 disabled:opacity-50 flex items-center gap-2 border border-upt-gold/40"
+                  className="px-5 py-2 rounded-xl bg-[#0B2545] hover:bg-[#133A66] text-white font-semibold transition shadow-xs active:scale-95 disabled:opacity-50 flex items-center gap-2"
                 >
                   {creandoProy ? (
                     <span>Registrando...</span>
                   ) : (
                     <>
-                      <Plus className="w-4 h-4 stroke-[3]" />
+                      <Plus className="w-4 h-4" />
                       <span>
                         Crear {terminologia.proyectoLabel}
                       </span>

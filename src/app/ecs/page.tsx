@@ -222,7 +222,7 @@ export default function EcsPage() {
   const terminologia = getTerminologia(rubro);
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#F4F6F9] text-slate-900 flex flex-col antialiased">
       {/* Navbar Global Unificado */}
       <NavbarPrincipal user={currentUser} />
 
@@ -264,7 +264,7 @@ export default function EcsPage() {
             </Link>
             <button
               onClick={() => setModalOpen(true)}
-              className="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-xs transition flex items-center gap-1.5 active:scale-95"
+              className="px-3.5 py-1.5 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-semibold text-xs shadow-xs transition flex items-center gap-1.5 active:scale-95"
             >
               <Plus className="w-4 h-4" />
               <span>Nuevo Entregable</span>
@@ -471,7 +471,7 @@ export default function EcsPage() {
             </button>
             <button
               onClick={() => setModalOpen(true)}
-              className="mt-4 px-5 py-2 rounded-xl bg-upt-navy-700 hover:bg-upt-navy-800 text-upt-gold font-black text-xs shadow-md transition"
+              className="mt-4 px-5 py-2 rounded-xl bg-[#0B2545] hover:bg-[#133A66] text-white font-semibold text-xs shadow-xs transition"
             >
               + Registrar Nuevo Entregable
             </button>
@@ -577,7 +577,7 @@ export default function EcsPage() {
                         className={`w-full py-2.5 px-4 rounded-xl font-bold text-xs transition flex items-center justify-between group/btn shadow-xs active:scale-98 ${
                           isMyEcs && !ultimaVersion
                             ? 'bg-sky-600 hover:bg-sky-700 text-white'
-                            : 'bg-slate-900 hover:bg-slate-800 text-white'
+                            : 'bg-[#0B2545] hover:bg-[#133A66] text-white'
                         }`}
                       >
                         <span className="flex items-center gap-1.5">
@@ -761,11 +761,11 @@ export default function EcsPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-5 py-2.5 rounded-xl bg-upt-navy-700 hover:bg-upt-navy-800 text-upt-gold font-black text-xs shadow-md transition flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl bg-[#0B2545] hover:bg-[#133A66] text-white font-bold text-xs shadow-xs transition flex items-center gap-2"
                 >
                   {saving ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin text-upt-gold" />
+                      <Loader2 className="w-4 h-4 animate-spin text-sky-300" />
                       <span>Registrando...</span>
                     </>
                   ) : (
