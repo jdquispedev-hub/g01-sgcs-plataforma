@@ -222,26 +222,26 @@ export default function EcsPage() {
   const terminologia = getTerminologia(rubro);
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] text-slate-900 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
       {/* Navbar Global Unificado */}
       <NavbarPrincipal user={currentUser} />
 
       {/* Sub-Header y Acciones del Catálogo */}
-      <div className="bg-white border-b border-slate-200">
+      <div className="bg-[#0B1528] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <Link
               href="/dashboard"
-              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition border border-slate-200"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition border border-white/10"
               title="Volver al Dashboard"
             >
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <div className="min-w-0">
-              <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight truncate">
+              <h1 className="text-base sm:text-lg font-bold text-white tracking-tight truncate">
                 Catálogo de Entregables (ECS)
               </h1>
-              <p className="text-xs text-slate-500 truncate">
+              <p className="text-xs text-slate-400 truncate">
                 {terminologia.ecsSubtitulo} validados técnicamente
               </p>
             </div>
@@ -250,23 +250,23 @@ export default function EcsPage() {
           <div className="flex items-center gap-2 shrink-0">
             <Link
               href="/aprobaciones"
-              className="px-3 py-1.5 text-xs font-medium rounded-lg text-slate-700 hover:bg-slate-100 border border-slate-200 transition flex items-center gap-1.5"
+              className="px-3 py-1.5 text-xs font-medium rounded-lg text-slate-200 hover:bg-white/10 border border-white/15 transition flex items-center gap-1.5"
             >
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
               <span>Dictaminar</span>
             </Link>
             <Link
               href="/lineas-base"
-              className="px-3 py-1.5 text-xs font-medium rounded-lg text-slate-700 hover:bg-slate-100 border border-slate-200 transition flex items-center gap-1.5"
+              className="px-3 py-1.5 text-xs font-medium rounded-lg text-slate-200 hover:bg-white/10 border border-white/15 transition flex items-center gap-1.5"
             >
-              <Lock className="w-3.5 h-3.5 text-purple-600" />
+              <Lock className="w-3.5 h-3.5 text-purple-400" />
               <span>Hitos Oficiales</span>
             </Link>
             <button
               onClick={() => setModalOpen(true)}
-              className="px-3.5 py-1.5 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-semibold text-xs shadow-xs transition flex items-center gap-1.5 active:scale-95"
+              className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs shadow-xs transition flex items-center gap-1.5 active:scale-95"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 text-slate-950" />
               <span>Nuevo Entregable</span>
             </button>
           </div>
@@ -277,34 +277,34 @@ export default function EcsPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
         
         {/* Banner de Contexto: ¿Qué es un ECS? */}
-        <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-[#0C1527] rounded-2xl p-5 sm:p-6 border border-white/10 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-1.5 text-sky-600 text-xs font-semibold uppercase tracking-wider">
+            <div className="flex items-center gap-1.5 text-sky-400 text-xs font-semibold uppercase tracking-wider">
               <Layers className="w-4 h-4" />
               <span>Fase 2: Catálogo de Artefactos de Obra</span>
             </div>
-            <h2 className="text-base sm:text-lg font-bold text-slate-900">
+            <h2 className="text-base sm:text-lg font-bold text-white">
               ¿Qué es un Entregable o Componente de Configuración (ECS)?
             </h2>
-            <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
+            <p className="text-xs text-slate-400 max-w-2xl leading-relaxed">
               Es cualquier pieza técnica o entregable auditado (un plano estructural, memoria de cálculo o especificación técnica).
-              Cada versión propuesta debe ser revisada y <strong className="text-emerald-700">APROBADA</strong> por el responsable de calidad antes de incluirse en un Hito Oficial (Línea Base).
+              Cada versión propuesta debe ser revisada y <strong className="text-emerald-400">APROBADA</strong> por el responsable de calidad antes de incluirse en un Hito Oficial (Línea Base).
             </p>
           </div>
-          <div className="bg-slate-50 px-4 py-3 rounded-xl border border-slate-200 text-center shrink-0">
-            <span className="text-[10px] text-slate-500 uppercase font-bold block">Entregables Totales</span>
-            <span className="text-2xl font-bold text-slate-900">{ecsList.length}</span>
+          <div className="bg-[#070D18] px-4 py-3 rounded-xl border border-white/10 text-center shrink-0">
+            <span className="text-[10px] text-slate-400 uppercase font-bold block">Entregables Totales</span>
+            <span className="text-2xl font-bold text-white">{ecsList.length}</span>
           </div>
         </div>
 
         {/* Consola de Búsqueda y Filtros de Alto Contraste */}
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div className="bg-[#0C1527] p-4 sm:p-5 rounded-2xl border border-white/10 shadow-md space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+            <span className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
               <Search className="w-4 h-4 text-slate-400" />
               <span>Búsqueda de Entregables</span>
             </span>
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-slate-400">
               {ecsList.length} resultados encontrados
             </span>
           </div>
@@ -318,7 +318,7 @@ export default function EcsPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Escribe el código (ej. PLN-EST-01) o nombre del entregable..."
-                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-slate-400 transition"
+                className="w-full pl-10 pr-4 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-white placeholder:text-slate-500 focus:bg-[#070D18] focus:border-sky-400/50 transition outline-hidden"
               />
             </div>
 
@@ -327,7 +327,7 @@ export default function EcsPage() {
               <select
                 value={tipoFiltro}
                 onChange={(e) => setTipoFiltro(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-800 focus:bg-white focus:border-slate-400 transition cursor-pointer"
+                className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-slate-200 focus:bg-[#070D18] focus:border-sky-400/50 transition cursor-pointer"
               >
                 <option value="">Todos los Tipos de ECS</option>
                 <option value="DOCUMENTO">Documentos / Memorias</option>
@@ -341,7 +341,7 @@ export default function EcsPage() {
             {/* Botón Buscar */}
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs sm:text-sm transition flex items-center justify-center gap-1.5 shrink-0"
+              className="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white font-medium text-xs sm:text-sm transition flex items-center justify-center gap-1.5 shrink-0 border border-white/10"
             >
               <Search className="w-3.5 h-3.5" />
               <span>Buscar</span>
@@ -349,22 +349,24 @@ export default function EcsPage() {
           </form>
 
           {/* Pestañas de Asignación Personal */}
-          <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-200">
-            <span className="text-xs font-bold text-slate-500 mr-1 flex items-center gap-1">
-              <UserCheck className="w-3.5 h-3.5 text-slate-500" /> Vista:
+          <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-white/10">
+            <span className="text-xs font-bold text-slate-400 mr-1 flex items-center gap-1">
+              <UserCheck className="w-3.5 h-3.5 text-slate-400" /> Vista:
             </span>
             <button
               type="button"
               onClick={() => setFiltroAsignacion('MIS_ASIGNACIONES')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                 filtroAsignacion === 'MIS_ASIGNACIONES'
-                  ? 'bg-slate-900 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 shadow-sm'
+                  : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
               }`}
             >
               <UserCheck className="w-3.5 h-3.5" />
               <span>Mis Asignaciones</span>
-              <span className="text-[10px] px-2 py-0.2 rounded-full bg-slate-800 text-slate-200 font-semibold">
+              <span className={`text-[10px] px-2 py-0.2 rounded-full font-semibold ${
+                filtroAsignacion === 'MIS_ASIGNACIONES' ? 'bg-slate-900 text-amber-200' : 'bg-white/10 text-slate-300'
+              }`}>
                 {ecsList.filter((e) => e.responsable?.id === currentUser?.userId).length}
               </span>
             </button>
@@ -373,28 +375,30 @@ export default function EcsPage() {
               onClick={() => setFiltroAsignacion('TODOS')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                 filtroAsignacion === 'TODOS'
-                  ? 'bg-slate-900 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 shadow-sm'
+                  : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
               <span>Todos los Entregables</span>
-              <span className="text-[10px] px-2 py-0.2 rounded-full bg-slate-200 text-slate-700 font-semibold">
+              <span className={`text-[10px] px-2 py-0.2 rounded-full font-semibold ${
+                filtroAsignacion === 'TODOS' ? 'bg-slate-900 text-amber-200' : 'bg-white/10 text-slate-300'
+              }`}>
                 {ecsList.length}
               </span>
             </button>
           </div>
 
           {/* Filtros Rápidos por Estado de Aprobación */}
-          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
-            <span className="text-xs font-bold text-slate-500 mr-1">Filtrar por estado:</span>
+          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-white/5">
+            <span className="text-xs font-bold text-slate-400 mr-1">Filtrar por estado:</span>
             <button
               type="button"
               onClick={() => setTabEstado('TODOS')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                 tabEstado === 'TODOS'
-                  ? 'bg-upt-navy-900 text-upt-gold shadow'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-upt-gold text-slate-950 shadow'
+                  : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
               }`}
             >
               Todos ({ecsList.length})
@@ -404,8 +408,8 @@ export default function EcsPage() {
               onClick={() => setTabEstado('PENDIENTE')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                 tabEstado === 'PENDIENTE'
-                  ? 'bg-amber-500 text-slate-950 font-black shadow'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-amber-400 text-slate-950 font-black shadow'
+                  : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
               }`}
             >
               <Clock className="w-3.5 h-3.5" />
@@ -416,8 +420,8 @@ export default function EcsPage() {
               onClick={() => setTabEstado('APROBADA')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                 tabEstado === 'APROBADA'
-                  ? 'bg-emerald-600 text-white font-black shadow'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-emerald-500 text-slate-950 font-black shadow'
+                  : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
               }`}
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
@@ -428,9 +432,9 @@ export default function EcsPage() {
 
         {/* Grilla de Elementos de Configuración (ECS) */}
         {loading ? (
-          <div className="p-16 text-center bg-white rounded-3xl border-2 border-slate-200 shadow-sm">
-            <Loader2 className="w-10 h-10 animate-spin text-upt-navy-700 mx-auto mb-3" />
-            <p className="text-xs font-black text-slate-700 uppercase tracking-wider">
+          <div className="p-16 text-center bg-[#0C1527] rounded-3xl border border-white/10 shadow-sm">
+            <Loader2 className="w-10 h-10 animate-spin text-upt-gold mx-auto mb-3" />
+            <p className="text-xs font-black text-slate-300 uppercase tracking-wider">
               Consultando catálogo oficial de entregables...
             </p>
           </div>
@@ -444,16 +448,16 @@ export default function EcsPage() {
             if (tabEstado === 'APROBADA') return u?.estado === 'APROBADA';
             return true;
           }).length === 0 ? (
-          <div className="bg-white rounded-3xl border-2 border-dashed border-slate-300 p-12 text-center shadow-sm">
-            <div className="w-14 h-14 rounded-2xl bg-upt-navy-50 text-upt-navy-700 flex items-center justify-center mx-auto mb-3 border border-upt-navy-200">
+          <div className="bg-[#0C1527] rounded-3xl border-2 border-dashed border-white/10 p-12 text-center shadow-sm">
+            <div className="w-14 h-14 rounded-2xl bg-white/5 text-sky-400 flex items-center justify-center mx-auto mb-3 border border-white/10">
               <Layers className="w-7 h-7" />
             </div>
-            <h3 className="font-black text-slate-900 text-base">
+            <h3 className="font-black text-white text-base">
               {filtroAsignacion === 'MIS_ASIGNACIONES'
                 ? 'No tienes entregables asignados directamente'
                 : 'No se encontraron entregables con este filtro'}
             </h3>
-            <p className="text-xs text-slate-600 mt-1 max-w-md mx-auto leading-relaxed">
+            <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">
               {filtroAsignacion === 'MIS_ASIGNACIONES'
                 ? 'El Administrador puede asignarte como Responsable Técnico al dar de alta nuevos planos o partidas en la obra.'
                 : 'No hay artefactos en esta categoría. Puedes cambiar de pestaña o registrar uno nuevo.'}
@@ -465,13 +469,13 @@ export default function EcsPage() {
                 setSearch('');
                 setTipoFiltro('');
               }}
-              className="mt-4 px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs transition mr-2"
+              className="mt-4 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition mr-2 border border-white/10"
             >
               Ver Todos los Entregables
             </button>
             <button
               onClick={() => setModalOpen(true)}
-              className="mt-4 px-5 py-2 rounded-xl bg-[#0B2545] hover:bg-[#133A66] text-white font-semibold text-xs shadow-xs transition"
+              className="mt-4 px-5 py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs shadow-xs transition"
             >
               + Registrar Nuevo Entregable
             </button>
@@ -498,31 +502,31 @@ export default function EcsPage() {
               return (
                 <div
                   key={item.id}
-                  className={`bg-white rounded-3xl border shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between overflow-hidden group ${
+                  className={`bg-[#0C1527] rounded-3xl border shadow-md hover:border-white/20 transition-all duration-200 flex flex-col justify-between overflow-hidden group ${
                     isMyEcs
-                      ? 'border-slate-300 border-l-4 border-l-sky-600'
-                      : 'border-slate-200 hover:border-slate-300'
+                      ? 'border-sky-500/30 border-l-4 border-l-sky-500'
+                      : 'border-white/10 hover:border-white/20'
                   }`}
                 >
                     <div>
                       {/* Header de la Tarjeta */}
-                      <div className="p-4 sm:p-5 pb-3 border-b border-slate-100 bg-slate-50/50 flex items-start justify-between gap-2.5">
+                      <div className="p-4 sm:p-5 pb-3 border-b border-white/10 bg-[#070D18] flex items-start justify-between gap-2.5">
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
-                            <span className="font-mono text-xs font-bold text-slate-800 bg-white px-2.5 py-0.5 rounded-lg border border-slate-200 flex items-center gap-1">
-                              <Layers className="w-3.5 h-3.5 text-slate-500" />
+                            <span className="font-mono text-xs font-bold text-sky-300 bg-white/10 px-2.5 py-0.5 rounded-lg border border-white/10 flex items-center gap-1">
+                              <Layers className="w-3.5 h-3.5 text-sky-400" />
                               {item.codigo}
                             </span>
-                            <span className="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+                            <span className="text-[10px] font-semibold text-slate-300 bg-white/5 px-2 py-0.5 rounded-md border border-white/10">
                               {item.proyecto.codigo}
                             </span>
                             {isMyEcs && (
-                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-sky-50 text-sky-800 border border-sky-200 flex items-center gap-1 shadow-xs">
-                                <UserCheck className="w-3 h-3 text-sky-600" /> A tu cargo
+                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30 flex items-center gap-1 shadow-xs">
+                                <UserCheck className="w-3 h-3 text-sky-400" /> A tu cargo
                               </span>
                             )}
                           </div>
-                          <h3 className="font-black text-slate-900 text-sm sm:text-base group-hover:text-sky-700 transition leading-snug">
+                          <h3 className="font-black text-white text-sm sm:text-base group-hover:text-sky-300 transition leading-snug">
                             {item.nombre}
                           </h3>
                         </div>
@@ -536,35 +540,35 @@ export default function EcsPage() {
 
                       {/* Contenido de la Tarjeta */}
                       <div className="p-4 sm:p-5 py-4 space-y-3.5">
-                        <p className="text-xs text-slate-700 line-clamp-2 leading-relaxed">
+                        <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
                           {item.descripcion || 'Sin descripción descriptiva registrada.'}
                         </p>
 
-                        <div className="text-[11px] text-slate-600 font-mono bg-slate-100 px-2.5 py-1.5 rounded-xl border border-slate-200 truncate flex items-center gap-1.5">
+                        <div className="text-[11px] text-slate-300 font-mono bg-[#070D18] px-2.5 py-1.5 rounded-xl border border-white/10 truncate flex items-center gap-1.5">
                           <FolderGit2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                           <span className="truncate">{item.ubicacion}</span>
                         </div>
 
                         {/* Estado de la última versión */}
-                        <div className="bg-slate-50 rounded-2xl p-3 border border-slate-200 flex items-center justify-between text-xs">
+                        <div className="bg-[#070D18] rounded-2xl p-3 border border-white/10 flex items-center justify-between text-xs">
                           <div className="flex items-center gap-1.5">
-                            <span className="font-semibold text-slate-700">Última Versión:</span>
+                            <span className="font-semibold text-slate-400">Última Versión:</span>
                             {ultimaVersion ? (
-                              <span className="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded-md border border-slate-200 shadow-xs">
+                              <span className="font-mono font-bold text-white bg-white/10 px-2 py-0.5 rounded-md border border-white/10 shadow-xs">
                                 v{ultimaVersion.numero_version}
                               </span>
                             ) : (
-                              <span className="text-slate-400 italic">Sin versiones</span>
+                              <span className="text-slate-500 italic">Sin versiones</span>
                             )}
                           </div>
                           {ultimaVersion && renderBadgeEstado(ultimaVersion.estado)}
                         </div>
 
                         {/* Responsable */}
-                        <div className="flex items-center gap-1.5 text-[11px] text-slate-600 font-medium pt-1">
-                          <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium pt-1">
+                          <User className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                           <span className="truncate">
-                            Responsable: <strong className="text-slate-800 font-semibold">{item.responsable.nombre_completo}</strong>
+                            Responsable: <strong className="text-slate-200 font-semibold">{item.responsable.nombre_completo}</strong>
                           </span>
                         </div>
                       </div>
@@ -576,8 +580,8 @@ export default function EcsPage() {
                         href={`/ecs/${item.id}`}
                         className={`w-full py-2.5 px-4 rounded-xl font-bold text-xs transition flex items-center justify-between group/btn shadow-xs active:scale-98 ${
                           isMyEcs && !ultimaVersion
-                            ? 'bg-sky-600 hover:bg-sky-700 text-white'
-                            : 'bg-[#0B2545] hover:bg-[#133A66] text-white'
+                            ? 'bg-sky-600 hover:bg-sky-500 text-white'
+                            : 'bg-white/10 hover:bg-white/20 text-white border border-white/10'
                         }`}
                       >
                         <span className="flex items-center gap-1.5">
@@ -608,31 +612,31 @@ export default function EcsPage() {
 
       {/* Modal Nuevo ECS (RF-04) */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border-2 border-slate-200 space-y-5 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#0C1527] rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-white/10 space-y-5 animate-in fade-in zoom-in-95 duration-150 text-white">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-upt-navy-50 text-upt-navy-700 flex items-center justify-center border border-upt-navy-200">
+                <div className="w-8 h-8 rounded-xl bg-white/10 text-sky-400 flex items-center justify-center border border-white/10">
                   <Plus className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-black text-slate-900">
+                  <h3 className="text-base font-black text-white">
                     Registrar Nuevo {terminologia.ecsLabel}
                   </h3>
-                  <span className="text-[11px] text-slate-500 font-medium">Paso 2 • Alta técnica bajo control de versiones</span>
+                  <span className="text-[11px] text-slate-400 font-medium">Paso 2 • Alta técnica bajo control de versiones</span>
                 </div>
               </div>
               <button
                 onClick={() => setModalOpen(false)}
-                className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center"
+                className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 font-bold flex items-center justify-center"
               >
                 ✕
               </button>
             </div>
 
             {formError && (
-              <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs font-bold flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
+              <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-bold flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
                 <span>{formError}</span>
               </div>
             )}
@@ -641,16 +645,16 @@ export default function EcsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Proyecto */}
                 <div>
-                  <label className="block text-xs font-black text-slate-700 mb-1">
-                    {terminologia.proyectoLabel} <span className="text-red-500">*</span>
+                  <label className="block text-xs font-black text-slate-300 mb-1">
+                    {terminologia.proyectoLabel} <span className="text-rose-400">*</span>
                   </label>
                   <select
                     value={proyectoId}
                     onChange={(e) => setProyectoId(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 transition"
+                    className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-bold text-white focus:border-sky-400 transition"
                   >
                     {auxData.proyectos.map((p) => (
-                      <option key={p.id} value={p.id}>
+                      <option key={p.id} value={p.id} className="bg-[#0C1527] text-white">
                         {p.codigo} - {p.nombre}
                       </option>
                     ))}
@@ -659,44 +663,44 @@ export default function EcsPage() {
 
                 {/* Código */}
                 <div>
-                  <label className="block text-xs font-black text-slate-700 mb-1">
-                    Código Identificador <span className="text-red-500">*</span>
+                  <label className="block text-xs font-black text-slate-300 mb-1">
+                    Código Identificador <span className="text-rose-400">*</span>
                   </label>
                   <input
                     type="text"
                     value={codigo}
                     onChange={(e) => setCodigo(e.target.value.toUpperCase())}
                     placeholder={`Ej. ${terminologia.ecsEjemploCodigo}`}
-                    className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-mono font-black uppercase text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
+                    className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-mono font-black uppercase text-white placeholder:text-slate-500 focus:border-sky-400 transition"
                   />
                 </div>
 
                 {/* Nombre */}
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-black text-slate-700 mb-1">
-                    Nombre ({terminologia.ecsLabel}) <span className="text-red-500">*</span>
+                  <label className="block text-xs font-black text-slate-300 mb-1">
+                    Nombre ({terminologia.ecsLabel}) <span className="text-rose-400">*</span>
                   </label>
                   <input
                     type="text"
                     value={nombre}
                     onChange={(e) => setNombre(e.target.value)}
                     placeholder={terminologia.ecsEjemploNombre}
-                    className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
+                    className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-semibold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
                   />
                 </div>
 
                 {/* Tipo */}
                 <div>
-                  <label className="block text-xs font-black text-slate-700 mb-1">
-                    Tipo de {terminologia.ecsLabel} <span className="text-red-500">*</span>
+                  <label className="block text-xs font-black text-slate-300 mb-1">
+                    Tipo de {terminologia.ecsLabel} <span className="text-rose-400">*</span>
                   </label>
                   <select
                     value={tipo}
                     onChange={(e) => setTipo(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 transition"
+                    className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-bold text-white focus:border-sky-400 transition"
                   >
                     {terminologia.ecsTipos.map((t) => (
-                      <option key={t.valor} value={t.valor}>
+                      <option key={t.valor} value={t.valor} className="bg-[#0C1527] text-white">
                         {t.label}
                       </option>
                     ))}
@@ -705,16 +709,16 @@ export default function EcsPage() {
 
                 {/* Responsable */}
                 <div>
-                  <label className="block text-xs font-black text-slate-700 mb-1">
-                    Especialista Responsable <span className="text-red-500">*</span>
+                  <label className="block text-xs font-black text-slate-300 mb-1">
+                    Especialista Responsable <span className="text-rose-400">*</span>
                   </label>
                   <select
                     value={responsableId}
                     onChange={(e) => setResponsableId(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:border-upt-navy-700 transition"
+                    className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-bold text-white focus:border-sky-400 transition"
                   >
                     {auxData.usuarios.map((u) => (
-                      <option key={u.id} value={u.id}>
+                      <option key={u.id} value={u.id} className="bg-[#0C1527] text-white">
                         {u.nombre_completo}{u.cargo ? ` (${u.cargo})` : ''}
                       </option>
                     ))}
@@ -723,21 +727,21 @@ export default function EcsPage() {
 
                 {/* Ubicación */}
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-black text-slate-700 mb-1">
-                    {terminologia.ecsUbicacionLabel} <span className="text-red-500">*</span>
+                  <label className="block text-xs font-black text-slate-300 mb-1">
+                    {terminologia.ecsUbicacionLabel} <span className="text-rose-400">*</span>
                   </label>
                   <input
                     type="text"
                     value={ubicacion}
                     onChange={(e) => setUbicacion(e.target.value)}
                     placeholder={terminologia.ecsUbicacionPlaceholder}
-                    className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-mono font-semibold text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
+                    className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-mono font-semibold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
                   />
                 </div>
 
                 {/* Descripción */}
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-black text-slate-700 mb-1">
+                  <label className="block text-xs font-black text-slate-300 mb-1">
                     Descripción Técnica
                   </label>
                   <textarea
@@ -745,32 +749,32 @@ export default function EcsPage() {
                     value={descripcion}
                     onChange={(e) => setDescripcion(e.target.value)}
                     placeholder={terminologia.ecsDescripcionPlaceholder}
-                    className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs font-medium text-slate-900 focus:bg-white focus:border-upt-navy-700 transition"
+                    className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-medium text-white placeholder:text-slate-500 focus:border-sky-400 transition"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-100 transition"
+                  className="px-4 py-2 rounded-xl text-slate-400 font-bold text-xs hover:bg-white/10 transition"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-5 py-2.5 rounded-xl bg-[#0B2545] hover:bg-[#133A66] text-white font-bold text-xs shadow-xs transition flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs shadow-xs transition flex items-center gap-2"
                 >
                   {saving ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin text-sky-300" />
+                      <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
                       <span>Registrando...</span>
                     </>
                   ) : (
                     <>
-                      <Plus className="w-4 h-4" />
+                      <Plus className="w-4 h-4 text-slate-950" />
                       <span>Registrar {terminologia.ecsLabel}</span>
                     </>
                   )}

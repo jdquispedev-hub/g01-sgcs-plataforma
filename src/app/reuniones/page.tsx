@@ -33,6 +33,7 @@ import {
   Filter,
   Printer,
 } from 'lucide-react';
+import NavbarPrincipal from '@/components/NavbarPrincipal';
 
 interface ReunionItem {
   id: string;
@@ -211,63 +212,66 @@ export default function ReunionesPage() {
     switch (tipo) {
       case 'CLIENTE':
         return {
-          chip: 'bg-emerald-50 hover:bg-emerald-100 text-emerald-950 border-emerald-300',
-          badge: 'bg-emerald-700 text-white',
+          chip: 'bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border-emerald-500/30',
+          badge: 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold',
           label: 'Con Cliente',
         };
       case 'EQUIPO_INTERNO':
         return {
-          chip: 'bg-blue-50 hover:bg-blue-100 text-blue-950 border-blue-300',
-          badge: 'bg-blue-700 text-white',
+          chip: 'bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 border-sky-500/30',
+          badge: 'bg-sky-500/20 text-sky-300 border border-sky-500/30 font-semibold',
           label: 'Equipo Técnico',
         };
       case 'COMITE_CAMBIOS':
       default:
         return {
-          chip: 'bg-amber-50 hover:bg-amber-100 text-amber-950 border-amber-300',
-          badge: 'bg-amber-600 text-white font-semibold',
+          chip: 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/30',
+          badge: 'bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold',
           label: 'Comité RFC',
         };
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col antialiased">
-      {/* Top Navbar */}
-      <header className="bg-upt-navy-900 text-white border-b-2 border-upt-gold shadow-xl sticky top-0 z-40 print:hidden">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-0 sm:h-16 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
+    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
+      {/* Navbar Global Unificado */}
+      <NavbarPrincipal />
+
+      {/* Sub-Header de Reuniones y Acciones */}
+      <div className="bg-[#0B1528] border-b border-white/10 print:hidden">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <Link
               href="/dashboard"
-              className="p-2 rounded-xl bg-upt-navy-800 hover:bg-upt-navy-700 text-upt-gold transition border border-upt-gold/30 shrink-0 shadow-sm"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition border border-white/10"
               title="Volver al Dashboard"
             >
-              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+              <ArrowLeft className="w-4 h-4" />
             </Link>
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-black text-sm sm:text-base text-white tracking-tight truncate">
+                <span className="font-bold text-sm sm:text-base text-white tracking-tight truncate">
                   Calendario de Reuniones y Acuerdos
                 </span>
-                <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold text-upt-navy-950 font-black uppercase tracking-wider shrink-0 shadow-sm">
+                <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold/20 text-upt-gold border border-upt-gold/30 font-bold uppercase tracking-wider shrink-0">
                   Paso 1: Comunicación
                 </span>
               </div>
-              <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
-                Agenda oficial: reuniones convocadas por el jefe o el equipo con minutas vinculadas
+              <p className="text-[10px] sm:text-[11px] text-slate-400 truncate">
+                Agenda oficial: reuniones convocadas con minutas contractuales vinculadas
               </p>
             </div>
           </div>
 
           <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0 border-t border-white/10 sm:border-t-0">
             {/* Toggle de Vista */}
-            <div className="bg-upt-navy-950 p-1 rounded-xl border border-white/20 flex items-center gap-1">
+            <div className="bg-[#070D18] p-1 rounded-xl border border-white/10 flex items-center gap-1">
               <button
                 onClick={() => setVistaModo('CALENDARIO')}
                 className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
                   vistaModo === 'CALENDARIO'
-                    ? 'bg-upt-gold text-upt-navy-950 shadow'
-                    : 'text-slate-300 hover:text-white'
+                    ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 shadow-xs'
+                    : 'text-slate-400 hover:text-white'
                 }`}
               >
                 <CalendarDays className="w-3.5 h-3.5" />
@@ -277,8 +281,8 @@ export default function ReunionesPage() {
                 onClick={() => setVistaModo('LISTA')}
                 className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
                   vistaModo === 'LISTA'
-                    ? 'bg-upt-gold text-upt-navy-950 shadow'
-                    : 'text-slate-300 hover:text-white'
+                    ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 shadow-xs'
+                    : 'text-slate-400 hover:text-white'
                 }`}
               >
                 <List className="w-3.5 h-3.5" />
@@ -291,15 +295,15 @@ export default function ReunionesPage() {
                 setFormFecha('2026-11-03');
                 setModalOpen(true);
               }}
-              className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-500 hover:from-amber-400 hover:to-upt-gold text-upt-navy-950 font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition flex items-center gap-1.5 shrink-0 active:scale-95"
+              className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition flex items-center gap-1.5 shrink-0 active:scale-95"
             >
-              <Plus className="w-4 h-4 stroke-[3]" />
+              <Plus className="w-4 h-4 stroke-[3] text-slate-950" />
               <span className="hidden sm:inline">Agendar Reunión</span>
               <span className="sm:hidden font-bold">Agendar</span>
             </button>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
       <main className={`max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6 ${selectedReunion ? 'print:hidden' : ''}`}>
