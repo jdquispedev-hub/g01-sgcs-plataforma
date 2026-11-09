@@ -44,39 +44,44 @@ export default function AppSidebar({ user, onLogout }: AppSidebarProps) {
   const isConstruccion = user?.rubro === 'CONSTRUCCION';
   const isVeterinaria = user?.rubro === 'VETERINARIA';
 
-  // Flujo Secuencial Oficial (Fases 1 a 5)
+  // Flujo Secuencial Oficial (Fases 1 a 5) - Modo Moderno y Humano
   const navCicloVida = [
     {
       href: '/reuniones',
-      label: isConstruccion ? 'Minutas de Obra' : isVeterinaria ? 'Consentimientos' : 'Minutas / Sprints',
+      label: isConstruccion ? 'Minutas de Obra' : isVeterinaria ? 'Consentimientos' : 'Reuniones & Sprints',
+      sublabel: 'Minutas',
       step: '1',
       icon: CalendarDays,
       badgeColor: 'text-amber-400 bg-amber-400/10 border-amber-400/30',
     },
     {
       href: '/ecs',
-      label: isConstruccion ? 'Planos & Memorias' : isVeterinaria ? 'Casos & Analíticas' : 'Entregables (ECS)',
+      label: isConstruccion ? 'Planos & Entregables' : isVeterinaria ? 'Historiales Clínicos' : 'Entregables',
+      sublabel: 'ECS',
       step: '2',
       icon: Layers,
       badgeColor: 'text-teal-400 bg-teal-400/10 border-teal-400/30',
     },
     {
       href: '/aprobaciones',
-      label: isConstruccion ? 'Dictamen Técnico' : isVeterinaria ? 'Aprobación Cirugía' : 'Dictamen Tech Lead',
+      label: isConstruccion ? 'Visto Bueno Técnico' : isVeterinaria ? 'Aprobación Médica' : 'Aprobaciones',
+      sublabel: 'Dictamen',
       step: '3',
       icon: FileCheck2,
       badgeColor: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30',
     },
     {
       href: '/lineas-base',
-      label: isConstruccion ? 'Hitos Congelados' : isVeterinaria ? 'Protocolos Clínicos' : 'Líneas Base (Release)',
+      label: isConstruccion ? 'Hitos Congelados' : isVeterinaria ? 'Protocolos Cerrados' : 'Hitos Cerrados',
+      sublabel: 'Línea Base',
       step: '4',
       icon: Lock,
       badgeColor: 'text-purple-400 bg-purple-400/10 border-purple-400/30',
     },
     {
       href: '/cambios',
-      label: isConstruccion ? 'Adicionales de Obra' : isVeterinaria ? 'Variaciones Clínicas' : 'Control de Cambios (RFC)',
+      label: isConstruccion ? 'Adicionales de Obra' : isVeterinaria ? 'Variaciones Clínicas' : 'Cambios de Plan',
+      sublabel: 'RFC',
       step: '5',
       icon: GitPullRequest,
       badgeColor: 'text-rose-400 bg-rose-400/10 border-rose-400/30',
@@ -88,21 +93,25 @@ export default function AppSidebar({ user, onLogout }: AppSidebarProps) {
     {
       href: '/bitacora',
       label: isConstruccion ? 'Cuaderno de Obra' : isVeterinaria ? 'Evolución del Paciente' : 'Bitácora Diaria',
+      sublabel: 'Reporte del Día',
       icon: Activity,
     },
     {
-      href: '/trazabilidad',
-      label: 'Matriz RTV (Calidad)',
-      icon: Network,
+      href: '/cronograma',
+      label: 'Línea de Tiempo',
+      sublabel: 'Tablero Visual',
+      icon: Building2,
     },
     {
-      href: '/cronograma',
-      label: 'Línea de Tiempo (Canvas)',
-      icon: Building2,
+      href: '/trazabilidad',
+      label: 'Trazabilidad y Calidad',
+      sublabel: 'Matriz RTV',
+      icon: Network,
     },
     {
       href: '/reportes',
       label: 'Reportes Formales PDF',
+      sublabel: 'Exportación',
       icon: Printer,
     },
     ...(isAdmin
@@ -110,11 +119,13 @@ export default function AppSidebar({ user, onLogout }: AppSidebarProps) {
           {
             href: '/auditoria',
             label: 'Registro de Auditoría',
+            sublabel: 'Logs',
             icon: History,
           },
           {
             href: '/usuarios',
             label: 'Equipo y Roles',
+            sublabel: 'Colaboradores',
             icon: Users,
           },
         ]
@@ -172,8 +183,8 @@ export default function AppSidebar({ user, onLogout }: AppSidebarProps) {
             <div className="space-y-1">
               {!collapsed && (
                 <div className="px-3 pb-1 text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center justify-between">
-                  <span>Ciclo de Vida Formal</span>
-                  <span className="text-[9px] text-upt-gold font-mono">5 Fases</span>
+                  <span>Fases del Proyecto</span>
+                  <span className="text-[9px] text-upt-gold font-mono">1 a 5</span>
                 </div>
               )}
               {navCicloVida.map((item) => {
@@ -188,15 +199,22 @@ export default function AppSidebar({ user, onLogout }: AppSidebarProps) {
                         ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold shadow-sm'
                         : 'text-slate-300 hover:text-white hover:bg-white/5'
                     }`}
-                    title={collapsed ? `${item.step}. ${item.label}` : undefined}
+                    title={collapsed ? `${item.step}. ${item.label} (${item.sublabel})` : undefined}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-slate-950' : 'text-slate-400 group-hover:text-white'}`} />
-                      {!collapsed && <span className="truncate">{item.label}</span>}
+                      {!collapsed && (
+                        <div className="flex flex-col min-w-0">
+                          <span className="truncate leading-tight font-medium">{item.label}</span>
+                          <span className={`text-[10px] leading-tight ${isActive ? 'text-slate-900 font-semibold' : 'text-slate-500'}`}>
+                            {item.sublabel}
+                          </span>
+                        </div>
+                      )}
                     </div>
                     {!collapsed && (
                       <span
-                        className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-md border shrink-0 ${
+                        className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-md border shrink-0 ${
                           isActive
                             ? 'bg-slate-950 text-upt-gold border-slate-950'
                             : item.badgeColor
@@ -214,7 +232,7 @@ export default function AppSidebar({ user, onLogout }: AppSidebarProps) {
             <div className="space-y-1">
               {!collapsed && (
                 <div className="px-3 pb-1 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                  Supervisión & Campo
+                  Operación Diaria
                 </div>
               )}
               {navSupervision.map((item) => {
@@ -224,15 +242,24 @@ export default function AppSidebar({ user, onLogout }: AppSidebarProps) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition group ${
+                    className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition group ${
                       isActive
                         ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold shadow-sm'
                         : 'text-slate-300 hover:text-white hover:bg-white/5'
                     }`}
-                    title={collapsed ? item.label : undefined}
+                    title={collapsed ? `${item.label} (${item.sublabel})` : undefined}
                   >
-                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-slate-950' : 'text-slate-400 group-hover:text-white'}`} />
-                    {!collapsed && <span className="truncate">{item.label}</span>}
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-slate-950' : 'text-slate-400 group-hover:text-white'}`} />
+                      {!collapsed && (
+                        <div className="flex flex-col min-w-0">
+                          <span className="truncate leading-tight font-medium">{item.label}</span>
+                          <span className={`text-[10px] leading-tight ${isActive ? 'text-slate-900 font-semibold' : 'text-slate-500'}`}>
+                            {item.sublabel}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </Link>
                 );
               })}

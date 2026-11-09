@@ -193,12 +193,12 @@ export default function AprobacionesPage() {
             </Link>
             <div className="min-w-0">
               <h1 className="text-base sm:text-lg font-bold text-white tracking-tight truncate">
-                {user?.rol === 'SOLICITANTE' ? 'Bandeja de Seguimiento de Entregables' : 'Centro de Dictamen y Control de Cambios'}
+                {user?.rol === 'SOLICITANTE' ? 'Estado de Mis Entregables' : 'Centro de Aprobaciones'}
               </h1>
               <p className="text-xs text-slate-400 truncate">
                 {user?.rol === 'SOLICITANTE'
-                  ? 'Paso 3: Monitorea el estado de revisión técnica de tus planos y artefactos'
-                  : 'Paso 3: Evaluación Técnica Oficial y Aprobación de Artefactos'}
+                  ? 'Revisión técnica de tus planos y artefactos'
+                  : 'Fase 3: Revisión de calidad y visto bueno técnico'}
               </p>
             </div>
           </div>
@@ -209,7 +209,7 @@ export default function AprobacionesPage() {
               <span>
                 {user?.rol === 'SOLICITANTE'
                   ? `${totalPendientes} en revisión técnica`
-                  : `${totalPendientes} pendientes de dictamen`}
+                  : `${totalPendientes} entregas por revisar`}
               </span>
             </div>
           </div>
@@ -226,28 +226,28 @@ export default function AprobacionesPage() {
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>
                   {user?.rol === 'SOLICITANTE'
-                    ? 'Seguimiento de Calidad y Dictámenes'
-                    : 'Paso 3: Dictamen Técnico y Aprobación'}
+                    ? 'Seguimiento de Calidad'
+                    : 'Fase 3: Revisión de Calidad y Aprobación'}
                 </span>
               </div>
               <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                 {user?.rol === 'SOLICITANTE'
-                  ? 'Estado de Aprobación de tus Entregables y Cambios'
-                  : 'Centro de Dictamen y Control de Cambios'}
+                  ? 'Estado de Aprobación de tus Entregables'
+                  : 'Centro de Aprobaciones del Proyecto'}
               </h1>
               <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
                 {user?.rol === 'SOLICITANTE'
-                  ? 'Aquí puedes consultar en tiempo real el veredicto técnico de tus versiones propuestas y solicitudes de cambio (RFC). El Especialista Aprobador revisa cada artefacto antes de congelarlo en una Línea Base.'
-                  : 'Como especialista técnico, tu función es evaluar la viabilidad de nuevos artefactos de software y solicitudes de cambio antes de que pasen a producción o a una Línea Base.'}
+                  ? 'Aquí puedes consultar en tiempo real el veredicto técnico de tus versiones propuestas y solicitudes de cambio.'
+                  : 'Evalúa la calidad de los entregables y cambios antes de que se congelen formalmente en los hitos oficiales.'}
               </p>
             </div>
 
             {/* Contadores Clave */}
             <div className="grid grid-cols-2 gap-3 shrink-0">
               <div className="bg-[#14161E] p-4 rounded-2xl border border-white/10 text-center min-w-[120px]">
-                <span className="text-[10px] text-slate-400 uppercase font-black block">Versiones ECS</span>
+                <span className="text-[10px] text-slate-400 uppercase font-black block">Entregas</span>
                 <span className="text-2xl font-black text-upt-gold">{versiones.length}</span>
-                <span className="text-[10px] text-slate-500 block mt-0.5">Por dictaminar</span>
+                <span className="text-[10px] text-slate-500 block mt-0.5">Por revisar</span>
               </div>
               <div className="bg-[#14161E] p-4 rounded-2xl border border-white/10 text-center min-w-[120px]">
                 <span className="text-[10px] text-slate-400 uppercase font-black block">Cambios (RFC)</span>
@@ -390,18 +390,18 @@ export default function AprobacionesPage() {
                           <button
                             disabled={actionLoadingId === v.id}
                             onClick={() => handleDictaminarVersion(v.ecs.id, v.id, 'APROBAR')}
-                            className="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow transition flex items-center justify-center gap-1.5 active:scale-95 disabled:opacity-50"
+                            className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5 active:scale-95 disabled:opacity-50"
                           >
                             <CheckCircle2 className="w-3.5 h-3.5" />
-                            <span>Aprobar</span>
+                            <span>Aprobar Entrega</span>
                           </button>
                           <button
                             disabled={actionLoadingId === v.id}
                             onClick={() => handleDictaminarVersion(v.ecs.id, v.id, 'RECHAZAR')}
-                            className="py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs shadow transition flex items-center justify-center gap-1.5 active:scale-95 disabled:opacity-50"
+                            className="py-2.5 px-3 rounded-xl bg-rose-600/90 hover:bg-rose-600 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5 active:scale-95 disabled:opacity-50"
                           >
                             <XCircle className="w-3.5 h-3.5" />
-                            <span>Rechazar</span>
+                            <span>Pedir Corrección</span>
                           </button>
                         </div>
                       )}
