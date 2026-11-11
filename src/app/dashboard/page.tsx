@@ -42,7 +42,7 @@ import {
 } from 'lucide-react';
 import GuiaFlujoModal from '@/components/GuiaFlujoModal';
 import AgendarReunionModal from '@/components/AgendarReunionModal';
-import NavbarPrincipal from '@/components/NavbarPrincipal';
+import AppShell from '@/components/AppShell';
 import { getTerminologia } from '@/lib/terminologia';
 
 interface UserData {
@@ -78,6 +78,7 @@ interface UsuarioItem {
   nombre_completo: string;
   email: string;
   rol: string;
+  cargo?: string | null;
 }
 
 interface ReunionItem {
@@ -326,10 +327,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
-      {/* Top Navbar Responsivo con Drawer Móvil */}
-      <NavbarPrincipal user={user} onLogout={handleLogout} />
-
+    <AppShell user={user} onLogout={handleLogout}>
       {/* Sub-Header de Contexto Unificado (Nivel 3) */}
       <div className="bg-[#16181D] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -1076,6 +1074,153 @@ export default function DashboardPage() {
             </div>
           </Link>
         </div>
+
+        {/* ========================================================
+           SECCIÓN: RENDIMIENTO Y CARGA DE TRABAJO DEL EQUIPO (LINEAR WORKLOAD)
+           ======================================================== */}
+        <section className="bg-[#1A1D25] rounded-3xl p-6 sm:p-7 border border-white/10 shadow-xl space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/15 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/30">
+                <Users className="w-5 h-5 text-amber-400" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                    Carga Operativa y Rendimiento del Equipo
+                  </h3>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-upt-gold/15 text-upt-gold border border-upt-gold/30 uppercase tracking-wider hidden sm:inline-block">
+                    Supervisión Ejecutiva
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400">
+                  Monitoreo de entregables asignados, porcentaje de avance y detección de bloqueos por colaborador
+                </p>
+              </div>
+            </div>
+
+            <Link
+              href="/usuarios"
+              className="text-xs font-bold text-upt-gold hover:text-amber-300 flex items-center gap-1.5 shrink-0 self-start sm:self-auto"
+            >
+              <span>Ver Directorio ({usuarios.length})</span>
+              <ArrowRight className="w-3.5 h-3.5 text-upt-gold" />
+            </Link>
+          </div>
+
+          {/* Grid de Colaboradores y su Carga */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {usuarios.map((u) => {
+              // Entregables asignados a este usuario en el proyecto activo o en general
+              const ecsUsuario = ecsList.filter((e: any) => {
+                const matchUser = e.responsable?.id === u.id || e.responsable_id === u.id;
+                const matchProy = !selectedProyectoId || e.proyecto_id === selectedProyectoId || e.proyecto?.id === selectedProyectoId;
+                return matchUser && matchProy;
+              });
+
+              const totalAsignados = ecsUsuario.length;
+              const aprobados = ecsUsuario.filter((e: any) =>
+                Array.isArray(e.versiones) && e.versiones.some((v: any) => v.estado === 'APROBADA')
+              ).length;
+              const pendientes = totalAsignados - aprobados;
+
+              const pctAvance = totalAsignados > 0 ? Math.round((aprobados / totalAsignados) * 100) : 100;
+
+              const tieneBloqueo = bloqueosActivos.some(
+                (b) => (b as any).usuario?.id === u.id || (b as any).usuario_id === u.id || b.usuario?.nombre_completo === u.nombre_completo
+              );
+
+              const initials = u.nombre_completo
+                ? u.nombre_completo
+                    .split(' ')
+                    .map((n) => n[0])
+                    .slice(0, 2)
+                    .join('')
+                    .toUpperCase()
+                : 'U';
+
+              return (
+                <div
+                  key={u.id}
+                  className="bg-[#14161E] hover:bg-[#181B24] p-4 sm:p-5 rounded-2xl border border-white/10 hover:border-white/20 transition shadow-md space-y-3 flex flex-col justify-between group"
+                >
+                  <div className="space-y-3">
+                    {/* Header del Colaborador */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-8 h-8 rounded-xl bg-white/10 text-amber-400 border border-white/15 flex items-center justify-center font-bold text-xs shrink-0">
+                          {initials}
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-amber-300 transition-colors">
+                            {u.nombre_completo}
+                          </h4>
+                          <span className="text-[10px] text-slate-400 truncate block">
+                            {u.cargo || u.rol}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Badge de Alerta de Bloqueo */}
+                      {tieneBloqueo ? (
+                        <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center gap-1 shrink-0 animate-pulse">
+                          <AlertTriangle className="w-2.5 h-2.5 text-rose-400" />
+                          <span>Bloqueado</span>
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1 shrink-0">
+                          <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" />
+                          <span>Al día</span>
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Barra de Progreso y Métricas */}
+                    <div className="space-y-1.5 pt-1">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-[11px] font-medium text-slate-400">
+                          Avance técnico:
+                        </span>
+                        <span className="font-mono font-bold text-white text-xs">
+                          {pctAvance}%
+                        </span>
+                      </div>
+
+                      {/* Barra de progreso */}
+                      <div className="w-full h-2 rounded-full bg-white/5 border border-white/10 overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-amber-400 to-emerald-400 rounded-full transition-all duration-300"
+                          style={{ width: `${pctAvance}%` }}
+                        />
+                      </div>
+
+                      {/* Detalle de Entregables */}
+                      <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1">
+                        <span>
+                          <strong className="text-emerald-400">{aprobados}</strong> aprobados
+                        </span>
+                        <span>
+                          <strong className="text-amber-300">{pendientes}</strong> pendientes
+                        </span>
+                        <span className="font-semibold text-slate-300">
+                          {totalAsignados} total
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Enlace rápido para ver sus entregables en el tablero */}
+                  <Link
+                    href="/cronograma"
+                    className="w-full py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-[11px] font-semibold text-center border border-white/10 transition block"
+                  >
+                    Ver en Tablero Canvas →
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+        </section>
       </div>
     )}
 
@@ -1643,6 +1788,6 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
-    </div>
+    </AppShell>
   );
 }

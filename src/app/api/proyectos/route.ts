@@ -12,12 +12,46 @@ const crearProyectoSchema = z.object({
   descripcion: z.string().optional(),
 });
 
-// GET: Listar proyectos de la organización activa
-export async function GET() {
+// GET: Listar proyectos o detalle de uno por id
+export async function GET(request: NextRequest) {
   try {
     const session = await getSession();
     if (!session) {
       return NextResponse.json({ success: false, message: 'No autenticado' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const proyectoId = searchParams.get('id');
+
+    if (proyectoId) {
+      const proyecto = await prisma.proyectoCaso.findFirst({
+        where: { id: proyectoId, organizacion_id: session.organizacionId },
+        include: {
+          elementos_config: {
+            include: {
+              responsable: { select: { id: true, nombre_completo: true, cargo: true } },
+              versiones: { orderBy: { created_at: 'desc' } },
+            },
+            orderBy: { created_at: 'desc' },
+          },
+          reuniones: { orderBy: { fecha: 'desc' } },
+          lineas_base: {
+            include: {
+              versiones: true,
+            },
+            orderBy: { created_at: 'desc' },
+          },
+        },
+      });
+
+      if (!proyecto) {
+        return NextResponse.json({ success: false, message: 'Proyecto no encontrado' }, { status: 404 });
+      }
+
+      return NextResponse.json({
+        success: true,
+        data: proyecto,
+      });
     }
 
     const proyectos = await prisma.proyectoCaso.findMany({

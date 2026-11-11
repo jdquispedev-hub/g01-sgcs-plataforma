@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Handshake,
   Users,
+  User,
   Briefcase,
   AlertTriangle,
   FileText,
@@ -27,7 +28,7 @@ import {
   ArrowUpRight,
   Sparkles,
 } from 'lucide-react';
-import NavbarPrincipal from '@/components/NavbarPrincipal';
+import AppShell from '@/components/AppShell';
 
 interface TimelineEvent {
   id: string;
@@ -57,24 +58,31 @@ interface ProyectoData {
 export default function CronogramaPage() {
   const [proyectos, setProyectos] = useState<{ id: string; codigo: string; nombre: string }[]>([]);
   const [selectedProyectoId, setSelectedProyectoId] = useState<string>('');
+  const [usuarios, setUsuarios] = useState<{ id: string; nombre_completo: string; cargo?: string | null }[]>([]);
+  const [selectedResponsableId, setSelectedResponsableId] = useState<string>('');
   const [proyecto, setProyecto] = useState<ProyectoData | null>(null);
   const [timeline, setTimeline] = useState<TimelineEvent[]>([]);
   const [solicitudesCambio, setSolicitudesCambio] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'TIMELINE' | 'CANVAS'>('TIMELINE');
 
-  // Cargar lista de proyectos
+  // Cargar lista de proyectos y colaboradores
   useEffect(() => {
     const fetchAux = async () => {
       try {
         const res = await fetch('/api/auxiliares');
         const data = await res.json();
-        if (data.success && Array.isArray(data.data.proyectos) && data.data.proyectos.length > 0) {
-          setProyectos(data.data.proyectos);
-          setSelectedProyectoId(data.data.proyectos[0].id);
-        } else {
-          setProyectos([]);
-          setLoading(false);
+        if (data.success) {
+          if (Array.isArray(data.data.proyectos) && data.data.proyectos.length > 0) {
+            setProyectos(data.data.proyectos);
+            setSelectedProyectoId(data.data.proyectos[0].id);
+          } else {
+            setProyectos([]);
+            setLoading(false);
+          }
+          if (Array.isArray(data.data.usuarios)) {
+            setUsuarios(data.data.usuarios);
+          }
         }
       } catch (err) {
         console.error('Error al cargar proyectos auxiliares:', err);
@@ -237,10 +245,7 @@ export default function CronogramaPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased">
-      {/* Navbar Global Unificado */}
-      <NavbarPrincipal />
-
+    <AppShell>
       {/* Sub-header contextual */}
       <div className="bg-[#16181D] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -367,32 +372,59 @@ export default function CronogramaPage() {
           </div>
         ) : (
           <>
-            {/* Barra de Alternancia de Vistas (Timeline vs Canvas) */}
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+            {/* Barra de Alternancia de Vistas (Timeline vs Canvas) y Filtro de Responsable */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setViewMode('TIMELINE')}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
                     viewMode === 'TIMELINE'
                       ? 'bg-amber-400 text-slate-950 shadow-md'
                       : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
                   }`}
                 >
                   <ListOrdered className="w-4 h-4" />
-                  <span>Línea de Tiempo Cronológica ({timeline.length} eventos)</span>
+                  <span>Línea de Tiempo ({timeline.length})</span>
                 </button>
                 <button
                   onClick={() => setViewMode('CANVAS')}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
                     viewMode === 'CANVAS'
                       ? 'bg-amber-400 text-slate-950 shadow-md'
                       : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
                   }`}
                 >
                   <Kanban className="w-4 h-4" />
-                  <span>Tablero Canvas por Fases</span>
+                  <span>Tablero de Flujo (Canvas Linear)</span>
                 </button>
               </div>
+
+              {/* Filtro por Responsable para el Jefe / Líder */}
+              {viewMode === 'CANVAS' && (
+                <div className="flex items-center gap-2 bg-[#14161E] px-3 py-1.5 rounded-xl border border-white/10">
+                  <Users className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span className="text-xs font-bold text-slate-400 hidden md:inline">Colaborador:</span>
+                  <select
+                    value={selectedResponsableId}
+                    onChange={(e) => setSelectedResponsableId(e.target.value)}
+                    className="bg-transparent text-xs font-bold text-white focus:outline-none cursor-pointer max-w-[220px] truncate"
+                  >
+                    <option value="" className="bg-[#1A1D25] text-white">
+                      Todo el equipo ({proyecto?.elementos_config?.length || 0} entregables)
+                    </option>
+                    {usuarios.map((u) => {
+                      const count = (proyecto?.elementos_config || []).filter(
+                        (e) => e.responsable?.id === u.id || (e as any).responsable_id === u.id
+                      ).length;
+                      return (
+                        <option key={u.id} value={u.id} className="bg-[#1A1D25] text-white">
+                          {u.nombre_completo} ({count})
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              )}
 
               <div className="hidden sm:flex items-center gap-2">
                 <Link
@@ -560,37 +592,66 @@ export default function CronogramaPage() {
                         </h3>
                       </div>
                       <span className="text-[10px] font-bold bg-sky-500/20 text-sky-300 px-2 py-0.5 rounded-full border border-sky-500/30">
-                        {proyecto?.elementos_config?.length || 0}
+                        {(proyecto?.elementos_config || []).filter(
+                          (ecs) => !selectedResponsableId || ecs.responsable?.id === selectedResponsableId || (ecs as any).responsable_id === selectedResponsableId
+                        ).length}
                       </span>
                     </div>
 
                     <div className="space-y-3">
-                      {proyecto?.elementos_config?.map((ecs) => (
-                        <div
-                          key={ecs.id}
-                          className="bg-[#14161E] p-3.5 rounded-xl border border-white/10 space-y-1.5"
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-mono font-bold text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">
-                              {ecs.codigo}
-                            </span>
-                            <span className="text-[10px] text-slate-400 font-medium">
-                              {ecs.tipo}
-                            </span>
-                          </div>
-                          <h4 className="text-xs font-bold text-white leading-snug">
-                            {ecs.nombre}
-                          </h4>
-                          <div className="text-[10px] text-slate-400 font-medium">
-                            Versión actual:{' '}
-                            <strong className="text-slate-200">
-                              {ecs.versiones?.[ecs.versiones.length - 1]?.numero_version
-                                ? `v${ecs.versiones[ecs.versiones.length - 1].numero_version}`
-                                : 'Sin versión'}
-                            </strong>
-                          </div>
-                        </div>
-                      ))}
+                      {(() => {
+                        const filteredEcs = (proyecto?.elementos_config || []).filter((ecs) => {
+                          if (!selectedResponsableId) return true;
+                          return ecs.responsable?.id === selectedResponsableId || (ecs as any).responsable_id === selectedResponsableId;
+                        });
+
+                        if (filteredEcs.length === 0) {
+                          return (
+                            <div className="p-4 rounded-xl bg-[#14161E] border border-dashed border-white/10 text-center text-xs text-slate-400">
+                              No hay entregables asignados con el filtro actual.
+                            </div>
+                          );
+                        }
+
+                        return filteredEcs.map((ecs) => {
+                          const ultVersion = ecs.versiones?.[0] || ecs.versiones?.[ecs.versiones.length - 1];
+                          const tieneAprobada = (ecs.versiones || []).some((v: any) => v.estado === 'APROBADA');
+
+                          return (
+                            <div
+                              key={ecs.id}
+                              className="bg-[#14161E] hover:bg-[#1C202A] p-3.5 rounded-xl border border-white/10 transition shadow-sm space-y-2 group"
+                            >
+                              <div className="flex items-center justify-between gap-1.5">
+                                <span className="text-[10px] font-mono font-bold text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">
+                                  {ecs.codigo}
+                                </span>
+                                {tieneAprobada ? (
+                                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                                    <CheckCircle2 className="w-2.5 h-2.5" /> Aprobado
+                                  </span>
+                                ) : (
+                                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                                    En Revisión
+                                  </span>
+                                )}
+                              </div>
+                              <h4 className="text-xs font-bold text-white leading-snug group-hover:text-amber-300 transition-colors">
+                                {ecs.nombre}
+                              </h4>
+                              <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-white/5">
+                                <span className="flex items-center gap-1 text-slate-300 truncate max-w-[130px]">
+                                  <User className="w-3 h-3 text-amber-400 shrink-0" />
+                                  <span className="truncate">{ecs.responsable?.nombre_completo || 'Sin asignar'}</span>
+                                </span>
+                                <span className="font-mono text-slate-400">
+                                  {ultVersion?.numero_version ? `v${ultVersion.numero_version}` : 'v1.0'}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        });
+                      })()}
                     </div>
                   </div>
 
@@ -704,6 +765,6 @@ export default function CronogramaPage() {
         )}
 
       </main>
-    </div>
+    </AppShell>
   );
 }
