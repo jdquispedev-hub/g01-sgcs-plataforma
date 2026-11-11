@@ -28,7 +28,7 @@ import {
   FileText,
   AlertCircle,
 } from 'lucide-react';
-import NavbarPrincipal from '@/components/NavbarPrincipal';
+import AppShell from '@/components/AppShell';
 
 interface SolicitudDetalle {
   id: string;
@@ -312,10 +312,7 @@ export default function DetalleRfcPage() {
   const terminologia = getTerminologia(rubro);
 
   return (
-    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased">
-      {/* Navbar Global Unificado */}
-      <NavbarPrincipal />
-
+    <AppShell>
       {/* Sub-header contextual Nivel 3 */}
       <div className="bg-[#16181D] border-b border-white/10 sticky top-14 z-30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
@@ -826,6 +823,6 @@ export default function DetalleRfcPage() {
         )}
 
       </main>
-    </div>
+    </AppShell>
   );
 }

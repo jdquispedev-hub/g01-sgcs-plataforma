@@ -24,7 +24,7 @@ import {
   Calendar,
   Lock,
 } from 'lucide-react';
-import NavbarPrincipal from '@/components/NavbarPrincipal';
+import AppShell from '@/components/AppShell';
 
 interface VersionPendiente {
   id: string;
@@ -179,10 +179,7 @@ export default function AprobacionesPage() {
   const totalPendientes = versiones.length + solicitudes.length;
 
   return (
-    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
-      {/* Navbar Global Unificado */}
-      <NavbarPrincipal user={user} />
-
+    <AppShell user={user}>
       {/* Sub-Header de Dictamen Unificado (Nivel 3) */}
       <div className="bg-[#16181D] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -522,6 +519,6 @@ export default function AprobacionesPage() {
           </div>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

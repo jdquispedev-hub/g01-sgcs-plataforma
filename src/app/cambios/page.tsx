@@ -29,7 +29,7 @@ import {
   Tag,
   ArrowRight,
 } from 'lucide-react';
-import NavbarPrincipal from '@/components/NavbarPrincipal';
+import AppShell from '@/components/AppShell';
 
 interface SolicitudItem {
   id: string;
@@ -218,10 +218,7 @@ export default function CambiosPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased">
-      {/* Navbar Global Unificado */}
-      <NavbarPrincipal />
-
+    <AppShell>
       {/* Sub-header contextual */}
       <div className="bg-[#16181D] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -495,6 +492,6 @@ export default function CambiosPage() {
           </div>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

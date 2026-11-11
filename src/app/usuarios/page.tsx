@@ -25,7 +25,7 @@ import {
   Info,
   Sparkles,
 } from 'lucide-react';
-import NavbarPrincipal from '@/components/NavbarPrincipal';
+import AppShell from '@/components/AppShell';
 
 interface UsuarioColaborador {
   id: string;
@@ -261,10 +261,7 @@ export default function UsuariosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
-      {/* Navbar Global Unificado */}
-      <NavbarPrincipal user={currentUser} />
-
+    <AppShell user={currentUser}>
       {/* Sub-Header Mobile-First */}
       <div className="bg-[#16181D] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -715,6 +712,6 @@ export default function UsuariosPage() {
         </div>
       )}
 
-    </div>
+    </AppShell>
   );
 }

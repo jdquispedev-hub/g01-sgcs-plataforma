@@ -35,7 +35,7 @@ import {
   Filter,
   Printer,
 } from 'lucide-react';
-import NavbarPrincipal from '@/components/NavbarPrincipal';
+import AppShell from '@/components/AppShell';
 
 interface ReunionItem {
   id: string;
@@ -276,10 +276,7 @@ export default function ReunionesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased selection:bg-amber-400 selection:text-slate-950">
-      {/* Navbar Global Unificado */}
-      <NavbarPrincipal user={currentUser || undefined} />
-
+    <AppShell user={currentUser || undefined}>
       {/* Sub-Header de Reuniones y Acciones */}
       <div className="bg-[#16181D] border-b border-white/10 print:hidden">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -899,6 +896,6 @@ export default function ReunionesPage() {
         proyectos={proyectos}
         usuarios={usuarios}
       />
-    </div>
+    </AppShell>
   );
 }

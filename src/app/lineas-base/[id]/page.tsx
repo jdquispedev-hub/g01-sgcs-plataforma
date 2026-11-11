@@ -24,7 +24,7 @@ import {
   AlertCircle,
   Loader2,
 } from 'lucide-react';
-import NavbarPrincipal from '@/components/NavbarPrincipal';
+import AppShell from '@/components/AppShell';
 
 interface DetalleVersion {
   linea_base_id: string;
@@ -154,12 +154,7 @@ export default function DetalleLineaBasePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased print:bg-white print:text-slate-900 print:p-0">
-      {/* Navbar Global Unificado (oculta al imprimir) */}
-      <div className="print:hidden">
-        <NavbarPrincipal />
-      </div>
-
+    <AppShell>
       {/* Sub-header contextual Nivel 3 (oculta al imprimir) */}
       <div className="bg-[#16181D] border-b border-white/10 sticky top-14 z-30 print:hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
@@ -387,6 +382,6 @@ export default function DetalleLineaBasePage() {
           </div>
         </div>
       </main>
-    </div>
+    </AppShell>
   );
 }

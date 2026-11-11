@@ -20,7 +20,7 @@ import {
   Loader2,
   Filter,
 } from 'lucide-react';
-import NavbarPrincipal from '@/components/NavbarPrincipal';
+import AppShell from '@/components/AppShell';
 
 interface ReporteProyecto {
   id: string;
@@ -128,12 +128,7 @@ export default function ReportesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased print:bg-white print:text-slate-900 print:p-0">
-      {/* Navbar Global Unificado (oculta al imprimir) */}
-      <div className="print:hidden">
-        <NavbarPrincipal />
-      </div>
-
+    <AppShell>
       {/* Sub-header contextual (oculta al imprimir) */}
       <div className="bg-[#16181D] border-b border-white/10 print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -399,6 +394,6 @@ export default function ReportesPage() {
         )}
 
       </main>
-    </div>
+    </AppShell>
   );
 }
