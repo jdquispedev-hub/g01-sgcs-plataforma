@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import useSWR from 'swr';
+import { fetcher } from '@/lib/fetcher';
 import { getTerminologia } from '@/lib/terminologia';
 import Link from 'next/link';
 import NavbarPrincipal from '@/components/NavbarPrincipal';
@@ -58,7 +60,6 @@ export default function EcsPage() {
   const [auxData, setAuxData] = useState<AuxData>({ proyectos: [], usuarios: [] });
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [filtroAsignacion, setFiltroAsignacion] = useState<'TODOS' | 'MIS_ASIGNACIONES'>('TODOS');
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [tipoFiltro, setTipoFiltro] = useState('');
   const [rubro, setRubro] = useState('CONSTRUCCION');
@@ -78,59 +79,57 @@ export default function EcsPage() {
   const [ubicacion, setUbicacion] = useState('');
   const [responsableId, setResponsableId] = useState('');
 
-  // Cargar datos
-  const loadEcs = async () => {
-    setLoading(true);
-    try {
-      const url = new URL('/api/ecs', window.location.origin);
-      if (search) url.searchParams.set('search', search);
-      if (tipoFiltro) url.searchParams.set('tipo', tipoFiltro);
+  // SWR: Caché en memoria para navegación instantánea (0ms)
+  const ecsUrl = useMemo(() => {
+    const params = new URLSearchParams();
+    if (search.trim()) params.set('search', search.trim());
+    if (tipoFiltro) params.set('tipo', tipoFiltro);
+    const q = params.toString();
+    return q ? `/api/ecs?${q}` : '/api/ecs';
+  }, [search, tipoFiltro]);
 
-      const [resEcs, resAux, resMe] = await Promise.all([
-        fetch(url.toString()),
-        fetch('/api/auxiliares'),
-        fetch('/api/auth/me'),
-      ]);
+  const { data: dataEcs, mutate: mutateEcs } = useSWR(ecsUrl, fetcher, { revalidateOnFocus: false });
+  const { data: dataAux } = useSWR('/api/auxiliares', fetcher, { revalidateOnFocus: false });
+  const { data: dataMe } = useSWR('/api/auth/me', fetcher, { revalidateOnFocus: false });
 
-      const dataEcs = await resEcs.json();
-      const dataAux = await resAux.json();
-      const dataMe = await resMe.json();
-
-      if (dataMe?.success) {
-        const u = dataMe.data?.user || dataMe.user;
-        if (u) {
-          setCurrentUser(u);
-          if (u.rubro) setRubro(u.rubro);
-          if (u.rol === 'SOLICITANTE') {
-            setFiltroAsignacion('MIS_ASIGNACIONES');
-          }
-        }
-      }
-
-      if (dataEcs.success) setEcsList(dataEcs.data);
-      if (dataAux.success) {
-        setAuxData(dataAux.data);
-        if (dataAux.data.proyectos.length > 0 && !proyectoId) {
-          setProyectoId(dataAux.data.proyectos[0].id);
-        }
-        if (dataAux.data.usuarios.length > 0 && !responsableId) {
-          setResponsableId(dataAux.data.usuarios[0].id);
-        }
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const loading = !dataEcs && ecsList.length === 0;
 
   useEffect(() => {
-    loadEcs();
-  }, [tipoFiltro]);
+    if (dataEcs?.success && Array.isArray(dataEcs.data)) {
+      setEcsList(dataEcs.data);
+    }
+  }, [dataEcs]);
+
+  useEffect(() => {
+    if (dataAux?.success) {
+      setAuxData(dataAux.data);
+      if (dataAux.data.proyectos?.length > 0 && !proyectoId) {
+        setProyectoId(dataAux.data.proyectos[0].id);
+      }
+      if (dataAux.data.usuarios?.length > 0 && !responsableId) {
+        setResponsableId(dataAux.data.usuarios[0].id);
+      }
+    }
+  }, [dataAux, proyectoId, responsableId]);
+
+  useEffect(() => {
+    if (dataMe?.success && dataMe.data?.user) {
+      const u = dataMe.data.user;
+      setCurrentUser(u);
+      if (u.rubro) setRubro(u.rubro);
+      if (u.rol === 'SOLICITANTE') {
+        setFiltroAsignacion('MIS_ASIGNACIONES');
+      }
+    }
+  }, [dataMe]);
+
+  const loadEcs = async () => {
+    await mutateEcs();
+  };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    loadEcs();
+    mutateEcs();
   };
 
   const handleCreateEcs = async (e: React.FormEvent) => {
@@ -222,12 +221,12 @@ export default function EcsPage() {
   const terminologia = getTerminologia(rubro);
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
       {/* Navbar Global Unificado */}
       <NavbarPrincipal user={currentUser} />
 
       {/* Sub-Header y Acciones del Catálogo */}
-      <div className="bg-[#0B1528] border-b border-white/10">
+      <div className="bg-[#16181D] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <Link
@@ -277,7 +276,7 @@ export default function EcsPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
         
         {/* Banner de Contexto: ¿Qué es un ECS? */}
-        <div className="bg-[#0C1527] rounded-2xl p-5 sm:p-6 border border-white/10 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-[#1A1D25] rounded-2xl p-5 sm:p-6 border border-white/10 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-1.5 text-sky-400 text-xs font-semibold uppercase tracking-wider">
               <Layers className="w-4 h-4" />
@@ -291,14 +290,14 @@ export default function EcsPage() {
               Cada versión propuesta debe ser revisada y <strong className="text-emerald-400">APROBADA</strong> por el responsable de calidad antes de incluirse en un Hito Oficial (Línea Base).
             </p>
           </div>
-          <div className="bg-[#070D18] px-4 py-3 rounded-xl border border-white/10 text-center shrink-0">
+          <div className="bg-[#14161E] px-4 py-3 rounded-xl border border-white/10 text-center shrink-0">
             <span className="text-[10px] text-slate-400 uppercase font-bold block">Entregables Totales</span>
             <span className="text-2xl font-bold text-white">{ecsList.length}</span>
           </div>
         </div>
 
         {/* Consola de Búsqueda y Filtros de Alto Contraste */}
-        <div className="bg-[#0C1527] p-4 sm:p-5 rounded-2xl border border-white/10 shadow-md space-y-4">
+        <div className="bg-[#1A1D25] p-4 sm:p-5 rounded-2xl border border-white/10 shadow-md space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
               <Search className="w-4 h-4 text-slate-400" />
@@ -318,7 +317,7 @@ export default function EcsPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Escribe el código (ej. PLN-EST-01) o nombre del entregable..."
-                className="w-full pl-10 pr-4 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-white placeholder:text-slate-500 focus:bg-[#070D18] focus:border-sky-400/50 transition outline-hidden"
+                className="w-full pl-10 pr-4 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-white placeholder:text-slate-500 focus:bg-[#14161E] focus:border-sky-400/50 transition outline-hidden"
               />
             </div>
 
@@ -327,7 +326,7 @@ export default function EcsPage() {
               <select
                 value={tipoFiltro}
                 onChange={(e) => setTipoFiltro(e.target.value)}
-                className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-slate-200 focus:bg-[#070D18] focus:border-sky-400/50 transition cursor-pointer"
+                className="w-full px-3 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-slate-200 focus:bg-[#14161E] focus:border-sky-400/50 transition cursor-pointer"
               >
                 <option value="">Todos los Tipos de ECS</option>
                 <option value="DOCUMENTO">Documentos / Memorias</option>
@@ -432,7 +431,7 @@ export default function EcsPage() {
 
         {/* Grilla de Elementos de Configuración (ECS) */}
         {loading ? (
-          <div className="p-16 text-center bg-[#0C1527] rounded-3xl border border-white/10 shadow-sm">
+          <div className="p-16 text-center bg-[#1A1D25] rounded-3xl border border-white/10 shadow-sm">
             <Loader2 className="w-10 h-10 animate-spin text-upt-gold mx-auto mb-3" />
             <p className="text-xs font-black text-slate-300 uppercase tracking-wider">
               Consultando catálogo oficial de entregables...
@@ -448,7 +447,7 @@ export default function EcsPage() {
             if (tabEstado === 'APROBADA') return u?.estado === 'APROBADA';
             return true;
           }).length === 0 ? (
-          <div className="bg-[#0C1527] rounded-3xl border-2 border-dashed border-white/10 p-12 text-center shadow-sm">
+          <div className="bg-[#1A1D25] rounded-3xl border-2 border-dashed border-white/10 p-12 text-center shadow-sm">
             <div className="w-14 h-14 rounded-2xl bg-white/5 text-sky-400 flex items-center justify-center mx-auto mb-3 border border-white/10">
               <Layers className="w-7 h-7" />
             </div>
@@ -502,7 +501,7 @@ export default function EcsPage() {
               return (
                 <div
                   key={item.id}
-                  className={`bg-[#0C1527] rounded-3xl border shadow-md hover:border-white/20 transition-all duration-200 flex flex-col justify-between overflow-hidden group ${
+                  className={`bg-[#1A1D25] rounded-3xl border shadow-md hover:border-white/20 transition-all duration-200 flex flex-col justify-between overflow-hidden group ${
                     isMyEcs
                       ? 'border-sky-500/30 border-l-4 border-l-sky-500'
                       : 'border-white/10 hover:border-white/20'
@@ -510,7 +509,7 @@ export default function EcsPage() {
                 >
                     <div>
                       {/* Header de la Tarjeta */}
-                      <div className="p-4 sm:p-5 pb-3 border-b border-white/10 bg-[#070D18] flex items-start justify-between gap-2.5">
+                      <div className="p-4 sm:p-5 pb-3 border-b border-white/10 bg-[#14161E] flex items-start justify-between gap-2.5">
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
                             <span className="font-mono text-xs font-bold text-sky-300 bg-white/10 px-2.5 py-0.5 rounded-lg border border-white/10 flex items-center gap-1">
@@ -544,13 +543,13 @@ export default function EcsPage() {
                           {item.descripcion || 'Sin descripción descriptiva registrada.'}
                         </p>
 
-                        <div className="text-[11px] text-slate-300 font-mono bg-[#070D18] px-2.5 py-1.5 rounded-xl border border-white/10 truncate flex items-center gap-1.5">
+                        <div className="text-[11px] text-slate-300 font-mono bg-[#14161E] px-2.5 py-1.5 rounded-xl border border-white/10 truncate flex items-center gap-1.5">
                           <FolderGit2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                           <span className="truncate">{item.ubicacion}</span>
                         </div>
 
                         {/* Estado de la última versión */}
-                        <div className="bg-[#070D18] rounded-2xl p-3 border border-white/10 flex items-center justify-between text-xs">
+                        <div className="bg-[#14161E] rounded-2xl p-3 border border-white/10 flex items-center justify-between text-xs">
                           <div className="flex items-center gap-1.5">
                             <span className="font-semibold text-slate-400">Última Versión:</span>
                             {ultimaVersion ? (
@@ -613,7 +612,7 @@ export default function EcsPage() {
       {/* Modal Nuevo ECS (RF-04) */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0C1527] rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-white/10 space-y-5 animate-in fade-in zoom-in-95 duration-150 text-white">
+          <div className="bg-[#1A1D25] rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-white/10 space-y-5 animate-in fade-in zoom-in-95 duration-150 text-white">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl bg-white/10 text-sky-400 flex items-center justify-center border border-white/10">
@@ -651,10 +650,10 @@ export default function EcsPage() {
                   <select
                     value={proyectoId}
                     onChange={(e) => setProyectoId(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-bold text-white focus:border-sky-400 transition"
+                    className="w-full px-3 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs font-bold text-white focus:border-sky-400 transition"
                   >
                     {auxData.proyectos.map((p) => (
-                      <option key={p.id} value={p.id} className="bg-[#0C1527] text-white">
+                      <option key={p.id} value={p.id} className="bg-[#1A1D25] text-white">
                         {p.codigo} - {p.nombre}
                       </option>
                     ))}
@@ -671,7 +670,7 @@ export default function EcsPage() {
                     value={codigo}
                     onChange={(e) => setCodigo(e.target.value.toUpperCase())}
                     placeholder={`Ej. ${terminologia.ecsEjemploCodigo}`}
-                    className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-mono font-black uppercase text-white placeholder:text-slate-500 focus:border-sky-400 transition"
+                    className="w-full px-3 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs font-mono font-black uppercase text-white placeholder:text-slate-500 focus:border-sky-400 transition"
                   />
                 </div>
 
@@ -685,7 +684,7 @@ export default function EcsPage() {
                     value={nombre}
                     onChange={(e) => setNombre(e.target.value)}
                     placeholder={terminologia.ecsEjemploNombre}
-                    className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-semibold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
+                    className="w-full px-3 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs font-semibold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
                   />
                 </div>
 
@@ -697,10 +696,10 @@ export default function EcsPage() {
                   <select
                     value={tipo}
                     onChange={(e) => setTipo(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-bold text-white focus:border-sky-400 transition"
+                    className="w-full px-3 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs font-bold text-white focus:border-sky-400 transition"
                   >
                     {terminologia.ecsTipos.map((t) => (
-                      <option key={t.valor} value={t.valor} className="bg-[#0C1527] text-white">
+                      <option key={t.valor} value={t.valor} className="bg-[#1A1D25] text-white">
                         {t.label}
                       </option>
                     ))}
@@ -715,10 +714,10 @@ export default function EcsPage() {
                   <select
                     value={responsableId}
                     onChange={(e) => setResponsableId(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-bold text-white focus:border-sky-400 transition"
+                    className="w-full px-3 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs font-bold text-white focus:border-sky-400 transition"
                   >
                     {auxData.usuarios.map((u) => (
-                      <option key={u.id} value={u.id} className="bg-[#0C1527] text-white">
+                      <option key={u.id} value={u.id} className="bg-[#1A1D25] text-white">
                         {u.nombre_completo}{u.cargo ? ` (${u.cargo})` : ''}
                       </option>
                     ))}
@@ -735,7 +734,7 @@ export default function EcsPage() {
                     value={ubicacion}
                     onChange={(e) => setUbicacion(e.target.value)}
                     placeholder={terminologia.ecsUbicacionPlaceholder}
-                    className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-mono font-semibold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
+                    className="w-full px-3 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs font-mono font-semibold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
                   />
                 </div>
 
@@ -749,7 +748,7 @@ export default function EcsPage() {
                     value={descripcion}
                     onChange={(e) => setDescripcion(e.target.value)}
                     placeholder={terminologia.ecsDescripcionPlaceholder}
-                    className="w-full px-3 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-medium text-white placeholder:text-slate-500 focus:border-sky-400 transition"
+                    className="w-full px-3 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs font-medium text-white placeholder:text-slate-500 focus:border-sky-400 transition"
                   />
                 </div>
               </div>

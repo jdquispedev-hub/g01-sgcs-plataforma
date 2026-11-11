@@ -281,7 +281,7 @@ export default function ReunionesPage() {
       <NavbarPrincipal user={currentUser || undefined} />
 
       {/* Sub-Header de Reuniones y Acciones */}
-      <div className="bg-[#191C24] border-b border-white/10 print:hidden">
+      <div className="bg-[#16181D] border-b border-white/10 print:hidden">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <Link

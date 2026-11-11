@@ -14,6 +14,7 @@ import {
   AlertTriangle,
   GitPullRequest,
   ArrowRight,
+  ArrowLeft,
   ExternalLink,
   ChevronRight,
   LogOut,
@@ -181,6 +182,36 @@ export default function AprobacionesPage() {
     <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
       {/* Navbar Global Unificado */}
       <NavbarPrincipal user={user} />
+
+      {/* Sub-Header de Dictamen Unificado (Nivel 3) */}
+      <div className="bg-[#16181D] border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <Link
+              href="/dashboard"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition border border-white/10"
+              title="Volver al Dashboard"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+            <div className="min-w-0">
+              <h1 className="text-base sm:text-lg font-bold text-white tracking-tight truncate">
+                Centro de Dictamen y Control de Cambios
+              </h1>
+              <p className="text-xs text-slate-400 truncate">
+                Paso 3: Evaluación Técnica y Aprobación de Artefactos
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 shrink-0">
+            <div className="px-3 py-1.5 rounded-xl bg-[#14161E] border border-white/10 text-xs text-slate-300 font-bold flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+              <span>{totalPendientes} pendientes de dictamen</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">

@@ -326,9 +326,56 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
       {/* Top Navbar Responsivo con Drawer Móvil */}
       <NavbarPrincipal user={user} onLogout={handleLogout} />
+
+      {/* Sub-Header de Contexto Unificado (Nivel 3) */}
+      <div className="bg-[#16181D] border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-amber-400 shrink-0">
+              <Compass className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-base sm:text-lg font-bold text-white tracking-tight truncate">
+                Panel de Control Operativo
+              </h1>
+              <p className="text-xs text-slate-400 truncate">
+                Supervisión de Entregables, Líneas Base y Control de Cambios
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 shrink-0">
+            {/* Selector de Proyecto Activo */}
+            <div className="flex items-center gap-2 bg-[#14161E] px-3 py-1.5 rounded-xl border border-white/10">
+              <FolderGit2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span className="text-[11px] font-bold text-slate-400 hidden md:inline">Proyecto:</span>
+              <select
+                value={selectedProyectoId}
+                onChange={(e) => setSelectedProyectoId(e.target.value)}
+                className="bg-transparent text-xs font-bold text-slate-200 focus:outline-none cursor-pointer max-w-[200px] truncate"
+              >
+                {proyectos.map((p) => (
+                  <option key={p.id} value={p.id} className="bg-[#1A1D25] text-white">
+                    {p.codigo} - {p.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              onClick={() => setCrearProyectoModalOpen(true)}
+              className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 text-xs font-bold transition flex items-center gap-1.5 active:scale-95"
+              title="Registrar nuevo proyecto"
+            >
+              <Plus className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">Nuevo Proyecto</span>
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
@@ -387,7 +434,7 @@ export default function DashboardPage() {
         )}
 
         {/* Selector de Modo de Vista (Segmented Control Estilo Linear / macOS) */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-[#0C1527] p-2 rounded-2xl border border-white/10 shadow-sm">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-[#1A1D25] p-2 rounded-2xl border border-white/10 shadow-sm">
           <div className="bg-slate-900/80 p-1 rounded-xl inline-flex items-center gap-1 border border-white/5">
             <button
               type="button"
@@ -434,7 +481,7 @@ export default function DashboardPage() {
         {vistaTab === 'PERSONAL' && (
           <div className="space-y-6 animate-in fade-in duration-200">
             {/* Banner de Bienvenida del Colaborador */}
-            <div className="bg-[#0C1527] rounded-3xl p-6 sm:p-7 text-white border border-white/10 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="bg-[#1A1D25] rounded-3xl p-6 sm:p-7 text-white border border-white/10 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="w-13 h-13 rounded-2xl bg-[#13233F] border border-sky-400/30 flex items-center justify-center text-sky-300 shadow shrink-0">
                   <UserCheck className="w-6 h-6 text-sky-300" />
@@ -471,7 +518,7 @@ export default function DashboardPage() {
 
             {/* 3 KPIs Personales del Usuario */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-[#0C1527] p-5 rounded-2xl border border-white/10 shadow-md flex items-center gap-4">
+              <div className="bg-[#1A1D25] p-5 rounded-2xl border border-white/10 shadow-md flex items-center gap-4">
                 <div className="w-11 h-11 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center shrink-0 border border-sky-500/30">
                   <Layers className="w-5 h-5 text-sky-400" />
                 </div>
@@ -484,7 +531,7 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="bg-[#0C1527] p-5 rounded-2xl border border-white/10 shadow-md flex items-center gap-4">
+              <div className="bg-[#1A1D25] p-5 rounded-2xl border border-white/10 shadow-md flex items-center gap-4">
                 <div className="w-11 h-11 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/30">
                   <Clock className="w-5 h-5 text-amber-400" />
                 </div>
@@ -497,7 +544,7 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="bg-[#0C1527] p-5 rounded-2xl border border-white/10 shadow-md flex items-center gap-4">
+              <div className="bg-[#1A1D25] p-5 rounded-2xl border border-white/10 shadow-md flex items-center gap-4">
                 <div className="w-11 h-11 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/30">
                   <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                 </div>
@@ -512,7 +559,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Sección de Artefactos Asignados */}
-            <div className="bg-[#0C1527] rounded-3xl p-6 sm:p-7 border border-white/10 shadow-xl space-y-4">
+            <div className="bg-[#1A1D25] rounded-3xl p-6 sm:p-7 border border-white/10 shadow-xl space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
                 <div>
                   <h3 className="text-lg font-black text-white flex items-center gap-2">
@@ -533,7 +580,7 @@ export default function DashboardPage() {
               </div>
 
               {misEcs.length === 0 ? (
-                <div className="bg-[#070D18] rounded-2xl p-8 border border-dashed border-white/10 text-center space-y-3">
+                <div className="bg-[#14161E] rounded-2xl p-8 border border-dashed border-white/10 text-center space-y-3">
                   <Layers className="w-10 h-10 text-slate-500 mx-auto" />
                   <div className="space-y-1">
                     <h4 className="text-sm font-bold text-slate-200">
@@ -561,7 +608,7 @@ export default function DashboardPage() {
                     return (
                       <div
                         key={ecs.id}
-                        className="bg-[#070D18] hover:bg-[#0C1527] p-5 rounded-2xl border border-white/10 hover:border-white/20 transition shadow-md space-y-3 flex flex-col justify-between"
+                        className="bg-[#14161E] hover:bg-[#1A1D25] p-5 rounded-2xl border border-white/10 hover:border-white/20 transition shadow-md space-y-3 flex flex-col justify-between"
                       >
                         <div className="space-y-2">
                           <div className="flex items-center justify-between gap-2">
@@ -626,7 +673,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Tarjeta de Bitácora Diaria y Semáforo de Bloqueo */}
-            <div className="bg-[#0C1527] rounded-3xl p-6 text-white border border-white/10 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="bg-[#1A1D25] rounded-3xl p-6 text-white border border-white/10 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="w-11 h-11 rounded-2xl bg-emerald-500/15 flex items-center justify-center shrink-0 border border-emerald-500/30">
                   <Activity className="w-5 h-5 text-emerald-400" />
@@ -661,10 +708,10 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
           {/* Lado Izquierdo: Ficha del Proyecto y Pipeline de 5 Pasos (7 cols) */}
-          <section className="lg:col-span-7 bg-[#0C1527] rounded-3xl p-6 sm:p-7 border border-white/10 shadow-xl flex flex-col justify-between space-y-5">
+          <section className="lg:col-span-7 bg-[#1A1D25] rounded-3xl p-6 sm:p-7 border border-white/10 shadow-xl flex flex-col justify-between space-y-5">
             <div className="space-y-4">
             {proyectos.length === 0 ? (
-              <div className="bg-[#070D18] rounded-2xl p-6 sm:p-8 border border-dashed border-white/15 text-center space-y-3">
+              <div className="bg-[#14161E] rounded-2xl p-6 sm:p-8 border border-dashed border-white/15 text-center space-y-3">
                 <div className="w-12 h-12 rounded-xl bg-white/5 text-slate-300 flex items-center justify-center mx-auto border border-white/10">
                   {user?.rubro === 'CONSTRUCCION' ? (
                     <Building className="w-6 h-6 text-slate-300" />
@@ -734,7 +781,7 @@ export default function DashboardPage() {
                     <select
                       value={selectedProyectoId}
                       onChange={(e) => setSelectedProyectoId(e.target.value)}
-                      className="px-3 py-1.5 bg-[#070D18] border border-white/15 rounded-xl text-xs font-medium text-slate-200 focus:bg-[#070D18] focus:border-upt-gold transition cursor-pointer max-w-[200px] truncate"
+                      className="px-3 py-1.5 bg-[#14161E] border border-white/15 rounded-xl text-xs font-medium text-slate-200 focus:bg-[#14161E] focus:border-upt-gold transition cursor-pointer max-w-[200px] truncate"
                     >
                       {proyectos.map((p) => (
                         <option key={p.id} value={p.id} className="bg-slate-900 text-white">
@@ -881,7 +928,7 @@ export default function DashboardPage() {
           </section>
 
           {/* Lado Derecho: Widget de Agenda de Reuniones (5 cols) */}
-          <section className="lg:col-span-5 bg-gradient-to-br from-[#0B2545] via-[#0C1A30] to-[#070D18] rounded-3xl p-6 text-white border border-white/10 shadow-xl flex flex-col justify-between space-y-4">
+          <section className="lg:col-span-5 bg-gradient-to-br from-[#0B2545] via-[#0C1A30] to-[#14161E] rounded-3xl p-6 text-white border border-white/10 shadow-xl flex flex-col justify-between space-y-4">
             <div className="space-y-3">
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
                 <div className="flex items-center gap-2">
@@ -971,7 +1018,7 @@ export default function DashboardPage() {
           <button
             type="button"
             onClick={() => setAgendarModalOpen(true)}
-            className="p-4 rounded-2xl bg-[#0C1527] hover:bg-[#111C33] border border-white/10 hover:border-amber-400/50 shadow-md transition flex items-center gap-3 text-left group"
+            className="p-4 rounded-2xl bg-[#1A1D25] hover:bg-[#111C33] border border-white/10 hover:border-amber-400/50 shadow-md transition flex items-center gap-3 text-left group"
           >
             <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/30 group-hover:scale-105 transition-transform">
               <CalendarDays className="w-5 h-5 text-amber-400" />
@@ -986,7 +1033,7 @@ export default function DashboardPage() {
 
           <Link
             href="/cronograma"
-            className="p-4 rounded-2xl bg-[#0C1527] hover:bg-[#111C33] border border-white/10 hover:border-sky-400/50 shadow-md transition flex items-center gap-3 group"
+            className="p-4 rounded-2xl bg-[#1A1D25] hover:bg-[#111C33] border border-white/10 hover:border-sky-400/50 shadow-md transition flex items-center gap-3 group"
           >
             <div className="w-10 h-10 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center shrink-0 border border-sky-500/30 group-hover:scale-105 transition-transform">
               <Sparkles className="w-5 h-5 text-sky-400" />
@@ -1001,7 +1048,7 @@ export default function DashboardPage() {
 
           <Link
             href="/ecs"
-            className="p-4 rounded-2xl bg-[#0C1527] hover:bg-[#111C33] border border-white/10 hover:border-teal-400/50 shadow-md transition flex items-center gap-3 group"
+            className="p-4 rounded-2xl bg-[#1A1D25] hover:bg-[#111C33] border border-white/10 hover:border-teal-400/50 shadow-md transition flex items-center gap-3 group"
           >
             <div className="w-10 h-10 rounded-xl bg-teal-500/15 text-teal-400 flex items-center justify-center shrink-0 border border-teal-500/30 group-hover:scale-105 transition-transform">
               <Layers className="w-5 h-5 text-teal-400" />
@@ -1016,7 +1063,7 @@ export default function DashboardPage() {
 
           <Link
             href="/lineas-base/nueva"
-            className="p-4 rounded-2xl bg-[#0C1527] hover:bg-[#111C33] border border-white/10 hover:border-purple-400/50 shadow-md transition flex items-center gap-3 group"
+            className="p-4 rounded-2xl bg-[#1A1D25] hover:bg-[#111C33] border border-white/10 hover:border-purple-400/50 shadow-md transition flex items-center gap-3 group"
           >
             <div className="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center shrink-0 border border-purple-500/30 group-hover:scale-105 transition-transform">
               <Lock className="w-5 h-5 text-purple-400" />
@@ -1047,7 +1094,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Pestañas de Organización */}
-            <div className="bg-[#0C1527] p-1 rounded-xl inline-flex items-center gap-1 border border-white/10">
+            <div className="bg-[#1A1D25] p-1 rounded-xl inline-flex items-center gap-1 border border-white/10">
               <button
                 onClick={() => setTabModulo('OPERACION')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
@@ -1078,7 +1125,7 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               
               {/* Card Reuniones */}
-              <div className="bg-[#0C1527] rounded-3xl p-5 border border-white/10 hover:border-amber-400/50 shadow-md transition flex flex-col justify-between group">
+              <div className="bg-[#1A1D25] rounded-3xl p-5 border border-white/10 hover:border-amber-400/50 shadow-md transition flex flex-col justify-between group">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 border border-amber-500/30 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
@@ -1109,7 +1156,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Card Canvas */}
-              <div className="bg-[#0C1527] rounded-3xl p-5 border border-white/10 hover:border-sky-400/50 shadow-md transition flex flex-col justify-between group">
+              <div className="bg-[#1A1D25] rounded-3xl p-5 border border-white/10 hover:border-sky-400/50 shadow-md transition flex flex-col justify-between group">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="w-10 h-10 rounded-xl bg-sky-500/15 text-sky-400 border border-sky-500/30 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
@@ -1140,7 +1187,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Card Entregables ECS */}
-              <div className="bg-[#0C1527] rounded-3xl p-5 border border-white/10 hover:border-teal-400/50 shadow-md transition flex flex-col justify-between group">
+              <div className="bg-[#1A1D25] rounded-3xl p-5 border border-white/10 hover:border-teal-400/50 shadow-md transition flex flex-col justify-between group">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="w-10 h-10 rounded-xl bg-teal-500/15 text-teal-400 border border-teal-500/30 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
@@ -1174,7 +1221,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Card Aprobaciones */}
-              <div className="bg-[#0C1527] rounded-3xl p-5 border border-white/10 hover:border-emerald-400/50 shadow-md transition flex flex-col justify-between group">
+              <div className="bg-[#1A1D25] rounded-3xl p-5 border border-white/10 hover:border-emerald-400/50 shadow-md transition flex flex-col justify-between group">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
@@ -1208,7 +1255,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Card Líneas Base */}
-              <div className="bg-[#0C1527] rounded-3xl p-5 border border-white/10 hover:border-purple-400/50 shadow-md transition flex flex-col justify-between group">
+              <div className="bg-[#1A1D25] rounded-3xl p-5 border border-white/10 hover:border-purple-400/50 shadow-md transition flex flex-col justify-between group">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-400 border border-purple-500/30 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
@@ -1242,7 +1289,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Card Cambios RFC */}
-              <div className="bg-[#0C1527] rounded-3xl p-5 border border-white/10 hover:border-orange-400/50 shadow-md transition flex flex-col justify-between group">
+              <div className="bg-[#1A1D25] rounded-3xl p-5 border border-white/10 hover:border-orange-400/50 shadow-md transition flex flex-col justify-between group">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="w-10 h-10 rounded-xl bg-orange-500/15 text-orange-400 border border-orange-500/30 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
@@ -1283,7 +1330,7 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               
               {/* Bitácora de Campo */}
-              <div className="bg-[#0C1527] rounded-3xl p-5 border border-white/10 hover:border-red-400/50 shadow-md transition flex flex-col justify-between group">
+              <div className="bg-[#1A1D25] rounded-3xl p-5 border border-white/10 hover:border-red-400/50 shadow-md transition flex flex-col justify-between group">
                 <div className="space-y-3">
                   <div className="w-10 h-10 rounded-xl bg-red-500/15 text-red-400 border border-red-500/30 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
                     <Activity className="w-5 h-5 text-red-400" />
@@ -1309,7 +1356,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Matriz de Trazabilidad */}
-              <div className="bg-[#0C1527] rounded-3xl p-5 border border-white/10 hover:border-blue-400/50 shadow-md transition flex flex-col justify-between group">
+              <div className="bg-[#1A1D25] rounded-3xl p-5 border border-white/10 hover:border-blue-400/50 shadow-md transition flex flex-col justify-between group">
                 <div className="space-y-3">
                   <div className="w-10 h-10 rounded-xl bg-blue-500/15 text-blue-400 border border-blue-500/30 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
                     <Network className="w-5 h-5 text-blue-400" />
@@ -1335,7 +1382,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Reportes Oficiales */}
-              <div className="bg-[#0C1527] rounded-3xl p-5 border border-white/10 hover:border-amber-400/50 shadow-md transition flex flex-col justify-between group">
+              <div className="bg-[#1A1D25] rounded-3xl p-5 border border-white/10 hover:border-amber-400/50 shadow-md transition flex flex-col justify-between group">
                 <div className="space-y-3">
                   <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 border border-amber-500/30 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
                     <Printer className="w-5 h-5 text-amber-400" />
@@ -1363,7 +1410,7 @@ export default function DashboardPage() {
               {isAdmin ? (
                 <>
                   {/* Auditoría de Seguridad (Solo Administradores) */}
-                  <div className="bg-[#0C1527] rounded-3xl p-5 border border-white/10 hover:border-emerald-400/50 shadow-md transition flex flex-col justify-between group">
+                  <div className="bg-[#1A1D25] rounded-3xl p-5 border border-white/10 hover:border-emerald-400/50 shadow-md transition flex flex-col justify-between group">
                     <div className="space-y-3">
                       <div className="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
                         <Terminal className="w-5 h-5 text-emerald-400" />
@@ -1389,7 +1436,7 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Personal y Roles (Solo Administradores) */}
-                  <div className="bg-[#0C1527] rounded-3xl p-5 border border-white/10 hover:border-indigo-400/50 shadow-md transition flex flex-col justify-between group">
+                  <div className="bg-[#1A1D25] rounded-3xl p-5 border border-white/10 hover:border-indigo-400/50 shadow-md transition flex flex-col justify-between group">
                     <div className="space-y-3">
                       <div className="w-10 h-10 rounded-xl bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
                         <Users className="w-5 h-5 text-indigo-400" />
@@ -1417,7 +1464,7 @@ export default function DashboardPage() {
               ) : (
                 <>
                   {/* Bitácora Diaria de Campo (Para Colaboradores Operativos) */}
-                  <div className="bg-[#0C1527] rounded-3xl p-5 border border-white/10 hover:border-teal-400/50 shadow-md transition flex flex-col justify-between group">
+                  <div className="bg-[#1A1D25] rounded-3xl p-5 border border-white/10 hover:border-teal-400/50 shadow-md transition flex flex-col justify-between group">
                     <div className="space-y-3">
                       <div className="w-10 h-10 rounded-xl bg-teal-500/15 text-teal-400 border border-teal-500/30 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
                         <Activity className="w-5 h-5 text-teal-400" />
@@ -1443,7 +1490,7 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Solicitudes de Cambio RFC (Para Colaboradores Operativos) */}
-                  <div className="bg-[#0C1527] rounded-3xl p-5 border border-white/10 hover:border-rose-400/50 shadow-md transition flex flex-col justify-between group">
+                  <div className="bg-[#1A1D25] rounded-3xl p-5 border border-white/10 hover:border-rose-400/50 shadow-md transition flex flex-col justify-between group">
                     <div className="space-y-3">
                       <div className="w-10 h-10 rounded-xl bg-rose-500/15 text-rose-400 border border-rose-500/30 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
                         <AlertTriangle className="w-5 h-5 text-rose-400" />
