@@ -278,7 +278,7 @@ export default function ReunionesPage() {
   return (
     <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased selection:bg-amber-400 selection:text-slate-950">
       {/* Navbar Global Unificado */}
-      <NavbarPrincipal />
+      <NavbarPrincipal user={currentUser || undefined} />
 
       {/* Sub-Header de Reuniones y Acciones */}
       <div className="bg-[#191C24] border-b border-white/10 print:hidden">

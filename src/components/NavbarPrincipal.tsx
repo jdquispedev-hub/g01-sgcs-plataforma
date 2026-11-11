@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import useSWR from 'swr';
+import { fetcher } from '@/lib/fetcher';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -126,37 +128,49 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [guiaModalOpen, setGuiaModalOpen] = useState(false);
   const [dropdownHerramientas, setDropdownHerramientas] = useState(false);
-  const [currentUser, setCurrentUser] = useState<NavbarUser | null>(userProp || null);
 
-  // Si no se proporcionó user por props, cargarlo automáticamente desde /api/auth/me
-  useEffect(() => {
-    if (userProp) {
-      setCurrentUser(userProp);
-      return;
+  // Cache instantáneo de sesión desde localStorage para 0ms al montar
+  const [cachedUser, setCachedUser] = useState<NavbarUser | null>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('sgcs_session_user');
+        return saved ? JSON.parse(saved) : null;
+      } catch {
+        return null;
+      }
     }
+    return null;
+  });
 
-    let isMounted = true;
-    fetch('/api/auth/me')
-      .then((res) => res.json())
-      .then((data) => {
-        if (isMounted && data.success && data.data?.user) {
-          setCurrentUser(data.data.user);
-        }
-      })
-      .catch((err) => console.error('Error al obtener usuario en Navbar:', err));
+  // SWR: Lectura de sesión en caché en memoria (Stale-While-Revalidate)
+  const { data: sessionData } = useSWR('/api/auth/me', fetcher, {
+    revalidateOnFocus: false,
+  });
 
-    return () => {
-      isMounted = false;
-    };
-  }, [userProp]);
+  const sessionUser = sessionData?.success && sessionData.data?.user ? (sessionData.data.user as NavbarUser) : null;
+  const user = userProp || sessionUser || cachedUser;
 
-  const user = currentUser || userProp;
+  // Persistir en cache de inicio rápido para futuras visitas
+  useEffect(() => {
+    const active = userProp || sessionUser;
+    if (active && typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('sgcs_session_user', JSON.stringify(active));
+        setCachedUser(active);
+      } catch {}
+    }
+  }, [userProp, sessionUser]);
 
   const coreNavItems = getCoreNavItems(user?.rubro);
   const secondaryNavItems = getSecondaryNavItems(user?.rubro);
   const isAdmin = user?.rol === 'ADMINISTRADOR' || user?.rol === 'SUPERADMIN';
 
   const handleDefaultLogout = async () => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem('sgcs_session_user');
+      } catch {}
+    }
     if (onLogout) {
       await onLogout();
       return;
@@ -183,7 +197,7 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
     }
   };
 
-  const displayName = user?.nombreCompleto?.split('(')[0]?.trim() || user?.nombreCompleto || 'Usuario';
+  const displayName = user?.nombreCompleto?.split('(')[0]?.trim() || user?.nombreCompleto || '';
   const displayRole = user?.nombreCompleto?.includes('(')
     ? user.nombreCompleto.split('(')[1]?.replace(')', '')?.trim()
     : user?.rol === 'SOLICITANTE'
@@ -192,14 +206,16 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
     ? 'Aprobador / Calidad'
     : user?.rol === 'ADMINISTRADOR'
     ? 'Administrador'
-    : user?.rol || 'USUARIO';
+    : user?.rol || '';
 
   const userInitials = displayName
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((n) => n[0].toUpperCase())
-    .join('');
+    ? displayName
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((n) => n[0].toUpperCase())
+        .join('')
+    : '';
 
   return (
     <>
@@ -225,13 +241,13 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
       {/* Header en Dos Niveles Adaptativo (Estilo Industrial / GitHub / Linear) */}
       <header className="sticky top-0 z-40 shadow-xs">
         {/* NIVEL 1: Identidad Corporativa, Proyecto Activo y Sesión */}
-        <div className="bg-[#0B2545] text-white border-b border-[#133A66]">
+        <div className="bg-[#13151A] text-slate-100 border-b border-white/10">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-13 sm:h-14 flex items-center justify-between gap-3">
             
             {/* Lado Izquierdo: Brand e Identidad */}
             <div className="flex items-center gap-3 min-w-0">
               <Link href="/dashboard" className="flex items-center gap-2.5 group shrink-0">
-                <div className="w-8 h-8 rounded-lg bg-[#133A66] border border-sky-400/30 flex items-center justify-center text-sky-300 shadow-xs group-hover:border-sky-300 transition">
+                <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-amber-400 shadow-xs group-hover:border-amber-400/40 transition">
                   <ShieldCheck className="w-4.5 h-4.5" />
                 </div>
                 <div className="flex flex-col">
@@ -239,11 +255,11 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
                     <span className="font-bold text-sm text-white tracking-tight leading-tight truncate max-w-[150px] sm:max-w-[220px]">
                       {user?.organizacionNombre || 'SGCS Plataforma'}
                     </span>
-                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#133A66] text-sky-200 border border-sky-400/20 uppercase tracking-wider shrink-0 hidden sm:inline-block">
+                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-white/5 text-amber-300 border border-amber-400/20 uppercase tracking-wider shrink-0 hidden sm:inline-block">
                       {user?.rubro || 'SISTEMA'}
                     </span>
                   </div>
-                  <span className="text-[10px] text-sky-200/70 hidden sm:block">
+                  <span className="text-[10px] text-slate-400 hidden sm:block">
                     Gestión de Configuración y Control Contractual
                   </span>
                 </div>
@@ -255,32 +271,41 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
               {/* Botón Guía Rápida */}
               <button
                 onClick={() => setGuiaModalOpen(true)}
-                className="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-sky-100 hover:text-white text-xs font-medium transition flex items-center gap-1.5 border border-white/10 active:scale-95"
+                className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs font-medium transition flex items-center gap-1.5 border border-white/10 active:scale-95"
                 title="Guía del Flujo Contractual"
               >
-                <HelpCircle className="w-3.5 h-3.5 text-sky-300" />
+                <HelpCircle className="w-3.5 h-3.5 text-amber-400" />
                 <span className="hidden sm:inline">Guía de Flujo</span>
               </button>
 
-              {/* Ficha de Usuario Compacta */}
-              <div className="flex items-center gap-2 pl-2 sm:pl-3 border-l border-[#133A66]">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#133A66] text-sky-200 border border-sky-400/30 flex items-center justify-center font-bold text-xs shrink-0">
-                  {userInitials || <User className="w-3.5 h-3.5" />}
+              {/* Ficha de Usuario Compacta (Ancho fijo reservado para cero parpadeo) */}
+              <div className="flex items-center gap-2 pl-2 sm:pl-3 border-l border-white/10 min-w-[140px]">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white/10 text-amber-400 border border-white/10 flex items-center justify-center font-bold text-xs shrink-0">
+                  {userInitials || <User className="w-3.5 h-3.5 text-slate-400" />}
                 </div>
-                <div className="hidden md:block text-left">
-                  <p className="font-semibold text-white text-xs leading-tight truncate max-w-[130px] xl:max-w-[170px]">
-                    {displayName}
-                  </p>
-                  <span className="text-[10px] text-sky-200/80 block truncate max-w-[130px] xl:max-w-[170px]">
-                    {displayRole}
-                  </span>
+                <div className="hidden md:block text-left min-w-0">
+                  {displayName ? (
+                    <>
+                      <p className="font-semibold text-white text-xs leading-tight truncate max-w-[130px] xl:max-w-[170px]">
+                        {displayName}
+                      </p>
+                      <span className="text-[10px] text-amber-300/80 block truncate max-w-[130px] xl:max-w-[170px]">
+                        {displayRole}
+                      </span>
+                    </>
+                  ) : (
+                    <div className="space-y-1 py-0.5">
+                      <div className="w-20 h-2.5 bg-white/10 rounded animate-pulse" />
+                      <div className="w-14 h-2 bg-white/10 rounded animate-pulse" />
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Logout */}
               <button
                 onClick={handleDefaultLogout}
-                className="p-1.5 sm:p-2 rounded-lg bg-white/10 hover:bg-rose-500/20 text-sky-200 hover:text-rose-200 transition border border-white/10 shrink-0"
+                className="p-1.5 sm:p-2 rounded-lg bg-white/5 hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 transition border border-white/10 shrink-0"
                 title="Cerrar sesión"
               >
                 <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -289,7 +314,7 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
               {/* Menú Móvil Botón (< lg) */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-1.5 rounded-lg bg-white/10 text-white border border-white/10 transition active:scale-95"
+                className="lg:hidden p-1.5 rounded-lg bg-white/5 text-white border border-white/10 transition active:scale-95"
                 aria-label="Abrir menú"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -299,7 +324,7 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
         </div>
 
         {/* NIVEL 2: Pestañas de Navegación Fluidas (Adaptable y con Scroll Suave en Laptops y Tablets) */}
-        <div className="bg-[#071326] border-b border-white/10 shadow-sm backdrop-blur-md">
+        <div className="bg-[#181B22] border-b border-white/10 shadow-sm backdrop-blur-md">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-11 flex items-center justify-between">
             
             {/* Navegación de Pestañas con Scroll Horizontal Táctil Automático */}
@@ -317,7 +342,7 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
                         : 'text-slate-300 hover:text-white hover:bg-white/10 border border-transparent font-medium'
                     }`}
                   >
-                    <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-slate-950 stroke-[2.5]' : 'text-sky-300'}`} />
+                    <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-slate-950 stroke-[2.5]' : 'text-slate-400'}`} />
                     <span>{item.label}</span>
                   </Link>
                 );
@@ -333,7 +358,7 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
                       : 'text-slate-300 hover:text-white hover:bg-white/10 border border-transparent font-medium'
                   }`}
                 >
-                  <Users className={`w-3.5 h-3.5 shrink-0 ${pathname.startsWith('/usuarios') ? 'text-slate-950 stroke-[2.5]' : 'text-indigo-400'}`} />
+                  <Users className={`w-3.5 h-3.5 shrink-0 ${pathname.startsWith('/usuarios') ? 'text-slate-950 stroke-[2.5]' : 'text-amber-400'}`} />
                   <span>Personal</span>
                 </Link>
               )}
@@ -349,7 +374,7 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
                       : 'text-slate-300 hover:text-white hover:bg-white/10 border border-transparent'
                   }`}
                 >
-                  <Sparkles className={`w-3.5 h-3.5 ${secondaryNavItems.some((s) => pathname.startsWith(s.href)) ? 'text-slate-950' : 'text-sky-300'}`} />
+                  <Sparkles className={`w-3.5 h-3.5 ${secondaryNavItems.some((s) => pathname.startsWith(s.href)) ? 'text-slate-950' : 'text-amber-400'}`} />
                   <span>Herramientas</span>
                   <ChevronDown className="w-3 h-3 text-slate-400" />
                 </button>
@@ -357,7 +382,7 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
                 {dropdownHerramientas && (
                   <>
                     <div className="fixed inset-0 z-30" onClick={() => setDropdownHerramientas(false)} />
-                    <div className="absolute left-0 mt-1.5 w-52 bg-[#0B2545] border border-white/15 rounded-xl shadow-2xl py-1.5 z-40 text-xs animate-in fade-in zoom-in-95 duration-100">
+                    <div className="absolute left-0 mt-1.5 w-52 bg-[#1A1D25] border border-white/15 rounded-xl shadow-2xl py-1.5 z-40 text-xs animate-in fade-in zoom-in-95 duration-100">
                       {secondaryNavItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = pathname.startsWith(item.href);
@@ -372,7 +397,7 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
                                 : 'text-slate-200 hover:bg-white/10 hover:text-white'
                             }`}
                           >
-                            <Icon className="w-3.5 h-3.5 text-sky-300" />
+                            <Icon className="w-3.5 h-3.5 text-amber-400" />
                             <span>{item.fullLabel || item.label}</span>
                           </Link>
                         );
@@ -390,38 +415,38 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileMenuOpen(false)}
           />
 
-          <div className="fixed top-0 right-0 bottom-0 w-72 max-w-[85vw] bg-white border-l border-slate-200 text-slate-900 shadow-2xl flex flex-col z-50 animate-in slide-in-from-right duration-150">
+          <div className="fixed top-0 right-0 bottom-0 w-72 max-w-[85vw] bg-[#181B22] border-l border-white/10 text-slate-100 shadow-2xl flex flex-col z-50 animate-in slide-in-from-right duration-150">
             {/* Header del Drawer Móvil */}
-            <div className="p-4 border-b border-[#133A66] flex items-center justify-between bg-[#0B2545] text-white">
+            <div className="p-4 border-b border-white/10 flex items-center justify-between bg-[#13151A] text-white">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#133A66] border border-sky-400/30 flex items-center justify-center text-sky-300">
+                <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-amber-400">
                   <ShieldCheck className="w-4.5 h-4.5" />
                 </div>
                 <div>
                   <h3 className="font-bold text-xs text-white leading-tight">Menú de Trabajo</h3>
-                  <span className="text-[10px] text-sky-200 uppercase">{user?.rubro || 'SISTEMA'}</span>
+                  <span className="text-[10px] text-amber-300 uppercase">{user?.rubro || 'SISTEMA'}</span>
                 </div>
               </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 rounded-lg text-sky-200 hover:text-white transition"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white transition"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Ficha de Usuario en Móvil */}
-            <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-[#0B2545] text-sky-200 border border-sky-300/30 flex items-center justify-center font-bold text-xs shrink-0">
+            <div className="p-4 bg-white/5 border-b border-white/10 flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-white/10 text-amber-400 border border-white/10 flex items-center justify-center font-bold text-xs shrink-0">
                 {userInitials || <User className="w-4 h-4" />}
               </div>
               <div className="min-w-0">
-                <p className="font-bold text-xs text-slate-900 truncate">{displayName}</p>
-                <span className="text-[10px] text-slate-500 block truncate">{displayRole}</span>
+                <p className="font-bold text-xs text-white truncate">{displayName || 'Usuario SGCS'}</p>
+                <span className="text-[10px] text-amber-300/80 block truncate">{displayRole}</span>
               </div>
             </div>
 
@@ -441,11 +466,11 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center gap-2.5 p-2.5 rounded-xl text-xs font-medium transition ${
                       isActive
-                        ? 'bg-[#0B2545] text-white font-semibold shadow-xs'
-                        : 'text-slate-700 hover:bg-slate-100'
+                        ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold shadow-xs'
+                        : 'text-slate-300 hover:bg-white/5 hover:text-white'
                     }`}
                   >
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-sky-300' : 'text-slate-500'}`} />
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-slate-950 stroke-[2.5]' : 'text-slate-400'}`} />
                     <span className="truncate">{item.fullLabel || item.label}</span>
                   </Link>
                 );
@@ -465,11 +490,11 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center gap-2.5 p-2.5 rounded-xl text-xs font-medium transition ${
                       isActive
-                        ? 'bg-[#0B2545] text-white font-semibold shadow-xs'
-                        : 'text-slate-700 hover:bg-slate-100'
+                        ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold shadow-xs'
+                        : 'text-slate-300 hover:bg-white/5 hover:text-white'
                     }`}
                   >
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-sky-300' : 'text-slate-500'}`} />
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-slate-950 stroke-[2.5]' : 'text-amber-400'}`} />
                     <span className="truncate">{item.fullLabel || item.label}</span>
                   </Link>
                 );
@@ -485,11 +510,11 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center gap-2.5 p-2.5 rounded-xl text-xs font-medium transition ${
                       pathname.startsWith('/usuarios')
-                        ? 'bg-[#0B2545] text-white font-semibold shadow-xs'
-                        : 'text-slate-700 hover:bg-slate-100'
+                        ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold shadow-xs'
+                        : 'text-slate-300 hover:bg-white/5 hover:text-white'
                     }`}
                   >
-                    <Users className="w-4 h-4 text-purple-600" />
+                    <Users className={`w-4 h-4 ${pathname.startsWith('/usuarios') ? 'text-slate-950 stroke-[2.5]' : 'text-amber-400'}`} />
                     <span>Personal y Roles</span>
                   </Link>
                 </>
@@ -497,21 +522,21 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
             </div>
 
             {/* Footer del Drawer */}
-            <div className="p-3 border-t border-slate-200 bg-slate-50 space-y-2">
+            <div className="p-3 border-t border-white/10 bg-[#13151A] space-y-2">
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   setGuiaModalOpen(true);
                 }}
-                className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-slate-100 text-slate-800 font-semibold text-xs flex items-center justify-center gap-2 border border-slate-200 transition"
+                className="w-full py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 font-semibold text-xs flex items-center justify-center gap-2 border border-white/10 transition"
               >
-                <HelpCircle className="w-4 h-4 text-sky-600" />
+                <HelpCircle className="w-4 h-4 text-amber-400" />
                 <span>¿Cómo funciona el sistema?</span>
               </button>
 
               <button
                 onClick={handleDefaultLogout}
-                className="w-full py-2.5 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold text-xs flex items-center justify-center gap-2 border border-rose-200 transition"
+                className="w-full py-2.5 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 font-semibold text-xs flex items-center justify-center gap-2 border border-rose-500/20 transition"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Cerrar Sesión</span>
