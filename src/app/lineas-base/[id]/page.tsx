@@ -126,9 +126,9 @@ export default function DetalleLineaBasePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#070D18] flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-[#13151A] flex flex-col items-center justify-center p-4">
         <Loader2 className="w-10 h-10 animate-spin text-amber-400 mb-3" />
-        <p className="text-xs font-bold text-slate-300 uppercase tracking-wider animate-pulse">
+        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider animate-pulse">
           Cargando Acta Oficial de Línea Base...
         </p>
       </div>
@@ -137,8 +137,8 @@ export default function DetalleLineaBasePage() {
 
   if (errorMsg || !lineaBase) {
     return (
-      <div className="min-h-screen bg-[#070D18] flex items-center justify-center p-4">
-        <div className="bg-[#0C1527] max-w-md w-full p-6 rounded-2xl border border-white/10 text-center space-y-4 shadow-xl">
+      <div className="min-h-screen bg-[#13151A] flex items-center justify-center p-4">
+        <div className="bg-[#1A1D25] max-w-md w-full p-6 rounded-2xl border border-white/10 text-center space-y-4 shadow-xl">
           <AlertCircle className="w-12 h-12 text-rose-400 mx-auto" />
           <h2 className="text-base font-bold text-white">Error al cargar la Línea Base</h2>
           <p className="text-xs text-slate-400">{errorMsg || 'Registro no disponible'}</p>
@@ -154,14 +154,14 @@ export default function DetalleLineaBasePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased print:bg-white print:text-slate-900 print:p-0">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased print:bg-white print:text-slate-900 print:p-0">
       {/* Navbar Global Unificado (oculta al imprimir) */}
       <div className="print:hidden">
         <NavbarPrincipal />
       </div>
 
-      {/* Sub-header contextual (oculta al imprimir) */}
-      <div className="bg-[#0B1528] border-b border-white/10 print:hidden">
+      {/* Sub-header contextual Nivel 3 (oculta al imprimir) */}
+      <div className="bg-[#16181D] border-b border-white/10 sticky top-14 z-30 print:hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <Link
@@ -205,7 +205,7 @@ export default function DetalleLineaBasePage() {
       {/* Main Container */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 w-full space-y-6 print:max-w-none print:p-0 print:space-y-4">
         {/* Encabezado del Acta Oficial */}
-        <div className="bg-[#0C1527] rounded-2xl p-5 sm:p-8 border border-white/10 shadow-md print:bg-white print:text-slate-900 print:shadow-none print:border-none print:p-4 space-y-6">
+        <div className="bg-[#1A1D25] rounded-2xl p-5 sm:p-8 border border-white/10 shadow-md print:bg-white print:text-slate-900 print:shadow-none print:border-none print:p-4 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-white/10 print:border-slate-300 pb-6">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2 mb-2">
@@ -235,7 +235,7 @@ export default function DetalleLineaBasePage() {
             </div>
 
             {/* Sello de Inmutabilidad Visual */}
-            <div className="bg-[#070D18] print:bg-slate-100 border border-white/10 print:border-slate-200 rounded-2xl p-4 text-center shrink-0 sm:w-56 shadow-sm">
+            <div className="bg-[#14161E] print:bg-slate-100 border border-white/10 print:border-slate-200 rounded-2xl p-4 text-center shrink-0 sm:w-56 shadow-sm">
               <ShieldCheck className="w-8 h-8 text-amber-400 mx-auto mb-1" />
               <div className="font-bold text-xs text-white print:text-slate-950 uppercase tracking-wider">
                 Línea Base Inmutable
@@ -247,7 +247,7 @@ export default function DetalleLineaBasePage() {
           </div>
 
           {/* Ficha Técnica de Auditoría */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 bg-[#070D18] print:bg-slate-50 p-4 rounded-xl border border-white/10 print:border-slate-200 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 bg-[#14161E] print:bg-slate-50 p-4 rounded-xl border border-white/10 print:border-slate-200 text-xs">
             <div>
               <span className="text-[10px] font-bold text-slate-400 uppercase block mb-0.5">Organización</span>
               <p className="font-bold text-white print:text-slate-800">{lineaBase.proyecto.organizacion.nombre}</p>
@@ -280,8 +280,8 @@ export default function DetalleLineaBasePage() {
         </div>
 
         {/* Tabla Detallada de Especificaciones y Versiones Congeladas */}
-        <div className="bg-[#0C1527] rounded-2xl border border-white/10 shadow-md overflow-hidden print:bg-white print:border print:shadow-none">
-          <div className="p-5 sm:p-6 border-b border-white/10 print:border-slate-200 flex items-center justify-between bg-[#0B1528] print:bg-slate-50">
+        <div className="bg-[#1A1D25] rounded-2xl border border-white/10 shadow-md overflow-hidden print:bg-white print:border print:shadow-none">
+          <div className="p-5 sm:p-6 border-b border-white/10 print:border-slate-200 flex items-center justify-between bg-[#16181D] print:bg-slate-50">
             <div className="flex items-center gap-2">
               <FileCheck2 className="w-5 h-5 text-amber-400" />
               <h2 className="font-bold text-white print:text-slate-900 text-sm sm:text-base">
@@ -296,7 +296,7 @@ export default function DetalleLineaBasePage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-[#070D18] print:bg-slate-100 border-b border-white/10 print:border-slate-200 text-slate-400 print:text-slate-600 uppercase font-bold tracking-wider text-[10px]">
+                <tr className="bg-[#14161E] print:bg-slate-100 border-b border-white/10 print:border-slate-200 text-slate-400 print:text-slate-600 uppercase font-bold tracking-wider text-[10px]">
                   <th className="py-3 px-4">Código ECS</th>
                   <th className="py-3 px-4">Elemento de Configuración</th>
                   <th className="py-3 px-4">Tipo</th>

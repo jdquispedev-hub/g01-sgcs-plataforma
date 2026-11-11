@@ -207,50 +207,62 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="w-8 h-8 animate-spin text-upt-navy-600" />
+      <div className="min-h-screen flex items-center justify-center bg-[#13151A]">
+        <div className="text-center space-y-2">
+          <Loader2 className="w-8 h-8 animate-spin text-amber-400 mx-auto" />
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+            Cargando expediente técnico del entregable...
+          </p>
+        </div>
       </div>
     );
   }
 
   if (!ecs) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
-        <p className="text-sm font-bold text-slate-700">Elemento de Configuración no encontrado</p>
-        <Link href="/ecs" className="mt-3 text-xs text-upt-navy-600 underline">
-          Volver al catálogo
-        </Link>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#13151A] p-4 text-center">
+        <div className="p-8 rounded-2xl bg-[#1A1D25] border border-white/10 max-w-md w-full space-y-4">
+          <AlertCircle className="w-10 h-10 text-rose-400 mx-auto" />
+          <h2 className="text-base font-bold text-white">Elemento de Configuración no encontrado</h2>
+          <p className="text-xs text-slate-400">El entregable solicitado no existe o no tiene permisos para visualizarlo.</p>
+          <Link
+            href="/ecs"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold text-xs shadow-md transition"
+          >
+            <ArrowLeft className="w-4 h-4" /> Volver al catálogo
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] text-slate-900 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased">
       {/* Top Navbar Global Unificado */}
       <NavbarPrincipal user={currentUser} />
 
-      {/* Sub-Header y Acciones del Entregable */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5 min-w-0">
+      {/* Sub-Header Nivel 3 y Acciones del Entregable */}
+      <div className="bg-[#16181D] border-b border-white/10 sticky top-14 z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <Link
               href="/ecs"
-              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition border border-slate-200"
+              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-amber-400 transition border border-white/10 shrink-0"
               title="Volver al Catálogo ECS"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </Link>
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="font-mono text-xs font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200 shrink-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-mono text-xs font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 shrink-0">
                   {ecs.codigo}
                 </span>
-                <span className="font-bold text-sm sm:text-base tracking-tight truncate text-slate-900">
+                <span className="font-bold text-sm sm:text-base tracking-tight truncate text-white">
                   {ecs.nombre}
                 </span>
               </div>
-              <span className="text-[11px] text-slate-500 block truncate">
-                Expediente de versiones y dictamen técnico
+              <span className="text-[11px] text-slate-400 block truncate">
+                Expediente de versiones y dictamen técnico oficial
               </span>
             </div>
           </div>
@@ -258,16 +270,16 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setModalEditOpen(true)}
-              className="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-medium text-xs transition flex items-center gap-1.5 border border-slate-200"
+              className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 font-semibold text-xs transition flex items-center gap-1.5 border border-white/10"
             >
-              <Edit3 className="w-3.5 h-3.5 text-slate-500" />
+              <Edit3 className="w-3.5 h-3.5 text-amber-400" />
               <span>Editar Datos</span>
             </button>
             <button
               onClick={() => setModalVersionOpen(true)}
-              className="px-3.5 py-1.5 rounded-lg bg-[#0B2545] hover:bg-[#133A66] text-white font-semibold text-xs shadow-xs transition flex items-center gap-1.5 active:scale-95"
+              className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs shadow-md transition flex items-center gap-1.5 active:scale-95"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 text-slate-950 stroke-[3]" />
               <span>Nueva Versión</span>
             </button>
           </div>
@@ -277,55 +289,55 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
         {/* Ficha Resumen del ECS */}
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs">
+        <div className="bg-[#1A1D25] rounded-2xl p-6 border border-white/10 shadow-md">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Tipo de Elemento</p>
-              <p className="text-sm font-bold text-slate-900 mt-1">{ecs.tipo}</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Tipo de Elemento</p>
+              <p className="text-sm font-bold text-white mt-1">{ecs.tipo}</p>
             </div>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Proyecto Asociado</p>
-              <p className="text-sm font-bold text-slate-900 mt-1">{ecs.proyecto.nombre}</p>
-              <span className="font-mono text-[10px] text-slate-400">{ecs.proyecto.codigo}</span>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Proyecto Asociado</p>
+              <p className="text-sm font-bold text-white mt-1">{ecs.proyecto.nombre}</p>
+              <span className="font-mono text-[10px] text-amber-300/80">{ecs.proyecto.codigo}</span>
             </div>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Responsable Técnico</p>
-              <p className="text-sm font-bold text-slate-900 mt-1">{ecs.responsable.nombre_completo}</p>
-              <span className="text-[11px] text-slate-500">{ecs.responsable.email}</span>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Responsable Técnico</p>
+              <p className="text-sm font-bold text-white mt-1">{ecs.responsable.nombre_completo}</p>
+              <span className="text-[11px] text-slate-400">{ecs.responsable.email}</span>
             </div>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Ubicación / Repo</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Ubicación / Repo</p>
               <a
                 href={ecs.ubicacion.startsWith('http') ? ecs.ubicacion : '#'}
                 target={ecs.ubicacion.startsWith('http') ? '_blank' : '_self'}
                 rel="noopener noreferrer"
-                className="text-xs font-medium text-sky-600 hover:underline mt-1 flex items-center gap-1 truncate"
+                className="text-xs font-semibold text-amber-400 hover:underline mt-1 flex items-center gap-1 truncate"
               >
-                <span>{ecs.ubicacion}</span>
+                <span className="truncate">{ecs.ubicacion}</span>
                 <ExternalLink className="w-3.5 h-3.5 shrink-0" />
               </a>
             </div>
           </div>
 
           {ecs.descripcion && (
-            <div className="mt-4 pt-4 border-t border-slate-100">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Descripción del Artefacto</p>
-              <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">{ecs.descripcion}</p>
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Descripción del Artefacto</p>
+              <p className="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">{ecs.descripcion}</p>
             </div>
           )}
         </div>
 
         {/* Banner Guiado para el Responsable Asignado */}
         {ecs.responsable?.id === currentUserId && (
-          <div className="bg-slate-900 rounded-2xl p-5 border border-slate-800 text-white shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-[#16181D] rounded-2xl p-5 border border-amber-500/30 text-white shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 text-sky-400 flex items-center justify-center shrink-0 shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 shadow-sm">
                 <UserCheck className="w-5 h-5" />
               </div>
               <div>
                 <p className="text-xs font-bold text-white flex items-center gap-2">
                   <span>Eres el Responsable Técnico de este entregable</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-sky-950 text-sky-300 border border-sky-800/60">
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
                     A tu cargo
                   </span>
                 </p>
@@ -339,9 +351,9 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
             {ecs.versiones.length === 0 && (
               <button
                 onClick={() => setModalVersionOpen(true)}
-                className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs shadow-sm transition active:scale-95 shrink-0 flex items-center gap-1.5"
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs shadow-sm transition active:scale-95 shrink-0 flex items-center gap-1.5"
               >
-                <Upload className="w-3.5 h-3.5 text-sky-600" />
+                <Upload className="w-3.5 h-3.5 text-slate-950" />
                 <span>Registrar Versión 1.0.0</span>
               </button>
             )}
@@ -349,70 +361,70 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
         )}
 
         {/* Historial de Versiones (RF-07, RF-08) */}
-        <div>
-          <div className="flex justify-between items-center mb-4">
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-lg font-black text-slate-900">Historial y Dictamen de Versiones</h2>
-              <p className="text-xs text-slate-500">
+              <h2 className="text-lg font-bold text-white">Historial y Dictamen de Versiones</h2>
+              <p className="text-xs text-slate-400">
                 Solo las versiones aprobadas pueden formar parte de una Línea Base formal (RF-09).
               </p>
             </div>
-            <span className="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700">
+            <span className="text-xs font-bold px-3 py-1 rounded-xl bg-white/5 border border-white/10 text-slate-300">
               Total: {ecs.versiones.length} versiones
             </span>
           </div>
 
           {ecs.versiones.length === 0 ? (
-            <div className="bg-white rounded-3xl border border-dashed border-slate-300 p-10 text-center">
-              <p className="text-sm font-bold text-slate-700">Este ECS no cuenta con versiones registradas</p>
+            <div className="bg-[#1A1D25] rounded-2xl border border-dashed border-white/20 p-10 text-center">
+              <p className="text-sm font-bold text-white">Este ECS no cuenta con versiones registradas</p>
               <p className="text-xs text-slate-400 mt-1">Registra la versión inicial (ej. 1.0.0) para empezar.</p>
               <button
                 onClick={() => setModalVersionOpen(true)}
-                className="mt-3 px-4 py-2 rounded-xl bg-upt-navy-600 hover:bg-upt-navy-700 text-white font-bold text-xs transition"
+                className="mt-4 px-4 py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs transition"
               >
                 Registrar Versión 1.0.0
               </button>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {ecs.versiones.map((v) => (
                 <div
                   key={v.id}
-                  className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm transition flex flex-col md:flex-row justify-between gap-4 items-start md:items-center"
+                  className="bg-[#1A1D25] rounded-2xl p-5 border border-white/10 hover:border-white/20 shadow-md transition flex flex-col md:flex-row justify-between gap-4 items-start md:items-center"
                 >
                   <div className="space-y-2 flex-1">
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono text-sm font-black text-slate-900 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <span className="font-mono text-xs sm:text-sm font-bold text-amber-300 bg-amber-500/10 px-2.5 py-1 rounded-xl border border-amber-500/20">
                         v{v.numero_version}
                       </span>
                       {v.estado === 'APROBADA' && (
-                        <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          <CheckCircle2 className="w-3.5 h-3.5" /> Aprobada Formalmente
+                        <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Aprobada Formalmente
                         </span>
                       )}
                       {v.estado === 'RECHAZADA' && (
-                        <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-red-50 text-red-700 border border-red-200">
-                          <XCircle className="w-3.5 h-3.5" /> Rechazada
+                        <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                          <XCircle className="w-3.5 h-3.5 text-rose-400" /> Rechazada
                         </span>
                       )}
                       {v.estado === 'PENDIENTE' && (
-                        <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
-                          <Clock className="w-3.5 h-3.5" /> Pendiente de Aprobación
+                        <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                          <Clock className="w-3.5 h-3.5 text-amber-400" /> Pendiente de Aprobación
                         </span>
                       )}
                     </div>
 
-                    <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">{v.descripcion}</p>
+                    <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">{v.descripcion}</p>
 
                     <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400">
                       <span className="flex items-center gap-1">
-                        <User className="w-3.5 h-3.5" /> Autor: {v.autor.nombre_completo}
+                        <User className="w-3.5 h-3.5 text-slate-500" /> Autor: {v.autor.nombre_completo}
                       </span>
                       <span className="flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5" /> Fecha: {new Date(v.created_at).toLocaleDateString()}
+                        <Calendar className="w-3.5 h-3.5 text-slate-500" /> Fecha: {new Date(v.created_at).toLocaleDateString('es-PE')}
                       </span>
                       {v.aprobador && (
-                        <span className="flex items-center gap-1 text-emerald-700 font-semibold">
+                        <span className="flex items-center gap-1 text-emerald-400 font-semibold">
                           <CheckCircle2 className="w-3.5 h-3.5" /> Dictaminado por: {v.aprobador.nombre_completo}
                         </span>
                       )}
@@ -421,7 +433,7 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
                           href={v.archivo_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-upt-navy-600 hover:text-upt-gold-600 font-semibold"
+                          className="flex items-center gap-1 text-amber-400 hover:underline font-semibold"
                         >
                           <ExternalLink className="w-3.5 h-3.5" /> Ver Archivo/Commit
                         </a>
@@ -434,13 +446,13 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
                     <div className="flex items-center gap-2 self-end md:self-center shrink-0">
                       <button
                         onClick={() => handleDictaminarVersion(v.id, 'APROBAR')}
-                        className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition flex items-center gap-1"
+                        className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition flex items-center gap-1"
                       >
                         <Check className="w-3.5 h-3.5" /> Aprobar
                       </button>
                       <button
                         onClick={() => handleDictaminarVersion(v.id, 'RECHAZAR')}
-                        className="px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-sm transition flex items-center gap-1"
+                        className="px-3.5 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 font-bold text-xs border border-rose-500/40 transition flex items-center gap-1"
                       >
                         <X className="w-3.5 h-3.5" /> Rechazar
                       </button>
@@ -453,26 +465,36 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
         </div>
       </main>
 
-      {/* Modal Nueva Versión (RF-07) */}
+      {/* Modal Nueva Versión (RF-07) en Carbon Matte */}
       {modalVersionOpen && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
-            <h3 className="text-lg font-black text-slate-900 mb-1">Registrar Nueva Versión</h3>
-            <p className="text-xs text-slate-500 mb-4">
-              Cada versión debe tener un número correlativo único para este ECS.
-            </p>
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#1A1D25] rounded-2xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+              <div>
+                <h3 className="text-base sm:text-lg font-bold text-white">Registrar Nueva Versión</h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Cada versión debe tener un número correlativo único para este ECS.
+                </p>
+              </div>
+              <button
+                onClick={() => setModalVersionOpen(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
             {versionError && (
-              <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-600" />
+              <div className="mb-4 p-3 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
                 <span>{versionError}</span>
               </div>
             )}
 
             <form onSubmit={handleCreateVersion} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Número de Versión <span className="text-upt-garnet-500">*</span>
+                <label className="block text-xs font-bold text-slate-300 mb-1">
+                  Número de Versión <span className="text-amber-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -480,13 +502,13 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
                   value={numeroVersion}
                   onChange={(e) => setNumeroVersion(e.target.value)}
                   placeholder="Ej. 1.0.0 o Rev-B"
-                  className="w-full px-3 py-2 font-mono bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500"
+                  className="w-full px-3.5 py-2 font-mono bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Descripción del Cambio / Motivo <span className="text-upt-garnet-500">*</span>
+                <label className="block text-xs font-bold text-slate-300 mb-1">
+                  Descripción del Cambio / Motivo <span className="text-amber-400">*</span>
                 </label>
                 <textarea
                   required
@@ -494,37 +516,37 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
                   value={descVersion}
                   onChange={(e) => setDescVersion(e.target.value)}
                   placeholder={terminologia.versionEjemploMotivo}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500"
+                  className="w-full px-3.5 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50"
                 ></textarea>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Enlace Digital o Ubicación del Archivo <span className="text-slate-400 font-normal">(Opcional)</span>
+                <label className="block text-xs font-bold text-slate-300 mb-1">
+                  Enlace Digital o Ubicación del Archivo <span className="text-slate-500 font-normal">(Opcional)</span>
                 </label>
                 <input
                   type="text"
                   value={archivoUrl}
                   onChange={(e) => setArchivoUrl(e.target.value)}
                   placeholder="Ej. https://drive.google.com/..., enlace web o ruta local (opcional)"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500 font-mono"
+                  className="w-full px-3.5 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-mono text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50"
                 />
               </div>
 
-              <div className="pt-2 flex gap-3 justify-end">
+              <div className="pt-2 flex gap-3 justify-end border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setModalVersionOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs"
+                  className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-bold text-xs border border-white/10 transition"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={savingVersion}
-                  className="px-5 py-2 rounded-xl bg-[#0B2545] hover:bg-[#133A66] text-white font-bold text-xs shadow-xs transition disabled:opacity-60 flex items-center gap-1.5"
+                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs shadow-md transition disabled:opacity-60 flex items-center gap-1.5"
                 >
-                  {savingVersion && <Loader2 className="w-4 h-4 animate-spin text-sky-300" />}
+                  {savingVersion && <Loader2 className="w-4 h-4 animate-spin text-slate-950" />}
                   <span>Guardar Versión</span>
                 </button>
               </div>
@@ -533,63 +555,73 @@ export default function EcsDetailPage({ params }: { params: { id: string } }) {
         </div>
       )}
 
-      {/* Modal Editar ECS (RF-06) */}
+      {/* Modal Editar ECS (RF-06) en Carbon Matte */}
       {modalEditOpen && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
-            <h3 className="text-lg font-black text-slate-900 mb-1">Actualizar Información ({terminologia.ecsLabel})</h3>
-            <p className="text-xs text-slate-500 mb-4">
-              El código identificador permanece invariable por trazabilidad (RF-06).
-            </p>
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#1A1D25] rounded-2xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+              <div>
+                <h3 className="text-base sm:text-lg font-bold text-white">Actualizar Información ({terminologia.ecsLabel})</h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  El código identificador permanece invariable por trazabilidad (RF-06).
+                </p>
+              </div>
+              <button
+                onClick={() => setModalEditOpen(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
             <form onSubmit={handleUpdateEcs} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Nombre</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Nombre</label>
                 <input
                   type="text"
                   required
                   value={editNombre}
                   onChange={(e) => setEditNombre(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500"
+                  className="w-full px-3.5 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm text-white focus:outline-none focus:border-amber-400/50"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">{terminologia.ecsUbicacionLabel}</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">{terminologia.ecsUbicacionLabel}</label>
                 <input
                   type="text"
                   required
                   value={editUbicacion}
                   onChange={(e) => setEditUbicacion(e.target.value)}
                   placeholder={terminologia.ecsUbicacionPlaceholder}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500"
+                  className="w-full px-3.5 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Descripción</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Descripción</label>
                 <textarea
                   rows={3}
                   value={editDescripcion}
                   onChange={(e) => setEditDescripcion(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:ring-2 focus:ring-upt-navy-500"
+                  className="w-full px-3.5 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm text-white focus:outline-none focus:border-amber-400/50"
                 ></textarea>
               </div>
 
-              <div className="pt-2 flex gap-3 justify-end">
+              <div className="pt-2 flex gap-3 justify-end border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setModalEditOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs"
+                  className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-bold text-xs border border-white/10 transition"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={savingEdit}
-                  className="px-5 py-2 rounded-xl bg-upt-navy-600 hover:bg-upt-navy-700 text-white font-bold text-xs shadow-md transition disabled:opacity-60 flex items-center gap-1.5"
+                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs shadow-md transition disabled:opacity-60 flex items-center gap-1.5"
                 >
-                  {savingEdit && <Loader2 className="w-4 h-4 animate-spin text-upt-gold" />}
+                  {savingEdit && <Loader2 className="w-4 h-4 animate-spin text-slate-950" />}
                   <span>Actualizar</span>
                 </button>
               </div>

@@ -100,14 +100,12 @@ export default function NuevaRfcPage() {
       try {
         const res = await fetch(`/api/ecs?proyectoId=${proyectoId}`);
         const data = await res.json();
-
         if (data.success) {
           setEcsList(data.data);
           if (data.data.length > 0) {
-            const primerEcs = data.data[0];
-            setEcsId(primerEcs.id);
-            if (primerEcs.versiones && primerEcs.versiones.length > 0) {
-              setVersionBaseId(primerEcs.versiones[primerEcs.versiones.length - 1].id);
+            setEcsId(data.data[0].id);
+            if (data.data[0].versiones && data.data[0].versiones.length > 0) {
+              setVersionBaseId(data.data[0].versiones[data.data[0].versiones.length - 1].id);
             } else {
               setVersionBaseId('');
             }
@@ -193,12 +191,12 @@ export default function NuevaRfcPage() {
   const terminologia = getTerminologia(rubro);
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased">
       {/* Navbar Global Unificado */}
       <NavbarPrincipal />
 
-      {/* Sub-header contextual */}
-      <div className="bg-[#0B1528] border-b border-white/10">
+      {/* Sub-header contextual Nivel 3 */}
+      <div className="bg-[#16181D] border-b border-white/10 sticky top-14 z-30">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <Link
@@ -235,7 +233,7 @@ export default function NuevaRfcPage() {
         )}
 
         {/* Banner de Concepto: ¿Por qué radicar una RFC? */}
-        <div className="bg-[#0C1527] rounded-2xl p-5 text-white border border-white/10 shadow-md flex items-start gap-3">
+        <div className="bg-[#1A1D25] rounded-2xl p-5 text-white border border-white/10 shadow-md flex items-start gap-3">
           <Info className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
           <p className="text-xs text-slate-300 leading-relaxed">
             <strong className="text-white">Procedimiento de Cambio Controlado (RF-11):</strong> Toda propuesta de cambio debe especificar con precisión el artefacto afectado y su versión actual. Luego de radicada, el comité técnico evaluará su impacto antes de autorizar cualquier trabajo.
@@ -244,7 +242,7 @@ export default function NuevaRfcPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Card 1: Selección del Artefacto y Versión Base */}
-          <div className="bg-[#0C1527] p-6 sm:p-8 rounded-2xl border border-white/10 shadow-md space-y-6">
+          <div className="bg-[#1A1D25] p-6 sm:p-8 rounded-2xl border border-white/10 shadow-md space-y-6">
             <div className="flex items-center gap-2 text-white font-bold text-base border-b border-white/10 pb-3">
               <Layers className="w-5 h-5 text-amber-400" />
               <span>1. {terminologia.ecsLabel} Afectado y Versión de Partida</span>
@@ -257,15 +255,15 @@ export default function NuevaRfcPage() {
                   {terminologia.proyectoLabel} <span className="text-amber-400">*</span>
                 </label>
                 {loadingProyectos ? (
-                  <div className="h-10 bg-[#070D18] rounded-xl animate-pulse" />
+                  <div className="h-10 bg-[#14161E] rounded-xl animate-pulse" />
                 ) : (
                   <select
                     value={proyectoId}
                     onChange={(e) => setProyectoId(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+                    className="w-full px-4 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
                   >
                     {proyectos.map((p) => (
-                      <option key={p.id} value={p.id} className="bg-[#0C1527] text-white">
+                      <option key={p.id} value={p.id} className="bg-[#1A1D25] text-white">
                         {p.codigo} — {p.nombre}
                       </option>
                     ))}
@@ -279,7 +277,7 @@ export default function NuevaRfcPage() {
                   {terminologia.ecsLabel} <span className="text-amber-400">*</span>
                 </label>
                 {loadingEcs ? (
-                  <div className="h-10 bg-[#070D18] rounded-xl animate-pulse" />
+                  <div className="h-10 bg-[#14161E] rounded-xl animate-pulse" />
                 ) : ecsList.length === 0 ? (
                   <p className="text-xs text-amber-400 font-semibold p-2.5 bg-amber-500/10 rounded-xl border border-amber-500/20">
                     Sin artefactos en este proyecto.
@@ -288,10 +286,10 @@ export default function NuevaRfcPage() {
                   <select
                     value={ecsId}
                     onChange={(e) => handleEcsChange(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+                    className="w-full px-4 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
                   >
                     {ecsList.map((ecs) => (
-                      <option key={ecs.id} value={ecs.id} className="bg-[#0C1527] text-white">
+                      <option key={ecs.id} value={ecs.id} className="bg-[#1A1D25] text-white">
                         {ecs.codigo} — {ecs.nombre} ({ecs.tipo})
                       </option>
                     ))}
@@ -308,10 +306,10 @@ export default function NuevaRfcPage() {
                   <select
                     value={versionBaseId}
                     onChange={(e) => setVersionBaseId(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-mono font-bold text-amber-300 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+                    className="w-full px-4 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-mono font-bold text-amber-300 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
                   >
                     {selectedEcs.versiones.map((v) => (
-                      <option key={v.id} value={v.id} className="bg-[#0C1527] text-white">
+                      <option key={v.id} value={v.id} className="bg-[#1A1D25] text-white">
                         v{v.numero_version} (Estado: {v.estado})
                       </option>
                     ))}
@@ -326,7 +324,7 @@ export default function NuevaRfcPage() {
           </div>
 
           {/* Card 2: Descripción y Justificación Técnica */}
-          <div className="bg-[#0C1527] p-6 sm:p-8 rounded-2xl border border-white/10 shadow-md space-y-6">
+          <div className="bg-[#1A1D25] p-6 sm:p-8 rounded-2xl border border-white/10 shadow-md space-y-6">
             <div className="flex items-center gap-2 text-white font-bold text-base border-b border-white/10 pb-3">
               <FileCheck2 className="w-5 h-5 text-amber-400" />
               <span>2. Alcance y Justificación del Cambio Solicitado</span>
@@ -343,7 +341,7 @@ export default function NuevaRfcPage() {
                   value={descripcion}
                   onChange={(e) => setDescripcion(e.target.value)}
                   placeholder={`Ej. ${terminologia.cambioEjemploDescripcion}`}
-                  className="w-full px-4 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
+                  className="w-full px-4 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
                 />
               </div>
 
@@ -357,7 +355,7 @@ export default function NuevaRfcPage() {
                   value={justificacion}
                   onChange={(e) => setJustificacion(e.target.value)}
                   placeholder={`Ej. ${terminologia.cambioEjemploJustificacion}`}
-                  className="w-full px-4 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
+                  className="w-full px-4 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
                 />
               </div>
             </div>

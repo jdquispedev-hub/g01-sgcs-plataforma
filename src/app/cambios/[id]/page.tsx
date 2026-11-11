@@ -278,10 +278,10 @@ export default function DetalleRfcPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#070D18] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#13151A] flex items-center justify-center p-4">
         <div className="text-center space-y-2">
-          <Loader2 className="w-10 h-10 animate-spin text-amber-400 mx-auto" />
-          <p className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+          <Loader2 className="w-8 h-8 animate-spin text-amber-400 mx-auto" />
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
             Cargando expediente técnico de la RFC...
           </p>
         </div>
@@ -291,14 +291,14 @@ export default function DetalleRfcPage() {
 
   if (errorMsg && !solicitud) {
     return (
-      <div className="min-h-screen bg-[#070D18] flex items-center justify-center p-4">
-        <div className="bg-[#0C1527] p-8 rounded-2xl border border-white/10 max-w-md w-full text-center shadow-lg space-y-4">
+      <div className="min-h-screen bg-[#13151A] flex items-center justify-center p-4">
+        <div className="bg-[#1A1D25] p-8 rounded-2xl border border-white/10 max-w-md w-full text-center shadow-lg space-y-4">
           <AlertCircle className="w-12 h-12 text-rose-400 mx-auto" />
           <h2 className="text-lg font-bold text-white">No se pudo cargar la Solicitud</h2>
           <p className="text-xs text-slate-400">{errorMsg}</p>
           <Link
             href="/cambios"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold text-xs"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold text-xs shadow-md transition"
           >
             <ArrowLeft className="w-4 h-4" /> Volver a Solicitudes
           </Link>
@@ -312,12 +312,12 @@ export default function DetalleRfcPage() {
   const terminologia = getTerminologia(rubro);
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased">
       {/* Navbar Global Unificado */}
       <NavbarPrincipal />
 
-      {/* Sub-header contextual */}
-      <div className="bg-[#0B1528] border-b border-white/10">
+      {/* Sub-header contextual Nivel 3 */}
+      <div className="bg-[#16181D] border-b border-white/10 sticky top-14 z-30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <Link
@@ -362,7 +362,7 @@ export default function DetalleRfcPage() {
         )}
 
         {/* Timeline Visual de 4 Fases del Cambio */}
-        <div className="bg-[#0C1527] p-6 rounded-2xl border border-white/10 shadow-md">
+        <div className="bg-[#1A1D25] p-6 rounded-2xl border border-white/10 shadow-md">
           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-4">
             Ciclo de Vida de la Solicitud (RFC)
           </span>
@@ -402,7 +402,7 @@ export default function DetalleRfcPage() {
                 ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300'
                 : solicitud.estado === 'RECHAZADA'
                 ? 'bg-rose-500/15 border-rose-500/30 text-rose-300'
-                : 'bg-[#070D18] border-white/10 text-slate-400'
+                : 'bg-[#14161E] border-white/10 text-slate-400'
             }`}>
               <div className="flex items-center justify-between text-xs font-bold">
                 <span>3. Dictamen Comité</span>
@@ -427,7 +427,7 @@ export default function DetalleRfcPage() {
             <div className={`p-3.5 rounded-xl border space-y-1 ${
               solicitud.estado === 'IMPLEMENTADA'
                 ? 'bg-purple-500/15 border-purple-500/30 text-purple-300'
-                : 'bg-[#070D18] border-white/10 text-slate-400'
+                : 'bg-[#14161E] border-white/10 text-slate-400'
             }`}>
               <div className="flex items-center justify-between text-xs font-bold">
                 <span>4. Implementación</span>
@@ -447,7 +447,7 @@ export default function DetalleRfcPage() {
         </div>
 
         {/* Ficha Principal de la RFC */}
-        <div className="bg-[#0C1527] rounded-2xl p-6 sm:p-8 border border-white/10 shadow-md space-y-6">
+        <div className="bg-[#1A1D25] rounded-2xl p-6 sm:p-8 border border-white/10 shadow-md space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-white/10 pb-5">
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-2">
@@ -468,7 +468,7 @@ export default function DetalleRfcPage() {
             </div>
 
             {/* Versión Base Congelada */}
-            <div className="bg-[#070D18] p-3.5 rounded-xl border border-white/10 text-xs shrink-0 text-center sm:w-48">
+            <div className="bg-[#14161E] p-3.5 rounded-xl border border-white/10 text-xs shrink-0 text-center sm:w-48">
               <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">
                 Versión Base Afectada
               </span>
@@ -482,7 +482,7 @@ export default function DetalleRfcPage() {
           </div>
 
           {/* Alcance y Justificación */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#070D18] p-5 rounded-xl border border-white/10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#14161E] p-5 rounded-xl border border-white/10">
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
                 Descripción Técnica del Cambio
@@ -517,7 +517,7 @@ export default function DetalleRfcPage() {
         </div>
 
         {/* Sección 2: Evaluación Técnica de Impacto (RF-13) */}
-        <div className="bg-[#0C1527] rounded-2xl p-6 sm:p-8 border border-white/10 shadow-md space-y-6">
+        <div className="bg-[#1A1D25] rounded-2xl p-6 sm:p-8 border border-white/10 shadow-md space-y-6">
           <div className="flex items-center gap-2 text-white font-bold text-base border-b border-white/10 pb-3">
             <Activity className="w-5 h-5 text-sky-400" />
             <span>Evaluación Técnica de Impacto y ECS Afectados (RF-13)</span>
@@ -526,7 +526,7 @@ export default function DetalleRfcPage() {
           {solicitud.evaluacion ? (
             /* Vista de Evaluación ya Registrada */
             <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-[#070D18] p-4 rounded-xl border border-white/10 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-[#14161E] p-4 rounded-xl border border-white/10 text-xs">
                 <div>
                   <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Nivel de Impacto</span>
                   <span className={`text-xs font-bold px-3 py-1 rounded-lg uppercase inline-block ${
@@ -550,7 +550,7 @@ export default function DetalleRfcPage() {
 
               <div>
                 <span className="text-xs font-bold text-white block mb-1">Observaciones Técnicas:</span>
-                <p className="text-xs text-slate-300 bg-[#070D18] p-4 rounded-xl border border-white/10 leading-relaxed font-medium">
+                <p className="text-xs text-slate-300 bg-[#14161E] p-4 rounded-xl border border-white/10 leading-relaxed font-medium">
                   {solicitud.evaluacion.observaciones}
                 </p>
               </div>
@@ -565,7 +565,7 @@ export default function DetalleRfcPage() {
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {solicitud.ecs_afectados.map((item) => (
-                      <div key={item.ecs.id} className="p-3 bg-[#070D18] rounded-xl border border-white/10 text-xs flex items-center justify-between">
+                      <div key={item.ecs.id} className="p-3 bg-[#14161E] rounded-xl border border-white/10 text-xs flex items-center justify-between">
                         <div>
                           <span className="font-mono font-bold text-amber-300 block">{item.ecs.codigo}</span>
                           <span className="text-slate-200 font-semibold">{item.ecs.nombre}</span>
@@ -597,12 +597,12 @@ export default function DetalleRfcPage() {
                   <select
                     value={impacto}
                     onChange={(e: any) => setImpacto(e.target.value)}
-                    className="w-full px-4 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+                    className="w-full px-4 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
                   >
-                    <option value="BAJO" className="bg-[#0C1527]">Bajo (Cambio cosmético o de documentación)</option>
-                    <option value="MEDIO" className="bg-[#0C1527]">Medio (Ajuste menor de lógica sin afectar contratos)</option>
-                    <option value="ALTO" className="bg-[#0C1527]">Alto (Modificación de esquemas de BD, contratos o planos)</option>
-                    <option value="CRITICO" className="bg-[#0C1527]">Crítico (Afectación arquitectónica central o seguridad)</option>
+                    <option value="BAJO" className="bg-[#1A1D25]">Bajo (Cambio cosmético o de documentación)</option>
+                    <option value="MEDIO" className="bg-[#1A1D25]">Medio (Ajuste menor de lógica sin afectar contratos)</option>
+                    <option value="ALTO" className="bg-[#1A1D25]">Alto (Modificación de esquemas de BD, contratos o planos)</option>
+                    <option value="CRITICO" className="bg-[#1A1D25]">Crítico (Afectación arquitectónica central o seguridad)</option>
                   </select>
                 </div>
               </div>
@@ -616,7 +616,7 @@ export default function DetalleRfcPage() {
                   value={observacionesEvaluacion}
                   onChange={(e) => setObservacionesEvaluacion(e.target.value)}
                   placeholder="Detalla qué componentes colaterales sufrirán modificaciones y si se requiere prueba de regresión..."
-                  className="w-full px-4 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
+                  className="w-full px-4 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
                 />
               </div>
 
@@ -625,13 +625,13 @@ export default function DetalleRfcPage() {
                 <label className="block text-xs font-bold text-slate-300 mb-1.5">
                   Seleccionar Artefactos Afectados Colateralmente (Opcional):
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 bg-[#070D18] border border-white/10 rounded-xl">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 bg-[#14161E] border border-white/10 rounded-xl">
                   {todosEcsProyecto
                     .filter((e) => e.id !== solicitud.ecs.id)
                     .map((item) => {
                       const isChecked = afectadosSeleccionados.includes(item.id);
                       return (
-                        <label key={item.id} className="flex items-center gap-2 p-2 rounded-lg bg-[#0C1527] border border-white/10 text-xs cursor-pointer hover:bg-white/5 transition">
+                        <label key={item.id} className="flex items-center gap-2 p-2 rounded-lg bg-[#1A1D25] border border-white/10 text-xs cursor-pointer hover:bg-white/5 transition">
                           <input
                             type="checkbox"
                             checked={isChecked}
@@ -642,7 +642,7 @@ export default function DetalleRfcPage() {
                                 setAfectadosSeleccionados([...afectadosSeleccionados, item.id]);
                               }
                             }}
-                            className="rounded text-amber-500 bg-[#070D18] border-white/20"
+                            className="rounded text-amber-500 bg-[#14161E] border-white/20"
                           />
                           <span className="font-mono font-bold text-amber-300">{item.codigo}:</span>
                           <span className="truncate text-slate-200 font-semibold">{item.nombre}</span>
@@ -671,7 +671,7 @@ export default function DetalleRfcPage() {
         </div>
 
         {/* Sección 3: Dictamen Formal del Comité (RF-14) */}
-        <div className="bg-[#0C1527] rounded-2xl p-6 sm:p-8 border border-white/10 shadow-md space-y-6">
+        <div className="bg-[#1A1D25] rounded-2xl p-6 sm:p-8 border border-white/10 shadow-md space-y-6">
           <div className="flex items-center gap-2 text-white font-bold text-base border-b border-white/10 pb-3">
             <CheckCircle2 className="w-5 h-5 text-emerald-400" />
             <span>Dictamen Formal del Comité / Aprobador (RF-14)</span>
@@ -705,7 +705,7 @@ export default function DetalleRfcPage() {
 
               <div>
                 <span className="text-xs font-bold block mb-0.5">Justificación de la Resolución:</span>
-                <p className="text-xs leading-relaxed bg-[#070D18] p-3 rounded-xl border border-white/10 text-slate-200">
+                <p className="text-xs leading-relaxed bg-[#14161E] p-3 rounded-xl border border-white/10 text-slate-200">
                   {solicitud.resolucion_justificacion}
                 </p>
               </div>
@@ -730,7 +730,7 @@ export default function DetalleRfcPage() {
                   value={justificacionResolucion}
                   onChange={(e) => setJustificacionResolucion(e.target.value)}
                   placeholder={`Ej. ${terminologia.cambioEjemploResolucion}`}
-                  className="w-full px-4 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
+                  className="w-full px-4 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
                 />
               </div>
 
@@ -764,7 +764,7 @@ export default function DetalleRfcPage() {
 
         {/* Sección 4: Registro de Implementación (RF-15) */}
         {(solicitud.estado === 'APROBADA' || solicitud.estado === 'IMPLEMENTADA') && (
-          <div className="bg-[#0C1527] rounded-2xl p-6 sm:p-8 border border-white/10 shadow-md space-y-6">
+          <div className="bg-[#1A1D25] rounded-2xl p-6 sm:p-8 border border-white/10 shadow-md space-y-6">
             <div className="flex items-center gap-2 text-white font-bold text-base border-b border-white/10 pb-3">
               <GitCommit className="w-5 h-5 text-purple-400" />
               <span>Implementación y Cierre del Cambio (RF-15)</span>
@@ -796,12 +796,12 @@ export default function DetalleRfcPage() {
                   <select
                     value={versionResultanteId}
                     onChange={(e) => setVersionResultanteId(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs font-mono font-bold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+                    className="w-full px-4 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs font-mono font-bold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
                   >
                     {todosEcsProyecto
                       .find((e) => e.id === solicitud.ecs.id)
                       ?.versiones.map((v) => (
-                        <option key={v.id} value={v.id} className="bg-[#0C1527] text-white">
+                        <option key={v.id} value={v.id} className="bg-[#1A1D25] text-white">
                           v{v.numero_version} (Estado: {v.estado})
                         </option>
                       ))}
