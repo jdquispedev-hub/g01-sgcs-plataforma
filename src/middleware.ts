@@ -8,7 +8,7 @@ const ROUTE_PERMISSIONS: { pattern: RegExp; roles: string[] }[] = [
   { pattern: /^\/aprobaciones(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
   { pattern: /^\/bitacora(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
   { pattern: /^\/ecs(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
-  { pattern: /^\/lineas-base(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR'] },
+  { pattern: /^\/lineas-base(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
   { pattern: /^\/cambios(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
   { pattern: /^\/trazabilidad(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
   { pattern: /^\/reuniones(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
@@ -53,18 +53,26 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(loginUrl);
       }
 
-      // 2. Si hay sesión pero no tiene el rol necesario: 403 Prohibido (RNF-02)
+      // 2. Si hay sesión pero no tiene el rol necesario: (RNF-02)
       if (!route.roles.includes(session.rol)) {
-        return new NextResponse(
-          JSON.stringify({
-            success: false,
-            message: 'Acceso no autorizado: su rol no cuenta con los permisos necesarios.',
-          }),
-          {
-            status: 403,
-            headers: { 'content-type': 'application/json' },
-          }
-        );
+        // Para peticiones de API, responder con JSON 403
+        if (pathname.startsWith('/api/')) {
+          return new NextResponse(
+            JSON.stringify({
+              success: false,
+              message: 'Acceso no autorizado: su rol no cuenta con los permisos necesarios.',
+            }),
+            {
+              status: 403,
+              headers: { 'content-type': 'application/json' },
+            }
+          );
+        }
+
+        // Para navegación en navegador web, redirigir suavemente al dashboard con alerta
+        const deniedUrl = new URL('/dashboard', request.url);
+        deniedUrl.searchParams.set('moduloRestringido', pathname);
+        return NextResponse.redirect(deniedUrl);
       }
     }
   }

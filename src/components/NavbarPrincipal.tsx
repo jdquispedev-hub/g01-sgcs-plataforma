@@ -26,6 +26,7 @@ import {
   Users,
   Building2,
   FolderGit2,
+  FileCheck2,
 } from 'lucide-react';
 import GuiaFlujoModal from '@/components/GuiaFlujoModal';
 
@@ -402,6 +403,36 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
                           </Link>
                         );
                       })}
+
+                      {isAdmin && (
+                        <>
+                          <div className="my-1 border-t border-white/10" />
+                          <Link
+                            href="/auditoria"
+                            onClick={() => setDropdownHerramientas(false)}
+                            className={`flex items-center gap-2.5 px-3 py-2 transition ${
+                              pathname.startsWith('/auditoria')
+                                ? 'bg-white/15 text-upt-gold font-bold'
+                                : 'text-slate-200 hover:bg-white/10 hover:text-white'
+                            }`}
+                          >
+                            <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Auditoría de Logs (RNF-10)</span>
+                          </Link>
+                          <Link
+                            href="/reportes"
+                            onClick={() => setDropdownHerramientas(false)}
+                            className={`flex items-center gap-2.5 px-3 py-2 transition ${
+                              pathname.startsWith('/reportes')
+                                ? 'bg-white/15 text-upt-gold font-bold'
+                                : 'text-slate-200 hover:bg-white/10 hover:text-white'
+                            }`}
+                          >
+                            <FileCheck2 className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Reportes Oficiales</span>
+                          </Link>
+                        </>
+                      )}
                     </div>
                   </>
                 )}

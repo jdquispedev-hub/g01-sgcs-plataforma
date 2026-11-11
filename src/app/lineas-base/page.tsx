@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import useSWR from 'swr';
+import { fetcher } from '@/lib/fetcher';
 import Link from 'next/link';
 import { getTerminologia } from '@/lib/terminologia';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -59,51 +61,56 @@ interface ProyectoAux {
 export default function LineasBasePage() {
   const [lineasBase, setLineasBase] = useState<LineaBaseItem[]>([]);
   const [proyectos, setProyectos] = useState<ProyectoAux[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [search, setSearch] = useState('');
   const [estadoFiltro, setEstadoFiltro] = useState('');
   const [proyectoFiltro, setProyectoFiltro] = useState('');
   const [rubro, setRubro] = useState<string>('CONSTRUCCION');
 
-  const loadData = async () => {
-    setLoading(true);
-    try {
-      const url = new URL('/api/lineas-base', window.location.origin);
-      if (search) url.searchParams.set('search', search);
-      if (estadoFiltro) url.searchParams.set('estado', estadoFiltro);
-      if (proyectoFiltro) url.searchParams.set('proyectoId', proyectoFiltro);
+  // SWR: Caché en memoria para navegación instantánea (0ms)
+  const lineasUrl = useMemo(() => {
+    const params = new URLSearchParams();
+    if (search.trim()) params.set('search', search.trim());
+    if (estadoFiltro) params.set('estado', estadoFiltro);
+    if (proyectoFiltro) params.set('proyectoId', proyectoFiltro);
+    const q = params.toString();
+    return q ? `/api/lineas-base?${q}` : '/api/lineas-base';
+  }, [search, estadoFiltro, proyectoFiltro]);
 
-      const [resLineas, resAux, resMe] = await Promise.all([
-        fetch(url.toString()),
-        fetch('/api/auxiliares'),
-        fetch('/api/auth/me'),
-      ]);
+  const { data: dataLineas, mutate: mutateLineas } = useSWR(lineasUrl, fetcher, { revalidateOnFocus: false });
+  const { data: dataAux } = useSWR('/api/auxiliares', fetcher, { revalidateOnFocus: false });
+  const { data: dataMe } = useSWR('/api/auth/me', fetcher, { revalidateOnFocus: false });
 
-      const dataLineas = await resLineas.json();
-      const dataAux = await resAux.json();
-      const dataMe = await resMe.json();
-
-      if (dataMe?.success && dataMe?.user?.rubro) {
-        setRubro(dataMe.user.rubro);
-      }
-
-      if (dataLineas.success) setLineasBase(dataLineas.data);
-      if (dataAux.success) setProyectos(dataAux.data.proyectos);
-    } catch (err) {
-      console.error('Error al cargar líneas base:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const loading = !dataLineas && lineasBase.length === 0;
 
   useEffect(() => {
-    loadData();
-  }, [estadoFiltro, proyectoFiltro]);
+    if (dataLineas?.success && Array.isArray(dataLineas.data)) {
+      setLineasBase(dataLineas.data);
+    }
+  }, [dataLineas]);
+
+  useEffect(() => {
+    if (dataAux?.success && Array.isArray(dataAux.data?.proyectos)) {
+      setProyectos(dataAux.data.proyectos);
+    }
+  }, [dataAux]);
+
+  useEffect(() => {
+    if (dataMe?.success && dataMe.data?.user) {
+      setCurrentUser(dataMe.data.user);
+      if (dataMe.data.user.rubro) setRubro(dataMe.data.user.rubro);
+    }
+  }, [dataMe]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    loadData();
+    mutateLineas();
   };
+
+  const canManage =
+    currentUser?.rol === 'ADMINISTRADOR' ||
+    currentUser?.rol === 'APROBADOR' ||
+    currentUser?.rol === 'SUPERADMIN';
 
   const totalVigentes = lineasBase.filter((lb) => lb.estado === 'VIGENTE').length;
   const totalObsoletas = lineasBase.filter((lb) => lb.estado === 'OBSOLETA').length;
@@ -112,7 +119,7 @@ export default function LineasBasePage() {
   return (
     <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
       {/* Navbar Global Unificado */}
-      <NavbarPrincipal />
+      <NavbarPrincipal user={currentUser || undefined} />
 
       {/* Sub-Header Mobile-First */}
       <div className="bg-[#16181D] border-b border-white/10">
@@ -150,14 +157,21 @@ export default function LineasBasePage() {
               <Layers className="w-3.5 h-3.5 text-sky-400" />
               <span>Entregables</span>
             </Link>
-            <Link
-              href="/lineas-base/nueva"
-              className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition flex items-center gap-1.5 shrink-0 active:scale-95"
-            >
-              <Plus className="w-4 h-4 stroke-[3] text-slate-950" />
-              <span className="hidden sm:inline">Congelar Nuevo Hito</span>
-              <span className="sm:hidden font-bold">Nuevo Hito</span>
-            </Link>
+            {canManage ? (
+              <Link
+                href="/lineas-base/nueva"
+                className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition flex items-center gap-1.5 shrink-0 active:scale-95"
+              >
+                <Plus className="w-4 h-4 stroke-[3] text-slate-950" />
+                <span className="hidden sm:inline">Congelar Nuevo Hito</span>
+                <span className="sm:hidden font-bold">Nuevo Hito</span>
+              </Link>
+            ) : (
+              <div className="px-3 py-1.5 text-xs font-bold rounded-xl bg-white/5 text-amber-300 border border-amber-400/20 flex items-center gap-1.5">
+                <Lock className="w-3.5 h-3.5 text-amber-400" />
+                <span>Modo Consulta Oficial</span>
+              </div>
+            )}
           </div>
 
         </div>
