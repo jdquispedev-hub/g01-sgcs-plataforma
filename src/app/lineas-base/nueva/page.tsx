@@ -220,6 +220,7 @@ export default function NuevaLineaBasePage() {
           nombre: nombre.trim(),
           descripcion: descripcion.trim(),
           proyecto_id: proyectoId,
+          versiones_ids: version_ids,
           version_ids,
           marcar_anteriores_obsoletas: marcarAnterioresObsoletas,
         }),
@@ -228,7 +229,13 @@ export default function NuevaLineaBasePage() {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setErrorMsg(data.message || 'Error al establecer la línea base');
+        const errorDetalle =
+          data.errors?.versiones_ids?._errors?.[0] ||
+          data.errors?.codigo?._errors?.[0] ||
+          data.errors?.nombre?._errors?.[0] ||
+          data.message ||
+          'Error al establecer la línea base';
+        setErrorMsg(errorDetalle);
         setConfirmModalOpen(false);
         setSubmitting(false);
         return;

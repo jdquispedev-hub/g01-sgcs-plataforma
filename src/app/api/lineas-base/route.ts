@@ -110,7 +110,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body = await request.json();
+    const rawBody = await request.json();
+    const body = {
+      ...rawBody,
+      versiones_ids: rawBody.versiones_ids || rawBody.version_ids,
+    };
     const validation = lineaBaseSchema.safeParse(body);
 
     if (!validation.success) {
