@@ -261,12 +261,12 @@ export default function UsuariosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
       {/* Navbar Global Unificado */}
       <NavbarPrincipal user={currentUser} />
 
       {/* Sub-Header Mobile-First */}
-      <div className="bg-[#0B1528] border-b border-white/10">
+      <div className="bg-[#16181D] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           
           <div className="flex items-center gap-2.5 min-w-0">
@@ -324,7 +324,7 @@ export default function UsuariosPage() {
 
         {/* Resumen de Personal por Rol */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-[#0C1527] p-5 rounded-3xl border border-white/10 border-l-4 border-l-purple-500 shadow-md">
+          <div className="bg-[#1A1D25] p-5 rounded-3xl border border-white/10 border-l-4 border-l-purple-500 shadow-md">
             <span className="text-[10px] font-black uppercase tracking-wider text-purple-300 block">
               1. Administradores
             </span>
@@ -334,7 +334,7 @@ export default function UsuariosPage() {
             <p className="text-[10px] text-slate-400 mt-0.5">Control global de la empresa y auditoría</p>
           </div>
 
-          <div className="bg-[#0C1527] p-5 rounded-3xl border border-white/10 border-l-4 border-l-emerald-500 shadow-md">
+          <div className="bg-[#1A1D25] p-5 rounded-3xl border border-white/10 border-l-4 border-l-emerald-500 shadow-md">
             <span className="text-[10px] font-black uppercase tracking-wider text-emerald-300 block">
               2. Especialistas Aprobadores
             </span>
@@ -344,7 +344,7 @@ export default function UsuariosPage() {
             <p className="text-[10px] text-slate-400 mt-0.5">Responsables del dictamen de pre-factibilidad y RFCs</p>
           </div>
 
-          <div className="bg-[#0C1527] p-5 rounded-3xl border border-white/10 border-l-4 border-l-sky-500 shadow-md">
+          <div className="bg-[#1A1D25] p-5 rounded-3xl border border-white/10 border-l-4 border-l-sky-500 shadow-md">
             <span className="text-[10px] font-black uppercase tracking-wider text-sky-300 block">
               3. Solicitantes & Campo
             </span>
@@ -357,15 +357,15 @@ export default function UsuariosPage() {
 
         {/* Tabla de Usuarios */}
         {loading ? (
-          <div className="p-16 text-center bg-[#0C1527] rounded-3xl border border-white/10 shadow-md">
+          <div className="p-16 text-center bg-[#1A1D25] rounded-3xl border border-white/10 shadow-md">
             <Loader2 className="w-10 h-10 animate-spin text-upt-gold mx-auto mb-3" />
             <p className="text-xs font-black text-slate-300 uppercase tracking-wider">
               Cargando directorio de personal...
             </p>
           </div>
         ) : (
-          <div className="bg-[#0C1527] rounded-3xl border border-white/10 shadow-md overflow-hidden">
-            <div className="p-4 sm:p-5 border-b border-white/10 bg-[#070D18] flex items-center justify-between">
+          <div className="bg-[#1A1D25] rounded-3xl border border-white/10 shadow-md overflow-hidden">
+            <div className="p-4 sm:p-5 border-b border-white/10 bg-[#14161E] flex items-center justify-between">
               <span className="text-xs font-black text-white uppercase tracking-wider">
                 Colaboradores Registrados ({usuarios.length} activos)
               </span>
@@ -374,7 +374,7 @@ export default function UsuariosPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-[#070D18] border-b border-white/10 text-slate-400 uppercase font-black tracking-wider text-[10px]">
+                  <tr className="bg-[#14161E] border-b border-white/10 text-slate-400 uppercase font-black tracking-wider text-[10px]">
                     <th className="py-3 px-4">Colaborador / Especialidad</th>
                     <th className="py-3 px-4">Email</th>
                     <th className="py-3 px-4">Rol Operativo (SGCS)</th>
@@ -467,7 +467,7 @@ export default function UsuariosPage() {
       {/* Modal Alta de Colaborador */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto text-white">
-          <div className="bg-[#0C1527] rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-white/10 space-y-4 animate-in fade-in zoom-in-95 duration-150 my-6">
+          <div className="bg-[#1A1D25] rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-white/10 space-y-4 animate-in fade-in zoom-in-95 duration-150 my-6">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <div className="flex items-center gap-2">
                 <div className="w-9 h-9 rounded-xl bg-white/10 text-upt-gold flex items-center justify-center border border-white/10">
@@ -492,7 +492,7 @@ export default function UsuariosPage() {
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
                   placeholder="Ej. Arq. Claudia Morales / Ing. Carlos Mendoza"
-                  className="w-full px-3.5 py-2.5 bg-[#070D18] border border-white/10 rounded-2xl font-bold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
+                  className="w-full px-3.5 py-2.5 bg-[#14161E] border border-white/10 rounded-2xl font-bold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
                 />
               </div>
 
@@ -504,12 +504,12 @@ export default function UsuariosPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="claudia.morales@empresa.com"
-                  className="w-full px-3.5 py-2.5 bg-[#070D18] border border-white/10 rounded-2xl font-bold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
+                  className="w-full px-3.5 py-2.5 bg-[#14161E] border border-white/10 rounded-2xl font-bold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
                 />
               </div>
 
               {/* Cargo / Especialidad por Rubro */}
-              <div className="bg-[#070D18] p-3.5 rounded-2xl border border-white/10 space-y-2">
+              <div className="bg-[#14161E] p-3.5 rounded-2xl border border-white/10 space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="font-black text-purple-300 flex items-center gap-1.5">
                     <Briefcase className="w-3.5 h-3.5 text-purple-400" />
@@ -530,7 +530,7 @@ export default function UsuariosPage() {
                       ? 'Ej. Tech Lead / Backend Engineer'
                       : 'Ej. Médico Veterinario Cirujano'
                   }
-                  className="w-full px-3.5 py-2 bg-[#0C1527] border border-white/10 rounded-xl font-bold text-white placeholder:text-slate-500 focus:border-purple-400 transition"
+                  className="w-full px-3.5 py-2 bg-[#1A1D25] border border-white/10 rounded-xl font-bold text-white placeholder:text-slate-500 focus:border-purple-400 transition"
                 />
                 
                 {/* Sugerencias Rápidas según el rubro */}
@@ -565,11 +565,11 @@ export default function UsuariosPage() {
                 <select
                   value={rol}
                   onChange={(e: any) => setRol(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-[#070D18] border border-white/10 rounded-2xl font-bold text-white focus:border-sky-400 transition"
+                  className="w-full px-3.5 py-2.5 bg-[#14161E] border border-white/10 rounded-2xl font-bold text-white focus:border-sky-400 transition"
                 >
-                  <option value="SOLICITANTE" className="bg-[#0C1527] text-white">SOLICITANTE • Técnicos de campo, asistentes, redactores de entregables</option>
-                  <option value="APROBADOR" className="bg-[#0C1527] text-white">APROBADOR • Residentes, arquitectos líderes con firma de aprobación y RFCs</option>
-                  <option value="ADMINISTRADOR" className="bg-[#0C1527] text-white">ADMINISTRADOR • Gestión directiva y control de configuración</option>
+                  <option value="SOLICITANTE" className="bg-[#1A1D25] text-white">SOLICITANTE • Técnicos de campo, asistentes, redactores de entregables</option>
+                  <option value="APROBADOR" className="bg-[#1A1D25] text-white">APROBADOR • Residentes, arquitectos líderes con firma de aprobación y RFCs</option>
+                  <option value="ADMINISTRADOR" className="bg-[#1A1D25] text-white">ADMINISTRADOR • Gestión directiva y control de configuración</option>
                 </select>
               </div>
 
@@ -581,7 +581,7 @@ export default function UsuariosPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Mínimo 6 caracteres"
-                  className="w-full px-3.5 py-2.5 bg-[#070D18] border border-white/10 rounded-2xl font-bold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
+                  className="w-full px-3.5 py-2.5 bg-[#14161E] border border-white/10 rounded-2xl font-bold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
                 />
                 <span className="text-[10px] text-slate-500 mt-1 block">
                   Protegida con hash criptográfico bcrypt (RNF-01).
@@ -612,7 +612,7 @@ export default function UsuariosPage() {
       {/* Modal Edición de Rol y Cargo */}
       {modalEditUser && (
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 text-white">
-          <div className="bg-[#0C1527] rounded-3xl max-w-md w-full p-6 shadow-2xl border border-white/10 space-y-4">
+          <div className="bg-[#1A1D25] rounded-3xl max-w-md w-full p-6 shadow-2xl border border-white/10 space-y-4">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <h3 className="font-black text-base text-white">
                 Editar {modalEditUser.nombre_completo}
@@ -632,7 +632,7 @@ export default function UsuariosPage() {
                   value={editCargo}
                   onChange={(e) => setEditCargo(e.target.value)}
                   placeholder="Ej. Arquitecto Proyectista / Ing. Residente"
-                  className="w-full px-3.5 py-2 bg-[#070D18] border border-white/10 rounded-xl font-bold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
+                  className="w-full px-3.5 py-2 bg-[#14161E] border border-white/10 rounded-xl font-bold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
                 />
                 <div className="flex flex-wrap gap-1 mt-2">
                   {sugerencias.slice(0, 4).map((sug) => (

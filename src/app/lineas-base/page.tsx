@@ -110,12 +110,12 @@ export default function LineasBasePage() {
   const terminologia = getTerminologia(rubro);
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
       {/* Navbar Global Unificado */}
       <NavbarPrincipal />
 
       {/* Sub-Header Mobile-First */}
-      <div className="bg-[#0B1528] border-b border-white/10">
+      <div className="bg-[#16181D] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           
           <div className="flex items-center gap-2.5 min-w-0">
@@ -168,7 +168,7 @@ export default function LineasBasePage() {
         
         {/* Banner Explicativo */}
         <div
-          className="bg-[#0C1527] rounded-3xl p-5 sm:p-7 text-white shadow-xl border border-white/10 relative overflow-hidden"
+          className="bg-[#1A1D25] rounded-3xl p-5 sm:p-7 text-white shadow-xl border border-white/10 relative overflow-hidden"
         >
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div className="space-y-2 max-w-3xl">
@@ -185,11 +185,11 @@ export default function LineasBasePage() {
             </div>
 
             <div className="grid grid-cols-2 gap-2.5 sm:gap-3 shrink-0">
-              <div className="bg-[#070D18] p-3.5 rounded-2xl border border-white/10 text-center">
+              <div className="bg-[#14161E] p-3.5 rounded-2xl border border-white/10 text-center">
                 <span className="text-[10px] text-slate-400 uppercase font-black block">Líneas Vigentes</span>
                 <span className="text-xl sm:text-2xl font-black text-emerald-400">{totalVigentes}</span>
               </div>
-              <div className="bg-[#070D18] p-3.5 rounded-2xl border border-white/10 text-center">
+              <div className="bg-[#14161E] p-3.5 rounded-2xl border border-white/10 text-center">
                 <span className="text-[10px] text-slate-400 uppercase font-black block">Históricas</span>
                 <span className="text-xl sm:text-2xl font-black text-slate-400">{totalObsoletas}</span>
               </div>
@@ -199,7 +199,7 @@ export default function LineasBasePage() {
 
         {/* Consola de Búsqueda y Filtros de Alto Contraste */}
         <div
-          className="bg-[#0C1527] p-4 sm:p-5 rounded-3xl border border-white/10 shadow-md space-y-3 sm:space-y-4"
+          className="bg-[#1A1D25] p-4 sm:p-5 rounded-3xl border border-white/10 shadow-md space-y-3 sm:space-y-4"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
@@ -219,7 +219,7 @@ export default function LineasBasePage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Buscar por código (ej. LB-PRJ-01) o título de la línea base..."
-                className="w-full pl-11 pr-4 py-2.5 bg-[#070D18] border border-white/10 rounded-2xl text-xs sm:text-sm font-semibold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
+                className="w-full pl-11 pr-4 py-2.5 bg-[#14161E] border border-white/10 rounded-2xl text-xs sm:text-sm font-semibold text-white placeholder:text-slate-500 focus:border-sky-400 transition"
               />
             </div>
 
@@ -227,11 +227,11 @@ export default function LineasBasePage() {
               <select
                 value={proyectoFiltro}
                 onChange={(e) => setProyectoFiltro(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-[#070D18] border border-white/10 rounded-2xl text-xs sm:text-sm font-bold text-white focus:border-sky-400 transition cursor-pointer"
+                className="w-full px-3.5 py-2.5 bg-[#14161E] border border-white/10 rounded-2xl text-xs sm:text-sm font-bold text-white focus:border-sky-400 transition cursor-pointer"
               >
                 <option value="">Todos los Proyectos</option>
                 {proyectos.map((p) => (
-                  <option key={p.id} value={p.id} className="bg-[#0C1527] text-white">
+                  <option key={p.id} value={p.id} className="bg-[#1A1D25] text-white">
                     {p.codigo} - {p.nombre}
                   </option>
                 ))}
@@ -242,7 +242,7 @@ export default function LineasBasePage() {
               <select
                 value={estadoFiltro}
                 onChange={(e) => setEstadoFiltro(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-[#070D18] border border-white/10 rounded-2xl text-xs sm:text-sm font-bold text-white focus:border-sky-400 transition cursor-pointer"
+                className="w-full px-3.5 py-2.5 bg-[#14161E] border border-white/10 rounded-2xl text-xs sm:text-sm font-bold text-white focus:border-sky-400 transition cursor-pointer"
               >
                 <option value="">Todos los Estados</option>
                 <option value="VIGENTE">Vigente (Activa)</option>
@@ -262,14 +262,14 @@ export default function LineasBasePage() {
 
         {/* Grilla de Líneas Base con Borde y Sombras de Alta Visibilidad */}
         {loading ? (
-          <div className="p-16 text-center bg-[#0C1527] rounded-3xl border border-white/10 shadow-md">
+          <div className="p-16 text-center bg-[#1A1D25] rounded-3xl border border-white/10 shadow-md">
             <Loader2 className="w-10 h-10 animate-spin text-upt-gold mx-auto mb-3" />
             <p className="text-xs font-black text-slate-300 uppercase tracking-wider">
               Consultando registro de Líneas Base...
             </p>
           </div>
         ) : lineasBase.length === 0 ? (
-          <div className="bg-[#0C1527] rounded-3xl border-2 border-dashed border-white/10 p-10 sm:p-12 text-center shadow-md">
+          <div className="bg-[#1A1D25] rounded-3xl border-2 border-dashed border-white/10 p-10 sm:p-12 text-center shadow-md">
             <div className="w-14 h-14 rounded-2xl bg-white/5 text-upt-gold flex items-center justify-center mx-auto mb-3 border border-white/10">
               <Lock className="w-7 h-7" />
             </div>
@@ -294,13 +294,13 @@ export default function LineasBasePage() {
               return (
                 <div
                   key={lb.id}
-                  className={`bg-[#0C1527] rounded-3xl border border-white/10 border-l-4 ${
+                  className={`bg-[#1A1D25] rounded-3xl border border-white/10 border-l-4 ${
                     esVigente ? 'border-l-emerald-500' : 'border-l-slate-500'
                   } shadow-md hover:border-white/20 transition-all duration-200 flex flex-col justify-between overflow-hidden group`}
                 >
                     <div>
                       {/* Header de la Tarjeta */}
-                      <div className="p-4 sm:p-5 pb-3 border-b border-white/10 bg-[#070D18] flex items-start justify-between gap-2.5">
+                      <div className="p-4 sm:p-5 pb-3 border-b border-white/10 bg-[#14161E] flex items-start justify-between gap-2.5">
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
                             <span className="font-mono text-xs font-black text-upt-gold bg-white/10 px-2.5 py-0.5 rounded-lg border border-white/10 flex items-center gap-1">
@@ -339,7 +339,7 @@ export default function LineasBasePage() {
                           {lb.descripcion || 'Sin justificación técnica o notas descriptivas registradas.'}
                         </p>
 
-                        <div className="bg-[#070D18] rounded-2xl p-3 border border-white/10 flex items-center justify-between text-xs">
+                        <div className="bg-[#14161E] rounded-2xl p-3 border border-white/10 flex items-center justify-between text-xs">
                           <div className="flex items-center gap-2 text-slate-300 font-bold">
                             <FileCheck2 className="w-4 h-4 text-sky-400" />
                             <span>Artefactos Congelados:</span>

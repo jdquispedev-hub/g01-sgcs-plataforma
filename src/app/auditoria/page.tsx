@@ -132,12 +132,12 @@ export default function AuditoriaPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased">
       {/* Navbar Global Unificado */}
       <NavbarPrincipal />
 
       {/* Sub-header contextual */}
-      <div className="bg-[#0B1528] border-b border-white/10">
+      <div className="bg-[#16181D] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
@@ -171,7 +171,7 @@ export default function AuditoriaPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
         
         {/* Filtros Rápidos */}
-        <div className="bg-[#0C1527] p-4 sm:p-5 rounded-2xl border border-white/10 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="bg-[#1A1D25] p-4 sm:p-5 rounded-2xl border border-white/10 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-white font-bold text-xs sm:text-sm">
             <Filter className="w-4 h-4 text-amber-400" />
             <span>Filtros de Auditoría:</span>
@@ -182,49 +182,49 @@ export default function AuditoriaPage() {
             <select
               value={entidadFiltro}
               onChange={(e) => setEntidadFiltro(e.target.value)}
-              className="px-3.5 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-slate-200 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+              className="px-3.5 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-slate-200 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
             >
-              <option value="" className="bg-[#0C1527]">Todas las Entidades</option>
-              <option value="ECS" className="bg-[#0C1527]">Elementos (ECS)</option>
-              <option value="VERSION_ECS" className="bg-[#0C1527]">Versiones de ECS</option>
-              <option value="LINEA_BASE" className="bg-[#0C1527]">Líneas Base</option>
-              <option value="SOLICITUD_CAMBIO" className="bg-[#0C1527]">Solicitudes de Cambio</option>
-              <option value="USUARIO" className="bg-[#0C1527]">Usuarios / Sesión</option>
+              <option value="" className="bg-[#1A1D25]">Todas las Entidades</option>
+              <option value="ECS" className="bg-[#1A1D25]">Elementos (ECS)</option>
+              <option value="VERSION_ECS" className="bg-[#1A1D25]">Versiones de ECS</option>
+              <option value="LINEA_BASE" className="bg-[#1A1D25]">Líneas Base</option>
+              <option value="SOLICITUD_CAMBIO" className="bg-[#1A1D25]">Solicitudes de Cambio</option>
+              <option value="USUARIO" className="bg-[#1A1D25]">Usuarios / Sesión</option>
             </select>
 
             {/* Filtro Acción */}
             <select
               value={accionFiltro}
               onChange={(e) => setAccionFiltro(e.target.value)}
-              className="px-3.5 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-slate-200 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+              className="px-3.5 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-slate-200 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
             >
-              <option value="" className="bg-[#0C1527]">Todas las Acciones</option>
-              <option value="CREAR" className="bg-[#0C1527]">Creación</option>
-              <option value="APROBAR" className="bg-[#0C1527]">Aprobación / Dictamen</option>
-              <option value="RECHAZAR" className="bg-[#0C1527]">Rechazo</option>
-              <option value="EVALUAR" className="bg-[#0C1527]">Evaluación de Impacto</option>
-              <option value="IMPLEMENTAR" className="bg-[#0C1527]">Implementación / Cierre</option>
+              <option value="" className="bg-[#1A1D25]">Todas las Acciones</option>
+              <option value="CREAR" className="bg-[#1A1D25]">Creación</option>
+              <option value="APROBAR" className="bg-[#1A1D25]">Aprobación / Dictamen</option>
+              <option value="RECHAZAR" className="bg-[#1A1D25]">Rechazo</option>
+              <option value="EVALUAR" className="bg-[#1A1D25]">Evaluación de Impacto</option>
+              <option value="IMPLEMENTAR" className="bg-[#1A1D25]">Implementación / Cierre</option>
             </select>
           </div>
         </div>
 
         {/* Tabla de Auditoría */}
         {loading ? (
-          <div className="p-16 text-center bg-[#0C1527] rounded-2xl border border-white/10 shadow-md">
+          <div className="p-16 text-center bg-[#1A1D25] rounded-2xl border border-white/10 shadow-md">
             <Loader2 className="w-8 h-8 animate-spin text-amber-400 mx-auto mb-3" />
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
               Consultando registro inmutable de auditoría...
             </p>
           </div>
         ) : logs.length === 0 ? (
-          <div className="bg-[#0C1527] rounded-2xl border border-white/10 p-12 text-center shadow-md">
+          <div className="bg-[#1A1D25] rounded-2xl border border-white/10 p-12 text-center shadow-md">
             <ShieldCheck className="w-10 h-10 text-slate-500 mx-auto mb-2" />
             <h3 className="font-bold text-white text-base">Sin eventos registrados con estos filtros</h3>
             <p className="text-xs text-slate-400 mt-1">Prueba seleccionando otros criterios de búsqueda.</p>
           </div>
         ) : (
-          <div className="bg-[#0C1527] rounded-2xl border border-white/10 shadow-md overflow-hidden">
-            <div className="p-4 sm:p-5 border-b border-white/10 bg-[#0B1528] flex items-center justify-between">
+          <div className="bg-[#1A1D25] rounded-2xl border border-white/10 shadow-md overflow-hidden">
+            <div className="p-4 sm:p-5 border-b border-white/10 bg-[#16181D] flex items-center justify-between">
               <span className="text-xs font-bold text-white uppercase tracking-wider">
                 Eventos Auditados ({pagination.total} registros totales)
               </span>
@@ -236,7 +236,7 @@ export default function AuditoriaPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-[#070D18] border-b border-white/10 text-slate-400 uppercase font-bold tracking-wider text-[10px]">
+                  <tr className="bg-[#14161E] border-b border-white/10 text-slate-400 uppercase font-bold tracking-wider text-[10px]">
                     <th className="py-3 px-4">Fecha & Hora</th>
                     <th className="py-3 px-4">Usuario Responsable</th>
                     <th className="py-3 px-4">Rol</th>
@@ -290,7 +290,7 @@ export default function AuditoriaPage() {
 
             {/* Paginación */}
             {pagination.totalPages > 1 && (
-              <div className="p-4 border-t border-white/10 flex items-center justify-between bg-[#0B1528]">
+              <div className="p-4 border-t border-white/10 flex items-center justify-between bg-[#16181D]">
                 <button
                   disabled={pagination.page <= 1}
                   onClick={() => loadLogs(pagination.page - 1)}
@@ -318,7 +318,7 @@ export default function AuditoriaPage() {
       {/* Modal Inspector de Payload JSON */}
       {selectedLog && (
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0C1527] rounded-2xl max-w-2xl w-full p-6 sm:p-7 shadow-2xl border border-white/10 space-y-4 max-h-[90vh] flex flex-col">
+          <div className="bg-[#1A1D25] rounded-2xl max-w-2xl w-full p-6 sm:p-7 shadow-2xl border border-white/10 space-y-4 max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <div className="flex items-center gap-2">
                 <Terminal className="w-5 h-5 text-amber-400" />
@@ -335,7 +335,7 @@ export default function AuditoriaPage() {
             </div>
 
             <div className="space-y-3 overflow-y-auto pr-1 flex-1 text-xs">
-              <div className="grid grid-cols-2 gap-2 bg-[#070D18] p-3 rounded-xl border border-white/10">
+              <div className="grid grid-cols-2 gap-2 bg-[#14161E] p-3 rounded-xl border border-white/10">
                 <div>
                   <span className="text-[10px] font-bold text-slate-400 uppercase block">Acción</span>
                   <span className="font-bold text-white">{selectedLog.accion}</span>
@@ -361,7 +361,7 @@ export default function AuditoriaPage() {
                 <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block mb-1">
                   Datos Nuevos / Modificados:
                 </span>
-                <pre className="bg-[#070D18] text-emerald-400 p-4 rounded-xl font-mono text-[11px] overflow-x-auto border border-white/10">
+                <pre className="bg-[#14161E] text-emerald-400 p-4 rounded-xl font-mono text-[11px] overflow-x-auto border border-white/10">
                   {JSON.stringify(selectedLog.datos_nuevos, null, 2)}
                 </pre>
               </div>
@@ -372,7 +372,7 @@ export default function AuditoriaPage() {
                   <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block mb-1">
                     Datos Anteriores (Pre-modificación):
                   </span>
-                  <pre className="bg-[#070D18] text-amber-300 p-4 rounded-xl font-mono text-[11px] overflow-x-auto border border-white/10">
+                  <pre className="bg-[#14161E] text-amber-300 p-4 rounded-xl font-mono text-[11px] overflow-x-auto border border-white/10">
                     {JSON.stringify(selectedLog.datos_anteriores, null, 2)}
                   </pre>
                 </div>

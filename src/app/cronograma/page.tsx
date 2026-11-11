@@ -237,12 +237,12 @@ export default function CronogramaPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased">
       {/* Navbar Global Unificado */}
       <NavbarPrincipal />
 
       {/* Sub-header contextual */}
-      <div className="bg-[#0B1528] border-b border-white/10">
+      <div className="bg-[#16181D] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
@@ -293,7 +293,7 @@ export default function CronogramaPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
         
         {/* Selector de Proyecto y Ficha Resumen */}
-        <div className="bg-[#0C1527] rounded-2xl p-6 text-white border border-white/10 shadow-lg space-y-4">
+        <div className="bg-[#1A1D25] rounded-2xl p-6 text-white border border-white/10 shadow-lg space-y-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-4">
             <div className="space-y-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
@@ -314,10 +314,10 @@ export default function CronogramaPage() {
               <select
                 value={selectedProyectoId}
                 onChange={(e) => setSelectedProyectoId(e.target.value)}
-                className="px-4 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+                className="px-4 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
               >
                 {proyectos.map((p) => (
-                  <option key={p.id} value={p.id} className="bg-[#0C1527] text-white">
+                  <option key={p.id} value={p.id} className="bg-[#1A1D25] text-white">
                     {p.codigo} - {p.nombre}
                   </option>
                 ))}
@@ -327,19 +327,19 @@ export default function CronogramaPage() {
 
           {/* Estadísticas de la Historia del Proyecto */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-            <div className="bg-[#070D18] p-3.5 rounded-xl border border-white/10 text-center">
+            <div className="bg-[#14161E] p-3.5 rounded-xl border border-white/10 text-center">
               <span className="text-[10px] text-slate-400 uppercase font-bold block">Reuniones</span>
               <span className="text-xl font-bold text-emerald-400">{proyecto?.reuniones?.length || 0}</span>
             </div>
-            <div className="bg-[#070D18] p-3.5 rounded-xl border border-white/10 text-center">
+            <div className="bg-[#14161E] p-3.5 rounded-xl border border-white/10 text-center">
               <span className="text-[10px] text-slate-400 uppercase font-bold block">Entregables (ECS)</span>
               <span className="text-xl font-bold text-sky-400">{proyecto?.elementos_config?.length || 0}</span>
             </div>
-            <div className="bg-[#070D18] p-3.5 rounded-xl border border-white/10 text-center">
+            <div className="bg-[#14161E] p-3.5 rounded-xl border border-white/10 text-center">
               <span className="text-[10px] text-slate-400 uppercase font-bold block">Hitos Congelados</span>
               <span className="text-xl font-bold text-amber-400">{proyecto?.lineas_base?.length || 0}</span>
             </div>
-            <div className="bg-[#070D18] p-3.5 rounded-xl border border-white/10 text-center">
+            <div className="bg-[#14161E] p-3.5 rounded-xl border border-white/10 text-center">
               <span className="text-[10px] text-slate-400 uppercase font-bold block">Cambios (RFC)</span>
               <span className="text-xl font-bold text-rose-400">{solicitudesCambio.length}</span>
             </div>
@@ -347,7 +347,7 @@ export default function CronogramaPage() {
         </div>
 
         {proyectos.length === 0 ? (
-          <div className="bg-[#0C1527] rounded-2xl p-10 border border-white/10 text-center space-y-3 shadow-md">
+          <div className="bg-[#1A1D25] rounded-2xl p-10 border border-white/10 text-center space-y-3 shadow-md">
             <div className="w-14 h-14 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto border border-amber-500/20">
               <Sparkles className="w-7 h-7" />
             </div>
@@ -407,7 +407,7 @@ export default function CronogramaPage() {
 
             {/* Contenido según la vista seleccionada */}
             {loading ? (
-              <div className="p-16 text-center bg-[#0C1527] rounded-2xl border border-white/10 shadow-sm">
+              <div className="p-16 text-center bg-[#1A1D25] rounded-2xl border border-white/10 shadow-sm">
                 <Loader2 className="w-8 h-8 animate-spin text-amber-400 mx-auto mb-3" />
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
                   Generando línea de tiempo del proyecto...
@@ -415,7 +415,7 @@ export default function CronogramaPage() {
               </div>
             ) : viewMode === 'TIMELINE' ? (
               /* VISTA 1: LÍNEA DE TIEMPO VERTICAL CONTINUA */
-              <div className="bg-[#0C1527] rounded-2xl border border-white/10 p-6 sm:p-8 shadow-md">
+              <div className="bg-[#1A1D25] rounded-2xl border border-white/10 p-6 sm:p-8 shadow-md">
                 <div className="relative border-l-2 border-amber-400/30 ml-4 sm:ml-8 space-y-8 py-2">
                   {timeline.map((event) => {
                     const visuals = getEventVisuals(event);
@@ -430,11 +430,11 @@ export default function CronogramaPage() {
                       <div key={event.id} className="relative pl-7 sm:pl-9 group">
                         {/* Punto del Timeline */}
                         <div
-                          className={`absolute -left-[11px] top-1.5 w-5 h-5 rounded-full border-2 border-[#070D18] ${visuals.dotColor} ring-4 ring-[#070D18] shadow-md flex items-center justify-center transition-transform group-hover:scale-125`}
+                          className={`absolute -left-[11px] top-1.5 w-5 h-5 rounded-full border-2 border-[#14161E] ${visuals.dotColor} ring-4 ring-[#14161E] shadow-md flex items-center justify-center transition-transform group-hover:scale-125`}
                         />
 
                         {/* Tarjeta del Evento */}
-                        <div className="bg-[#070D18] hover:border-amber-400/40 rounded-xl border border-white/10 p-4 sm:p-5 transition-all shadow-sm space-y-2.5">
+                        <div className="bg-[#14161E] hover:border-amber-400/40 rounded-xl border border-white/10 p-4 sm:p-5 transition-all shadow-sm space-y-2.5">
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border uppercase tracking-wider ${visuals.badgeColor}`}>
@@ -504,7 +504,7 @@ export default function CronogramaPage() {
               /* VISTA 2: TABLERO CANVAS DE 4 FASES */
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                 {/* Columna 1: Levantamiento con Cliente */}
-                <div className="bg-[#0C1527] rounded-2xl p-4 border border-white/10 space-y-3 flex flex-col justify-between shadow-md">
+                <div className="bg-[#1A1D25] rounded-2xl p-4 border border-white/10 space-y-3 flex flex-col justify-between shadow-md">
                   <div>
                     <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-3">
                       <div className="flex items-center gap-2">
@@ -524,7 +524,7 @@ export default function CronogramaPage() {
                         .map((r) => (
                           <div
                             key={r.id}
-                            className="bg-[#070D18] p-3.5 rounded-xl border border-white/10 space-y-1.5"
+                            className="bg-[#14161E] p-3.5 rounded-xl border border-white/10 space-y-1.5"
                           >
                             <span className="text-[10px] font-mono text-slate-400 flex items-center gap-1">
                               <Calendar className="w-3 h-3 text-slate-500" />
@@ -550,7 +550,7 @@ export default function CronogramaPage() {
                 </div>
 
                 {/* Columna 2: Planificación de Equipo y Entregables */}
-                <div className="bg-[#0C1527] rounded-2xl p-4 border border-white/10 space-y-3 flex flex-col justify-between shadow-md">
+                <div className="bg-[#1A1D25] rounded-2xl p-4 border border-white/10 space-y-3 flex flex-col justify-between shadow-md">
                   <div>
                     <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-3">
                       <div className="flex items-center gap-2">
@@ -568,7 +568,7 @@ export default function CronogramaPage() {
                       {proyecto?.elementos_config?.map((ecs) => (
                         <div
                           key={ecs.id}
-                          className="bg-[#070D18] p-3.5 rounded-xl border border-white/10 space-y-1.5"
+                          className="bg-[#14161E] p-3.5 rounded-xl border border-white/10 space-y-1.5"
                         >
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] font-mono font-bold text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">
@@ -603,7 +603,7 @@ export default function CronogramaPage() {
                 </div>
 
                 {/* Columna 3: Hito Congelado (Línea Base Oficial) */}
-                <div className="bg-[#0C1527] rounded-2xl p-4 border border-white/10 space-y-3 flex flex-col justify-between shadow-md">
+                <div className="bg-[#1A1D25] rounded-2xl p-4 border border-white/10 space-y-3 flex flex-col justify-between shadow-md">
                   <div>
                     <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-3">
                       <div className="flex items-center gap-2">
@@ -621,7 +621,7 @@ export default function CronogramaPage() {
                       {proyecto?.lineas_base?.map((lb) => (
                         <div
                           key={lb.id}
-                          className="bg-[#070D18] p-3.5 rounded-xl border border-amber-500/30 space-y-1.5"
+                          className="bg-[#14161E] p-3.5 rounded-xl border border-amber-500/30 space-y-1.5"
                         >
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] font-mono font-bold text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">
@@ -651,7 +651,7 @@ export default function CronogramaPage() {
                 </div>
 
                 {/* Columna 4: Nuevos Pedidos del Cliente / Cambios */}
-                <div className="bg-[#0C1527] rounded-2xl p-4 border border-white/10 space-y-3 flex flex-col justify-between shadow-md">
+                <div className="bg-[#1A1D25] rounded-2xl p-4 border border-white/10 space-y-3 flex flex-col justify-between shadow-md">
                   <div>
                     <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-3">
                       <div className="flex items-center gap-2">
@@ -669,7 +669,7 @@ export default function CronogramaPage() {
                       {solicitudesCambio.map((rfc) => (
                         <div
                           key={rfc.id}
-                          className="bg-[#070D18] p-3.5 rounded-xl border border-rose-500/30 space-y-1.5"
+                          className="bg-[#14161E] p-3.5 rounded-xl border border-rose-500/30 space-y-1.5"
                         >
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] font-mono font-bold text-rose-300 bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20">

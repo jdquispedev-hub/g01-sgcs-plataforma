@@ -196,10 +196,12 @@ export default function AprobacionesPage() {
             </Link>
             <div className="min-w-0">
               <h1 className="text-base sm:text-lg font-bold text-white tracking-tight truncate">
-                Centro de Dictamen y Control de Cambios
+                {user?.rol === 'SOLICITANTE' ? 'Bandeja de Seguimiento de Entregables' : 'Centro de Dictamen y Control de Cambios'}
               </h1>
               <p className="text-xs text-slate-400 truncate">
-                Paso 3: Evaluación Técnica y Aprobación de Artefactos
+                {user?.rol === 'SOLICITANTE'
+                  ? 'Paso 3: Monitorea el estado de revisión técnica de tus planos y artefactos'
+                  : 'Paso 3: Evaluación Técnica Oficial y Aprobación de Artefactos'}
               </p>
             </div>
           </div>
@@ -207,7 +209,11 @@ export default function AprobacionesPage() {
           <div className="flex items-center gap-2.5 shrink-0">
             <div className="px-3 py-1.5 rounded-xl bg-[#14161E] border border-white/10 text-xs text-slate-300 font-bold flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-              <span>{totalPendientes} pendientes de dictamen</span>
+              <span>
+                {user?.rol === 'SOLICITANTE'
+                  ? `${totalPendientes} en revisión técnica`
+                  : `${totalPendientes} pendientes de dictamen`}
+              </span>
             </div>
           </div>
         </div>
@@ -221,13 +227,21 @@ export default function AprobacionesPage() {
             <div className="space-y-2 max-w-2xl">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-upt-gold/20 text-upt-gold border border-upt-gold/40 text-[11px] font-black uppercase tracking-wider">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Paso 3: Dictamen Técnico y Aprobación</span>
+                <span>
+                  {user?.rol === 'SOLICITANTE'
+                    ? 'Seguimiento de Calidad y Dictámenes'
+                    : 'Paso 3: Dictamen Técnico y Aprobación'}
+                </span>
               </div>
               <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                Centro de Dictamen y Control de Cambios
+                {user?.rol === 'SOLICITANTE'
+                  ? 'Estado de Aprobación de tus Entregables y Cambios'
+                  : 'Centro de Dictamen y Control de Cambios'}
               </h1>
               <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-                Como especialista técnico, tu función es evaluar la viabilidad de nuevos artefactos de software y solicitudes de cambio antes de que pasen a producción o a una Línea Base.
+                {user?.rol === 'SOLICITANTE'
+                  ? 'Aquí puedes consultar en tiempo real el veredicto técnico de tus versiones propuestas y solicitudes de cambio (RFC). El Especialista Aprobador revisa cada artefacto antes de congelarlo en una Línea Base.'
+                  : 'Como especialista técnico, tu función es evaluar la viabilidad de nuevos artefactos de software y solicitudes de cambio antes de que pasen a producción o a una Línea Base.'}
               </p>
             </div>
 
@@ -365,9 +379,14 @@ export default function AprobacionesPage() {
 
                     <div className="pt-4 border-t border-white/10 space-y-2">
                       {user?.rol === 'SOLICITANTE' ? (
-                        <div className="py-2 px-3 rounded-xl bg-white/5 text-slate-400 font-medium text-[11px] text-center border border-white/10 flex items-center justify-center gap-1.5">
-                          <Lock className="w-3.5 h-3.5 text-slate-500" />
-                          <span>Dictamen reservado para el Especialista Aprobador</span>
+                        <div className="py-2.5 px-3 rounded-xl bg-amber-500/10 text-amber-300 font-bold text-xs border border-amber-400/20 flex items-center justify-between">
+                          <span className="flex items-center gap-1.5">
+                            <Clock className="w-3.5 h-3.5 text-amber-400 animate-pulse shrink-0" />
+                            <span>En revisión por el Especialista Aprobador</span>
+                          </span>
+                          <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-200 shrink-0">
+                            Pendiente
+                          </span>
                         </div>
                       ) : (
                         <div className="grid grid-cols-2 gap-2">

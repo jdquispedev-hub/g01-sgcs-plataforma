@@ -5,7 +5,7 @@ import { verifySessionTokenEdge, AUTH_COOKIE_NAME } from '@/lib/auth-edge';
 const ROUTE_PERMISSIONS: { pattern: RegExp; roles: string[] }[] = [
   { pattern: /^\/superadmin(\/.*)?$/, roles: ['SUPERADMIN'] },
   { pattern: /^\/dashboard(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
-  { pattern: /^\/aprobaciones(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR'] },
+  { pattern: /^\/aprobaciones(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
   { pattern: /^\/bitacora(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
   { pattern: /^\/ecs(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR', 'SOLICITANTE'] },
   { pattern: /^\/lineas-base(\/.*)?$/, roles: ['SUPERADMIN', 'ADMINISTRADOR', 'APROBADOR'] },

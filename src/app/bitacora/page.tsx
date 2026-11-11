@@ -144,12 +144,12 @@ export default function BitacoraPage() {
   const totalBloqueosActivos = reportes.filter((r) => r.tiene_bloqueo).length;
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased">
       {/* Navbar Global Unificado */}
       <NavbarPrincipal />
 
       {/* Sub-header contextual */}
-      <div className="bg-[#0B1528] border-b border-white/10">
+      <div className="bg-[#16181D] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
@@ -194,7 +194,7 @@ export default function BitacoraPage() {
         )}
 
         {/* Banner de Concepto de la Etapa 4 */}
-        <div className="bg-[#0C1527] rounded-2xl p-5 sm:p-6 text-white border border-white/10 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-[#1A1D25] rounded-2xl p-5 sm:p-6 text-white border border-white/10 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
               <Activity className="w-4 h-4" />
@@ -208,7 +208,7 @@ export default function BitacoraPage() {
             </p>
           </div>
 
-          <div className="bg-[#070D18] p-4 rounded-xl border border-white/10 shrink-0 text-center sm:w-48">
+          <div className="bg-[#14161E] p-4 rounded-xl border border-white/10 shrink-0 text-center sm:w-48">
             <span className="text-[10px] font-bold text-slate-400 uppercase block">Bloqueos Registrados</span>
             <span className={`text-2xl font-bold mt-1 block ${totalBloqueosActivos > 0 ? 'text-rose-400 animate-pulse' : 'text-emerald-400'}`}>
               {totalBloqueosActivos} {totalBloqueosActivos === 1 ? 'Activo' : 'Activos'}
@@ -217,17 +217,17 @@ export default function BitacoraPage() {
         </div>
 
         {/* Filtros Rápidos */}
-        <div className="bg-[#0C1527] p-4 sm:p-5 rounded-2xl border border-white/10 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="bg-[#1A1D25] p-4 sm:p-5 rounded-2xl border border-white/10 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <FolderGit2 className="w-4 h-4 text-amber-400" />
             <select
               value={proyectoFiltro}
               onChange={(e) => setProyectoFiltro(e.target.value)}
-              className="px-3 py-1.5 bg-[#070D18] border border-white/10 rounded-xl text-xs font-semibold text-slate-200 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+              className="px-3 py-1.5 bg-[#14161E] border border-white/10 rounded-xl text-xs font-semibold text-slate-200 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
             >
               <option value="">Todos los Proyectos</option>
               {proyectos.map((p) => (
-                <option key={p.id} value={p.id} className="bg-[#0C1527] text-white">
+                <option key={p.id} value={p.id} className="bg-[#1A1D25] text-white">
                   {p.codigo} - {p.nombre}
                 </option>
               ))}
@@ -249,14 +249,14 @@ export default function BitacoraPage() {
 
         {/* Lista de Tarjetas de Bitácora */}
         {loading ? (
-          <div className="p-16 text-center bg-[#0C1527] rounded-2xl border border-white/10 shadow-md">
+          <div className="p-16 text-center bg-[#1A1D25] rounded-2xl border border-white/10 shadow-md">
             <Loader2 className="w-8 h-8 animate-spin text-amber-400 mx-auto mb-3" />
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
               Consultando reportes de bitácora...
             </p>
           </div>
         ) : reportes.length === 0 ? (
-          <div className="bg-[#0C1527] rounded-2xl border border-white/10 p-12 text-center shadow-md">
+          <div className="bg-[#1A1D25] rounded-2xl border border-white/10 p-12 text-center shadow-md">
             <Activity className="w-10 h-10 text-slate-500 mx-auto mb-2" />
             <h3 className="font-bold text-white text-base">No hay reportes de bitácora registrados</h3>
             <p className="text-xs text-slate-400 mt-1">Usa el botón "Reportar Jornada" para registrar el primer parte diario.</p>
@@ -269,7 +269,7 @@ export default function BitacoraPage() {
               return (
                 <div
                   key={rep.id}
-                  className={`bg-[#0C1527] rounded-2xl border border-white/10 border-l-4 ${
+                  className={`bg-[#1A1D25] rounded-2xl border border-white/10 border-l-4 ${
                     tieneBloqueo ? 'border-l-rose-500' : 'border-l-emerald-500'
                   } hover:border-amber-400/40 hover:-translate-y-0.5 transition-all duration-200 p-5 flex flex-col justify-between space-y-4 shadow-md`}
                 >
@@ -345,7 +345,7 @@ export default function BitacoraPage() {
       {/* Modal / Formulario: Reportar Jornada de Campo */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-[#0C1527] rounded-2xl max-w-xl w-full p-5 sm:p-7 shadow-2xl border border-white/10 space-y-5 animate-in fade-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
+          <div className="bg-[#1A1D25] rounded-2xl max-w-xl w-full p-5 sm:p-7 shadow-2xl border border-white/10 space-y-5 animate-in fade-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
             
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <div className="flex items-center gap-2">
@@ -378,10 +378,10 @@ export default function BitacoraPage() {
                 <select
                   value={nuevoProyectoId}
                   onChange={(e) => setNuevoProyectoId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-[#070D18] border border-white/10 rounded-xl font-medium text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+                  className="w-full px-3.5 py-2.5 bg-[#14161E] border border-white/10 rounded-xl font-medium text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
                 >
                   {proyectos.map((p) => (
-                    <option key={p.id} value={p.id} className="bg-[#0C1527] text-white">
+                    <option key={p.id} value={p.id} className="bg-[#1A1D25] text-white">
                       {p.codigo} - {p.nombre}
                     </option>
                   ))}
@@ -399,7 +399,7 @@ export default function BitacoraPage() {
                   value={resumen}
                   onChange={(e) => setResumen(e.target.value)}
                   placeholder="Detalla las tareas ejecutadas, avances cuantitativos o pruebas realizadas..."
-                  className="w-full px-3.5 py-2.5 bg-[#070D18] border border-white/10 rounded-xl font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
+                  className="w-full px-3.5 py-2.5 bg-[#14161E] border border-white/10 rounded-xl font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
                 />
               </div>
 
@@ -416,7 +416,7 @@ export default function BitacoraPage() {
                     className={`p-3.5 rounded-xl border font-bold flex flex-col items-center justify-center gap-1.5 transition ${
                       !tieneBloqueo
                         ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
-                        : 'bg-[#070D18] text-slate-400 border-white/10 hover:bg-white/5'
+                        : 'bg-[#14161E] text-slate-400 border-white/10 hover:bg-white/5'
                     }`}
                   >
                     <CheckCircle2 className="w-5 h-5 text-emerald-400" />
@@ -429,7 +429,7 @@ export default function BitacoraPage() {
                     className={`p-3.5 rounded-xl border font-bold flex flex-col items-center justify-center gap-1.5 transition ${
                       tieneBloqueo
                         ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-sm'
-                        : 'bg-[#070D18] text-slate-400 border-white/10 hover:bg-white/5'
+                        : 'bg-[#14161E] text-slate-400 border-white/10 hover:bg-white/5'
                     }`}
                   >
                     <AlertTriangle className="w-5 h-5 text-rose-400" />
@@ -450,7 +450,7 @@ export default function BitacoraPage() {
                     value={detalleBloqueo}
                     onChange={(e) => setDetalleBloqueo(e.target.value)}
                     placeholder="Ej. Faltan especificaciones de la API, no hay aprobación de la RFC-01, o falta credencial..."
-                    className="w-full px-3 py-2 bg-[#070D18] border border-rose-500/40 rounded-lg font-medium text-rose-200 placeholder:text-rose-400/50 focus:outline-none focus:border-rose-400"
+                    className="w-full px-3 py-2 bg-[#14161E] border border-rose-500/40 rounded-lg font-medium text-rose-200 placeholder:text-rose-400/50 focus:outline-none focus:border-rose-400"
                   />
                   <span className="text-[10px] text-rose-300/80 font-medium block">
                     Al enviar, se emitirá una alerta gerencial inmediata en el Dashboard.

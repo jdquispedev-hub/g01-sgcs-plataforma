@@ -59,7 +59,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden antialiased">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden antialiased">
       {/* Detalle visual superior dorado */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
 
@@ -86,7 +86,7 @@ export default function LoginPage() {
       </div>
 
       <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-[#0C1527] py-8 px-6 shadow-2xl rounded-2xl border border-white/10 sm:px-10 relative">
+        <div className="bg-[#1A1D25] py-8 px-6 shadow-2xl rounded-2xl border border-white/10 sm:px-10 relative">
           
           {error && (
             <div className="mb-6 p-4 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-sm flex items-start gap-3 animate-shake">
@@ -111,7 +111,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="usuario@upt.pe o demo"
-                  className="block w-full pl-10 pr-4 py-2.5 text-white bg-[#070D18] border border-white/10 rounded-xl focus:outline-none focus:border-amber-400/50 text-sm placeholder:text-slate-500 transition"
+                  className="block w-full pl-10 pr-4 py-2.5 text-white bg-[#14161E] border border-white/10 rounded-xl focus:outline-none focus:border-amber-400/50 text-sm placeholder:text-slate-500 transition"
                 />
               </div>
             </div>
@@ -131,7 +131,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="block w-full pl-10 pr-4 py-2.5 text-white bg-[#070D18] border border-white/10 rounded-xl focus:outline-none focus:border-amber-400/50 text-sm placeholder:text-slate-500 transition"
+                  className="block w-full pl-10 pr-4 py-2.5 text-white bg-[#14161E] border border-white/10 rounded-xl focus:outline-none focus:border-amber-400/50 text-sm placeholder:text-slate-500 transition"
                 />
               </div>
             </div>
@@ -161,7 +161,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => fillCredentials('admin.construccion@sgcs.com', 'Admin123!')}
-              className="w-full text-left px-3 py-2 rounded-xl text-xs bg-[#070D18] hover:bg-white/5 text-slate-200 border border-white/10 transition flex justify-between items-center group shadow-sm"
+              className="w-full text-left px-3 py-2 rounded-xl text-xs bg-[#14161E] hover:bg-white/5 text-slate-200 border border-white/10 transition flex justify-between items-center group shadow-sm"
             >
               <span className="flex items-center gap-2">
                 <span>🏗️</span>
@@ -174,7 +174,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => fillCredentials('admin.software@sgcs.com', 'Admin123!')}
-              className="w-full text-left px-3 py-2 rounded-xl text-xs bg-[#070D18] hover:bg-white/5 text-slate-200 border border-white/10 transition flex justify-between items-center group shadow-sm"
+              className="w-full text-left px-3 py-2 rounded-xl text-xs bg-[#14161E] hover:bg-white/5 text-slate-200 border border-white/10 transition flex justify-between items-center group shadow-sm"
             >
               <span className="flex items-center gap-2">
                 <span>💻</span>
@@ -187,7 +187,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => fillCredentials('superadmin@sgcs.com', 'Admin123!')}
-              className="w-full text-left px-3 py-2 rounded-xl text-xs bg-[#070D18] hover:bg-white/5 text-slate-200 border border-white/10 transition flex justify-between items-center group shadow-sm"
+              className="w-full text-left px-3 py-2 rounded-xl text-xs bg-[#14161E] hover:bg-white/5 text-slate-200 border border-white/10 transition flex justify-between items-center group shadow-sm"
             >
               <span className="flex items-center gap-2">
                 <span>🌐</span>

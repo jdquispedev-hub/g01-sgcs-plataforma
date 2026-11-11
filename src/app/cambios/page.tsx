@@ -218,12 +218,12 @@ export default function CambiosPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased">
       {/* Navbar Global Unificado */}
       <NavbarPrincipal />
 
       {/* Sub-header contextual */}
-      <div className="bg-[#0B1528] border-b border-white/10">
+      <div className="bg-[#16181D] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
@@ -267,7 +267,7 @@ export default function CambiosPage() {
       <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
         
         {/* Banner Explicativo */}
-        <div className="bg-[#0C1527] rounded-2xl p-5 sm:p-6 text-white border border-white/10 relative overflow-hidden shadow-lg">
+        <div className="bg-[#1A1D25] rounded-2xl p-5 sm:p-6 text-white border border-white/10 relative overflow-hidden shadow-lg">
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div className="space-y-2 max-w-3xl">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20 text-[11px] font-bold uppercase tracking-wider">
@@ -285,11 +285,11 @@ export default function CambiosPage() {
 
             {/* Contadores Clave */}
             <div className="grid grid-cols-2 gap-2.5 sm:gap-3 shrink-0">
-              <div className="bg-[#070D18] p-3.5 rounded-xl border border-white/10 text-center">
+              <div className="bg-[#14161E] p-3.5 rounded-xl border border-white/10 text-center">
                 <span className="text-[10px] text-slate-400 uppercase font-bold block">Por Evaluar</span>
                 <span className="text-xl sm:text-2xl font-bold text-amber-400">{totalPendientes}</span>
               </div>
-              <div className="bg-[#070D18] p-3.5 rounded-xl border border-white/10 text-center">
+              <div className="bg-[#14161E] p-3.5 rounded-xl border border-white/10 text-center">
                 <span className="text-[10px] text-slate-400 uppercase font-bold block">Aprobadas / Cierre</span>
                 <span className="text-xl sm:text-2xl font-bold text-emerald-400">{totalAprobadas + totalImplementadas}</span>
               </div>
@@ -298,7 +298,7 @@ export default function CambiosPage() {
         </div>
 
         {/* Consola de Búsqueda y Filtros */}
-        <div className="bg-[#0C1527] p-4 sm:p-5 rounded-2xl border border-white/10 shadow-md space-y-3 sm:space-y-4">
+        <div className="bg-[#1A1D25] p-4 sm:p-5 rounded-2xl border border-white/10 shadow-md space-y-3 sm:space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
               <Search className="w-4 h-4 text-amber-400" />
@@ -318,7 +318,7 @@ export default function CambiosPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Buscar por código (ej. RFC-2026-001), justificación o ECS..."
-                className="w-full pl-10 pr-4 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
+                className="w-full pl-10 pr-4 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
               />
             </div>
 
@@ -327,11 +327,11 @@ export default function CambiosPage() {
               <select
                 value={proyectoFiltro}
                 onChange={(e) => setProyectoFiltro(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-slate-200 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+                className="w-full px-3.5 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-slate-200 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
               >
                 <option value="">Todos los Proyectos</option>
                 {proyectos.map((p) => (
-                  <option key={p.id} value={p.id} className="bg-[#0C1527] text-white">
+                  <option key={p.id} value={p.id} className="bg-[#1A1D25] text-white">
                     {p.codigo} - {p.nombre}
                   </option>
                 ))}
@@ -343,14 +343,14 @@ export default function CambiosPage() {
               <select
                 value={estadoFiltro}
                 onChange={(e) => setEstadoFiltro(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-slate-200 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+                className="w-full px-3.5 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-slate-200 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
               >
                 <option value="">Todos los Estados</option>
-                <option value="PENDIENTE_EVALUACION" className="bg-[#0C1527] text-white">Pendiente de Evaluación</option>
-                <option value="EN_EVALUACION" className="bg-[#0C1527] text-white">En Evaluación Técnica</option>
-                <option value="APROBADA" className="bg-[#0C1527] text-white">Aprobada</option>
-                <option value="RECHAZADA" className="bg-[#0C1527] text-white">Rechazada</option>
-                <option value="IMPLEMENTADA" className="bg-[#0C1527] text-white">Implementada</option>
+                <option value="PENDIENTE_EVALUACION" className="bg-[#1A1D25] text-white">Pendiente de Evaluación</option>
+                <option value="EN_EVALUACION" className="bg-[#1A1D25] text-white">En Evaluación Técnica</option>
+                <option value="APROBADA" className="bg-[#1A1D25] text-white">Aprobada</option>
+                <option value="RECHAZADA" className="bg-[#1A1D25] text-white">Rechazada</option>
+                <option value="IMPLEMENTADA" className="bg-[#1A1D25] text-white">Implementada</option>
               </select>
             </div>
 
@@ -367,14 +367,14 @@ export default function CambiosPage() {
 
         {/* Grilla de Tarjetas RFC */}
         {loading ? (
-          <div className="p-16 text-center bg-[#0C1527] rounded-2xl border border-white/10 shadow-md">
+          <div className="p-16 text-center bg-[#1A1D25] rounded-2xl border border-white/10 shadow-md">
             <Loader2 className="w-8 h-8 animate-spin text-amber-400 mx-auto mb-3" />
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
               Consultando registro oficial de RFCs...
             </p>
           </div>
         ) : solicitudes.length === 0 ? (
-          <div className="bg-[#0C1527] rounded-2xl border border-white/10 p-10 sm:p-12 text-center shadow-md">
+          <div className="bg-[#1A1D25] rounded-2xl border border-white/10 p-10 sm:p-12 text-center shadow-md">
             <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto mb-3 border border-amber-500/20">
               <GitPullRequest className="w-6 h-6" />
             </div>
@@ -400,11 +400,11 @@ export default function CambiosPage() {
               return (
                 <div
                   key={rfc.id}
-                  className={`bg-[#0C1527] rounded-2xl border border-white/10 border-l-4 ${visual.borderAccent} hover:border-amber-400/40 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between overflow-hidden group shadow-md`}
+                  className={`bg-[#1A1D25] rounded-2xl border border-white/10 border-l-4 ${visual.borderAccent} hover:border-amber-400/40 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between overflow-hidden group shadow-md`}
                 >
                   <div>
                     {/* Header de la Tarjeta */}
-                    <div className="p-4 sm:p-5 pb-3 border-b border-white/5 bg-[#0B1528] flex items-start justify-between gap-2.5">
+                    <div className="p-4 sm:p-5 pb-3 border-b border-white/5 bg-[#16181D] flex items-start justify-between gap-2.5">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
                           <span className="font-mono text-xs font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20 flex items-center gap-1">
@@ -437,7 +437,7 @@ export default function CambiosPage() {
                       </p>
 
                       {/* Fila de Versión Base & Nivel de Impacto */}
-                      <div className="bg-[#070D18] rounded-xl p-3 border border-white/10 flex items-center justify-between text-xs">
+                      <div className="bg-[#14161E] rounded-xl p-3 border border-white/10 flex items-center justify-between text-xs">
                         <div className="flex items-center gap-1.5 text-slate-300 font-semibold">
                           <span>Versión Base:</span>
                           <span className="font-mono font-bold text-amber-300 bg-white/5 px-2 py-0.5 rounded-md border border-white/10">

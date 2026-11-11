@@ -128,14 +128,14 @@ export default function ReportesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased print:bg-white print:text-slate-900 print:p-0">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased print:bg-white print:text-slate-900 print:p-0">
       {/* Navbar Global Unificado (oculta al imprimir) */}
       <div className="print:hidden">
         <NavbarPrincipal />
       </div>
 
       {/* Sub-header contextual (oculta al imprimir) */}
-      <div className="bg-[#0B1528] border-b border-white/10 print:hidden">
+      <div className="bg-[#16181D] border-b border-white/10 print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
@@ -179,7 +179,7 @@ export default function ReportesPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6 print:max-w-none print:p-0 print:space-y-4">
         
         {/* Controles de Configuración del Reporte (ocultos al imprimir) */}
-        <div className="bg-[#0C1527] p-4 sm:p-5 rounded-2xl border border-white/10 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 print:hidden">
+        <div className="bg-[#1A1D25] p-4 sm:p-5 rounded-2xl border border-white/10 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 print:hidden">
           <div className="flex items-center gap-2 text-white font-bold text-xs sm:text-sm">
             <Filter className="w-4 h-4 text-amber-400" />
             <span>Parámetros del Informe:</span>
@@ -189,31 +189,31 @@ export default function ReportesPage() {
             <select
               value={tipoReporte}
               onChange={(e: any) => setTipoReporte(e.target.value)}
-              className="px-3.5 py-2 bg-[#070D18] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+              className="px-3.5 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
             >
-              <option value="CONSOLIDADO" className="bg-[#0C1527]">Informe Consolidado Integral (CSA)</option>
-              <option value="INVENTARIO_ECS" className="bg-[#0C1527]">Catálogo e Inventario de Artefactos</option>
-              <option value="LINEAS_BASE" className="bg-[#0C1527]">Historial de Líneas Base y Congelamientos</option>
-              <option value="BALANCE_CAMBIOS" className="bg-[#0C1527]">Balance de Solicitudes de Cambio (RFC)</option>
+              <option value="CONSOLIDADO" className="bg-[#1A1D25]">Informe Consolidado Integral (CSA)</option>
+              <option value="INVENTARIO_ECS" className="bg-[#1A1D25]">Catálogo e Inventario de Artefactos</option>
+              <option value="LINEAS_BASE" className="bg-[#1A1D25]">Historial de Líneas Base y Congelamientos</option>
+              <option value="BALANCE_CAMBIOS" className="bg-[#1A1D25]">Balance de Solicitudes de Cambio (RFC)</option>
             </select>
           </div>
         </div>
 
         {/* Hoja de Reporte Formal */}
         {loading ? (
-          <div className="p-16 text-center bg-[#0C1527] rounded-2xl border border-white/10 shadow-md print:hidden">
+          <div className="p-16 text-center bg-[#1A1D25] rounded-2xl border border-white/10 shadow-md print:hidden">
             <Loader2 className="w-8 h-8 animate-spin text-amber-400 mx-auto mb-3" />
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
               Generando informe formal de contabilidad de configuración...
             </p>
           </div>
         ) : !data || data.proyectos.length === 0 ? (
-          <div className="bg-[#0C1527] rounded-2xl border border-white/10 p-12 text-center shadow-md">
+          <div className="bg-[#1A1D25] rounded-2xl border border-white/10 p-12 text-center shadow-md">
             <FileText className="w-10 h-10 text-slate-500 mx-auto mb-2" />
             <h3 className="font-bold text-white text-base">Sin datos para el informe seleccionado</h3>
           </div>
         ) : (
-          <div className="bg-[#0C1527] rounded-2xl p-6 sm:p-10 border border-white/10 shadow-md print:bg-white print:text-slate-900 print:border-none print:shadow-none print:p-4 space-y-8">
+          <div className="bg-[#1A1D25] rounded-2xl p-6 sm:p-10 border border-white/10 shadow-md print:bg-white print:text-slate-900 print:border-none print:shadow-none print:p-4 space-y-8">
             
             {/* Membrete Oficial Institucional */}
             <div className="border-b border-white/10 print:border-slate-300 pb-6 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
@@ -234,7 +234,7 @@ export default function ReportesPage() {
                 </p>
               </div>
 
-              <div className="text-left sm:text-right text-xs text-slate-300 print:text-slate-600 space-y-1 shrink-0 bg-[#070D18] print:bg-slate-50 p-3.5 rounded-xl border border-white/10 print:border-slate-200">
+              <div className="text-left sm:text-right text-xs text-slate-300 print:text-slate-600 space-y-1 shrink-0 bg-[#14161E] print:bg-slate-50 p-3.5 rounded-xl border border-white/10 print:border-slate-200">
                 <p>
                   <strong>Fecha de Emisión:</strong>{' '}
                   {new Date(data.fecha_generacion).toLocaleDateString('es-PE', {
@@ -255,7 +255,7 @@ export default function ReportesPage() {
             {/* Contenido de Cada Proyecto */}
             {data.proyectos.map((p) => (
               <div key={p.id} className="space-y-6">
-                <div className="bg-[#070D18] print:bg-slate-50 p-4 rounded-xl border border-white/10 print:border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="bg-[#14161E] print:bg-slate-50 p-4 rounded-xl border border-white/10 print:border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
                     <span className="font-mono text-xs font-bold text-amber-300 bg-amber-500/10 print:bg-white print:text-slate-900 px-2.5 py-0.5 rounded border border-amber-500/20 print:border-slate-300">
                       {p.codigo}
@@ -265,15 +265,15 @@ export default function ReportesPage() {
                   </div>
 
                   <div className="flex items-center gap-3 text-xs">
-                    <div className="bg-[#0C1527] print:bg-white px-3 py-1.5 rounded-xl border border-white/10 print:border-slate-200 font-semibold">
+                    <div className="bg-[#1A1D25] print:bg-white px-3 py-1.5 rounded-xl border border-white/10 print:border-slate-200 font-semibold">
                       <span className="text-slate-400 print:text-slate-500">ECS:</span>{' '}
                       <strong className="text-white print:text-slate-900">{p.resumen_metricas.total_ecs}</strong>
                     </div>
-                    <div className="bg-[#0C1527] print:bg-white px-3 py-1.5 rounded-xl border border-white/10 print:border-slate-200 font-semibold">
+                    <div className="bg-[#1A1D25] print:bg-white px-3 py-1.5 rounded-xl border border-white/10 print:border-slate-200 font-semibold">
                       <span className="text-slate-400 print:text-slate-500">Líneas Base:</span>{' '}
                       <strong className="text-amber-400 print:text-amber-700">{p.resumen_metricas.lineas_base_vigentes}</strong>
                     </div>
-                    <div className="bg-[#0C1527] print:bg-white px-3 py-1.5 rounded-xl border border-white/10 print:border-slate-200 font-semibold">
+                    <div className="bg-[#1A1D25] print:bg-white px-3 py-1.5 rounded-xl border border-white/10 print:border-slate-200 font-semibold">
                       <span className="text-slate-400 print:text-slate-500">RFCs Implementadas:</span>{' '}
                       <strong className="text-emerald-400 print:text-emerald-700">{p.resumen_metricas.rfcs_implementadas}</strong>
                     </div>
@@ -288,7 +288,7 @@ export default function ReportesPage() {
                   <div className="overflow-x-auto border border-white/10 print:border-slate-200 rounded-xl">
                     <table className="w-full text-left border-collapse text-xs">
                       <thead>
-                        <tr className="bg-[#070D18] print:bg-slate-100 border-b border-white/10 print:border-slate-200 text-slate-400 print:text-slate-700 uppercase font-bold text-[10px]">
+                        <tr className="bg-[#14161E] print:bg-slate-100 border-b border-white/10 print:border-slate-200 text-slate-400 print:text-slate-700 uppercase font-bold text-[10px]">
                           <th className="py-2.5 px-3">Código</th>
                           <th className="py-2.5 px-3">Nombre</th>
                           <th className="py-2.5 px-3">Tipo</th>
@@ -334,7 +334,7 @@ export default function ReportesPage() {
                     <div className="overflow-x-auto border border-white/10 print:border-slate-200 rounded-xl">
                       <table className="w-full text-left border-collapse text-xs">
                         <thead>
-                          <tr className="bg-[#070D18] print:bg-slate-100 border-b border-white/10 print:border-slate-200 text-slate-400 print:text-slate-700 uppercase font-bold text-[10px]">
+                          <tr className="bg-[#14161E] print:bg-slate-100 border-b border-white/10 print:border-slate-200 text-slate-400 print:text-slate-700 uppercase font-bold text-[10px]">
                             <th className="py-2.5 px-3">Código Línea Base</th>
                             <th className="py-2.5 px-3">Denominación</th>
                             <th className="py-2.5 px-3">Estado</th>

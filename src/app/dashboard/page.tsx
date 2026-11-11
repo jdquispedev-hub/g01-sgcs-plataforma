@@ -928,7 +928,7 @@ export default function DashboardPage() {
           </section>
 
           {/* Lado Derecho: Widget de Agenda de Reuniones (5 cols) */}
-          <section className="lg:col-span-5 bg-gradient-to-br from-[#0B2545] via-[#0C1A30] to-[#14161E] rounded-3xl p-6 text-white border border-white/10 shadow-xl flex flex-col justify-between space-y-4">
+          <section className="lg:col-span-5 bg-gradient-to-br bg-[#1A1D25] rounded-3xl p-6 text-white border border-white/10 shadow-xl flex flex-col justify-between space-y-4">
             <div className="space-y-3">
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
                 <div className="flex items-center gap-2">
@@ -1549,7 +1549,7 @@ export default function DashboardPage() {
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200 space-y-4 animate-in fade-in zoom-in-95 duration-150 my-6">
             <div className="flex items-start justify-between border-b border-slate-200 pb-3">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-sky-200 bg-[#0B2545] px-2.5 py-0.5 rounded-full inline-block mb-1">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-sky-200 bg-[#16181D] px-2.5 py-0.5 rounded-full inline-block mb-1">
                   Nuevo(a) {terminologia.proyectoLabel}
                 </span>
                 <h3 className="text-lg font-bold text-slate-900">
@@ -1582,7 +1582,7 @@ export default function DashboardPage() {
                   value={nuevoProyCodigo}
                   onChange={(e) => setNuevoProyCodigo(e.target.value.toUpperCase())}
                   placeholder={`Ej: ${terminologia.proyectoCodigoEjemplo}`}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:border-[#0B2545] focus:bg-white bg-slate-50 transition outline-hidden"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:border-[#16181D] focus:bg-white bg-slate-50 transition outline-hidden"
                 />
               </div>
 
@@ -1596,7 +1596,7 @@ export default function DashboardPage() {
                   value={nuevoProyNombre}
                   onChange={(e) => setNuevoProyNombre(e.target.value)}
                   placeholder={terminologia.proyectoPlaceholder}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-medium text-slate-900 focus:border-[#0B2545] focus:bg-white bg-slate-50 transition outline-hidden"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-medium text-slate-900 focus:border-[#16181D] focus:bg-white bg-slate-50 transition outline-hidden"
                 />
               </div>
 
@@ -1610,7 +1610,7 @@ export default function DashboardPage() {
                   value={nuevoProyCliente}
                   onChange={(e) => setNuevoProyCliente(e.target.value)}
                   placeholder={terminologia.clientePlaceholder}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-medium text-slate-900 focus:border-[#0B2545] focus:bg-white bg-slate-50 transition outline-hidden"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-medium text-slate-900 focus:border-[#16181D] focus:bg-white bg-slate-50 transition outline-hidden"
                 />
               </div>
 
@@ -1625,7 +1625,7 @@ export default function DashboardPage() {
                 <button
                   type="submit"
                   disabled={creandoProy}
-                  className="px-5 py-2 rounded-xl bg-[#0B2545] hover:bg-[#133A66] text-white font-semibold transition shadow-xs active:scale-95 disabled:opacity-50 flex items-center gap-2"
+                  className="px-5 py-2 rounded-xl bg-[#16181D] hover:bg-[#133A66] text-white font-semibold transition shadow-xs active:scale-95 disabled:opacity-50 flex items-center gap-2"
                 >
                   {creandoProy ? (
                     <span>Registrando...</span>

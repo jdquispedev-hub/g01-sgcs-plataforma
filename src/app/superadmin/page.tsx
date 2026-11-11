@@ -297,7 +297,7 @@ export default function SuperAdminPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#070D18] gap-3">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#14161E] gap-3">
         <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
         <p className="text-sm font-semibold text-slate-300 animate-pulse">
           Cargando Centro de Control Multi-Tenant...
@@ -307,9 +307,9 @@ export default function SuperAdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased">
       {/* Top Navbar SuperAdmin */}
-      <header className="bg-[#0B1528] text-white border-b border-white/10 sticky top-0 z-30 shadow-md">
+      <header className="bg-[#16181D] text-white border-b border-white/10 sticky top-0 z-30 shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
@@ -411,7 +411,7 @@ export default function SuperAdminPage() {
 
         {/* Grid de KPIs Globales */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-[#0C1527] p-5 rounded-2xl border border-white/10 shadow-sm flex items-center gap-4">
+          <div className="bg-[#1A1D25] p-5 rounded-2xl border border-white/10 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-indigo-500/15 text-indigo-400 flex items-center justify-center shrink-0">
               <Building className="w-6 h-6" />
             </div>
@@ -421,7 +421,7 @@ export default function SuperAdminPage() {
             </div>
           </div>
 
-          <div className="bg-[#0C1527] p-5 rounded-2xl border border-white/10 shadow-sm flex items-center gap-4">
+          <div className="bg-[#1A1D25] p-5 rounded-2xl border border-white/10 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center shrink-0">
               <CheckCircle2 className="w-6 h-6" />
             </div>
@@ -434,7 +434,7 @@ export default function SuperAdminPage() {
             </div>
           </div>
 
-          <div className="bg-[#0C1527] p-5 rounded-2xl border border-white/10 shadow-sm flex items-center gap-4">
+          <div className="bg-[#1A1D25] p-5 rounded-2xl border border-white/10 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center shrink-0">
               <Users className="w-6 h-6" />
             </div>
@@ -444,7 +444,7 @@ export default function SuperAdminPage() {
             </div>
           </div>
 
-          <div className="bg-[#0C1527] p-5 rounded-2xl border border-white/10 shadow-sm flex items-center gap-4">
+          <div className="bg-[#1A1D25] p-5 rounded-2xl border border-white/10 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center shrink-0">
               <FolderGit2 className="w-6 h-6" />
             </div>
@@ -456,7 +456,7 @@ export default function SuperAdminPage() {
         </div>
 
         {/* Barra de Filtros y Búsqueda */}
-        <div className="bg-[#0C1527] p-4 rounded-2xl border border-white/10 shadow-sm flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+        <div className="bg-[#1A1D25] p-4 rounded-2xl border border-white/10 shadow-sm flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
           <div className="relative flex-1">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
@@ -464,7 +464,7 @@ export default function SuperAdminPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar empresa cliente por nombre..."
-              className="w-full pl-10 pr-4 py-2 text-sm bg-[#070D18] border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
+              className="w-full pl-10 pr-4 py-2 text-sm bg-[#14161E] border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
             />
           </div>
 
@@ -493,7 +493,7 @@ export default function SuperAdminPage() {
 
         {/* Grid de Tarjetas de Organizaciones Dinámicas */}
         {organizacionesFiltradas.length === 0 ? (
-          <div className="bg-[#0C1527] p-12 text-center rounded-2xl border border-white/10 shadow-sm space-y-3">
+          <div className="bg-[#1A1D25] p-12 text-center rounded-2xl border border-white/10 shadow-sm space-y-3">
             <Building className="w-12 h-12 text-slate-500 mx-auto" />
             <h3 className="text-base font-bold text-white">No se encontraron organizaciones</h3>
             <p className="text-xs text-slate-400 max-w-sm mx-auto">
@@ -512,10 +512,10 @@ export default function SuperAdminPage() {
               return (
                 <div
                   key={org.id}
-                  className={`bg-[#0C1527] rounded-2xl border p-6 flex flex-col justify-between transition-all duration-200 shadow-md hover:-translate-y-0.5 ${
+                  className={`bg-[#1A1D25] rounded-2xl border p-6 flex flex-col justify-between transition-all duration-200 shadow-md hover:-translate-y-0.5 ${
                     org.activo
                       ? 'border-white/10 border-l-4 border-l-amber-400'
-                      : 'border-rose-500/30 bg-[#0C1527] border-l-4 border-l-rose-500'
+                      : 'border-rose-500/30 bg-[#1A1D25] border-l-4 border-l-rose-500'
                   }`}
                 >
                   <div>
@@ -565,7 +565,7 @@ export default function SuperAdminPage() {
                     </h3>
 
                     {/* Administrador a cargo */}
-                    <div className="mt-3 py-2 px-3 rounded-xl bg-[#070D18] border border-white/10 text-xs text-slate-300 flex items-center gap-2">
+                    <div className="mt-3 py-2 px-3 rounded-xl bg-[#14161E] border border-white/10 text-xs text-slate-300 flex items-center gap-2">
                       <User className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                       <div className="truncate">
                         <span className="font-semibold text-white block truncate">
@@ -579,7 +579,7 @@ export default function SuperAdminPage() {
 
                     {/* Métricas de la empresa */}
                     <div className="grid grid-cols-2 gap-2 mt-4">
-                      <div className="p-2.5 rounded-xl bg-[#070D18] border border-white/10 flex items-center gap-2">
+                      <div className="p-2.5 rounded-xl bg-[#14161E] border border-white/10 flex items-center gap-2">
                         <Users className="w-4 h-4 text-slate-400 shrink-0" />
                         <div>
                           <p className="text-[10px] font-bold uppercase text-slate-400">Usuarios</p>
@@ -587,7 +587,7 @@ export default function SuperAdminPage() {
                         </div>
                       </div>
 
-                      <div className="p-2.5 rounded-xl bg-[#070D18] border border-white/10 flex items-center gap-2">
+                      <div className="p-2.5 rounded-xl bg-[#14161E] border border-white/10 flex items-center gap-2">
                         <FolderGit2 className="w-4 h-4 text-slate-400 shrink-0" />
                         <div>
                           <p className="text-[10px] font-bold uppercase text-slate-400">Proyectos</p>
@@ -644,10 +644,10 @@ export default function SuperAdminPage() {
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="bg-[#0C1527] rounded-2xl border border-white/10 shadow-2xl max-w-lg w-full overflow-hidden"
+              className="bg-[#1A1D25] rounded-2xl border border-white/10 shadow-2xl max-w-lg w-full overflow-hidden"
             >
               {/* Header Modal */}
-              <div className="p-6 bg-[#0B1528] text-white flex items-center justify-between border-b border-white/10">
+              <div className="p-6 bg-[#16181D] text-white flex items-center justify-between border-b border-white/10">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center border border-amber-500/20">
                     <Building className="w-5 h-5" />
@@ -685,7 +685,7 @@ export default function SuperAdminPage() {
                     value={formNombre}
                     onChange={(e) => setFormNombre(e.target.value)}
                     placeholder="Ej. Minera & Constructora del Sur S.A.C."
-                    className="w-full px-3.5 py-2.5 text-sm bg-[#070D18] border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
+                    className="w-full px-3.5 py-2.5 text-sm bg-[#14161E] border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
                   />
                 </div>
 
@@ -710,7 +710,7 @@ export default function SuperAdminPage() {
                           className={`p-3 rounded-xl border text-center transition flex flex-col items-center gap-1.5 ${
                             isSelected
                               ? 'border-amber-400/60 bg-amber-500/10 text-amber-300 font-bold'
-                              : 'border-white/10 bg-[#070D18] text-slate-400 hover:bg-white/5'
+                              : 'border-white/10 bg-[#14161E] text-slate-400 hover:bg-white/5'
                           }`}
                         >
                           <Icon className={`w-5 h-5 ${isSelected ? 'text-amber-400' : 'text-slate-500'}`} />
@@ -742,7 +742,7 @@ export default function SuperAdminPage() {
                         value={formAdminNombre}
                         onChange={(e) => setFormAdminNombre(e.target.value)}
                         placeholder="Ej. Ing. Juan Pérez"
-                        className="w-full px-3.5 py-2 text-sm bg-[#070D18] border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
+                        className="w-full px-3.5 py-2 text-sm bg-[#14161E] border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
                       />
                     </div>
 
@@ -757,7 +757,7 @@ export default function SuperAdminPage() {
                           value={formAdminEmail}
                           onChange={(e) => setFormAdminEmail(e.target.value)}
                           placeholder="admin@empresa.com"
-                          className="w-full px-3.5 py-2 text-sm bg-[#070D18] border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
+                          className="w-full px-3.5 py-2 text-sm bg-[#14161E] border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
                         />
                       </div>
 
@@ -771,7 +771,7 @@ export default function SuperAdminPage() {
                           value={formAdminPassword}
                           onChange={(e) => setFormAdminPassword(e.target.value)}
                           placeholder="Mín. 6 caracteres"
-                          className="w-full px-3.5 py-2 text-sm bg-[#070D18] border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
+                          className="w-full px-3.5 py-2 text-sm bg-[#14161E] border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
                         />
                       </div>
                     </div>
