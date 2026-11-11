@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import useSWR from 'swr';
+import { fetcher } from '@/lib/fetcher';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -68,78 +70,64 @@ interface UserSession {
 
 export default function AprobacionesPage() {
   const router = useRouter();
-  const [user, setUser] = useState<UserSession | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [versiones, setVersiones] = useState<VersionPendiente[]>([]);
-  const [solicitudes, setSolicitudes] = useState<SolicitudPendiente[]>([]);
   const [activeTab, setActiveTab] = useState<'versiones' | 'cambios'>('versiones');
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
-  const loadData = async () => {
-    try {
-      const [resMe, resEcs, resCambios] = await Promise.all([
-        fetch('/api/auth/me'),
-        fetch('/api/ecs'),
-        fetch('/api/cambios'),
-      ]);
+  // SWR: Caché en memoria (Stale-While-Revalidate) para navegación instantánea (0ms)
+  const { data: dataMe, error: errorMe } = useSWR('/api/auth/me', fetcher, { revalidateOnFocus: false });
+  const { data: dataEcs, mutate: mutateEcs } = useSWR('/api/ecs', fetcher, { revalidateOnFocus: false });
+  const { data: dataCambios, mutate: mutateCambios } = useSWR('/api/cambios', fetcher, { revalidateOnFocus: false });
 
-      const dataMe = await resMe.json();
-      if (dataMe.success) {
-        setUser(dataMe.data.user);
-      } else {
-        router.push('/login');
-        return;
-      }
+  const user = dataMe?.success ? (dataMe.data.user as UserSession) : null;
+  const isInitialLoading = (!dataMe && !errorMe) || (!dataEcs && !dataCambios);
 
-      // Filtrar versiones que estén pendientes de aprobación técnica (RF-08)
-      const dataEcs = await resEcs.json();
-      if (dataEcs.success && Array.isArray(dataEcs.data)) {
-        const pendientes: VersionPendiente[] = [];
-        dataEcs.data.forEach((ecs: any) => {
-          if (Array.isArray(ecs.versiones)) {
-            ecs.versiones.forEach((v: any) => {
-              if (v.estado === 'PENDIENTE') {
-                pendientes.push({
-                  id: v.id,
-                  numero_version: v.numero_version,
-                  descripcion: v.descripcion || 'Sin descripción',
-                  archivo_url: v.archivo_url || '',
-                  estado: v.estado,
-                  created_at: v.created_at,
-                  autor: v.autor,
-                  ecs: {
-                    id: ecs.id,
-                    codigo: ecs.codigo,
-                    nombre: ecs.nombre,
-                    tipo: ecs.tipo,
-                    proyecto: ecs.proyecto,
-                  },
-                });
-              }
+  useEffect(() => {
+    if (dataMe && !dataMe.success) {
+      router.push('/login');
+    }
+    if (errorMe) {
+      router.push('/login');
+    }
+  }, [dataMe, errorMe, router]);
+
+  // Filtrar versiones que estén pendientes de aprobación técnica (RF-08)
+  const versiones: VersionPendiente[] = useMemo(() => {
+    if (!dataEcs?.success || !Array.isArray(dataEcs.data)) return [];
+    const pendientes: VersionPendiente[] = [];
+    dataEcs.data.forEach((ecs: any) => {
+      if (Array.isArray(ecs.versiones)) {
+        ecs.versiones.forEach((v: any) => {
+          if (v.estado === 'PENDIENTE') {
+            pendientes.push({
+              id: v.id,
+              numero_version: v.numero_version,
+              descripcion: v.descripcion || 'Sin descripción',
+              archivo_url: v.archivo_url || '',
+              estado: v.estado,
+              created_at: v.created_at,
+              autor: v.autor,
+              ecs: {
+                id: ecs.id,
+                codigo: ecs.codigo,
+                nombre: ecs.nombre,
+                tipo: ecs.tipo,
+                proyecto: ecs.proyecto,
+              },
             });
           }
         });
-        setVersiones(pendientes);
       }
+    });
+    return pendientes;
+  }, [dataEcs]);
 
-      // Filtrar solicitudes de cambio pendientes de evaluación / resolución (RF-13, RF-14)
-      const dataCambios = await resCambios.json();
-      if (dataCambios.success && Array.isArray(dataCambios.data)) {
-        const pendingRfcs = dataCambios.data.filter(
-          (c: any) => c.estado === 'PENDIENTE_EVALUACION' || c.estado === 'EN_EVALUACION'
-        );
-        setSolicitudes(pendingRfcs);
-      }
-    } catch (err) {
-      console.error('Error al cargar bandeja de aprobaciones:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadData();
-  }, [router]);
+  // Filtrar solicitudes de cambio pendientes de evaluación / resolución (RF-13, RF-14)
+  const solicitudes: SolicitudPendiente[] = useMemo(() => {
+    if (!dataCambios?.success || !Array.isArray(dataCambios.data)) return [];
+    return dataCambios.data.filter(
+      (c: any) => c.estado === 'PENDIENTE_EVALUACION' || c.estado === 'EN_EVALUACION'
+    );
+  }, [dataCambios]);
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
@@ -165,7 +153,7 @@ export default function AprobacionesPage() {
       });
       const data = await res.json();
       if (data.success) {
-        await loadData();
+        await mutateEcs();
       } else {
         alert(data.message || 'Error al dictaminar versión');
       }
@@ -176,13 +164,13 @@ export default function AprobacionesPage() {
     }
   };
 
-  if (loading) {
+  if (isInitialLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-100 text-slate-800 gap-3 p-4">
-        <div className="w-14 h-14 rounded-2xl bg-upt-navy-900 text-upt-gold border border-slate-300 flex items-center justify-center shadow-lg animate-pulse">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#13151A] text-slate-200 gap-3 p-4">
+        <div className="w-14 h-14 rounded-2xl bg-[#1A1D25] text-upt-gold border border-white/10 flex items-center justify-center shadow-lg animate-pulse">
           <ShieldCheck className="w-8 h-8" />
         </div>
-        <p className="text-sm font-bold text-slate-700">Cargando Bandeja de Aprobaciones...</p>
+        <p className="text-sm font-bold text-slate-300">Cargando Bandeja de Aprobaciones...</p>
       </div>
     );
   }
@@ -190,14 +178,14 @@ export default function AprobacionesPage() {
   const totalPendientes = versiones.length + solicitudes.length;
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
+    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased selection:bg-upt-gold selection:text-slate-950">
       {/* Navbar Global Unificado */}
       <NavbarPrincipal user={user} />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
         {/* Banner de Estado de Bandeja */}
-        <div className="bg-[#0C1527] rounded-3xl p-6 text-white shadow-xl border border-white/10 relative overflow-hidden">
+        <div className="bg-[#1A1D25] rounded-3xl p-6 text-white shadow-xl border border-white/10 relative overflow-hidden">
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div className="space-y-2 max-w-2xl">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-upt-gold/20 text-upt-gold border border-upt-gold/40 text-[11px] font-black uppercase tracking-wider">
@@ -214,12 +202,12 @@ export default function AprobacionesPage() {
 
             {/* Contadores Clave */}
             <div className="grid grid-cols-2 gap-3 shrink-0">
-              <div className="bg-[#070D18] p-4 rounded-2xl border border-white/10 text-center min-w-[120px]">
+              <div className="bg-[#14161E] p-4 rounded-2xl border border-white/10 text-center min-w-[120px]">
                 <span className="text-[10px] text-slate-400 uppercase font-black block">Versiones ECS</span>
                 <span className="text-2xl font-black text-upt-gold">{versiones.length}</span>
                 <span className="text-[10px] text-slate-500 block mt-0.5">Por dictaminar</span>
               </div>
-              <div className="bg-[#070D18] p-4 rounded-2xl border border-white/10 text-center min-w-[120px]">
+              <div className="bg-[#14161E] p-4 rounded-2xl border border-white/10 text-center min-w-[120px]">
                 <span className="text-[10px] text-slate-400 uppercase font-black block">Cambios (RFC)</span>
                 <span className="text-2xl font-black text-amber-400">{solicitudes.length}</span>
                 <span className="text-[10px] text-slate-500 block mt-0.5">Por evaluar</span>
@@ -258,7 +246,7 @@ export default function AprobacionesPage() {
         {activeTab === 'versiones' && (
           <div className="space-y-4">
             {versiones.length === 0 ? (
-              <div className="bg-[#0C1527] rounded-3xl border border-white/10 p-12 text-center shadow-md space-y-3">
+              <div className="bg-[#1A1D25] rounded-3xl border border-white/10 p-12 text-center shadow-md space-y-3">
                 <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
                 <h3 className="font-black text-white text-base">
                   ¡No hay versiones de artefactos pendientes de aprobación!
@@ -279,7 +267,7 @@ export default function AprobacionesPage() {
                 {versiones.map((v) => (
                   <div
                     key={v.id}
-                    className="bg-[#0C1527] rounded-3xl border border-white/10 border-l-4 border-l-amber-400 shadow-md hover:border-white/20 transition-all duration-200 p-6 flex flex-col justify-between group space-y-4"
+                    className="bg-[#1A1D25] rounded-3xl border border-white/10 border-l-4 border-l-amber-400 shadow-md hover:border-white/20 transition-all duration-200 p-6 flex flex-col justify-between group space-y-4"
                   >
                     <div className="space-y-3">
                       <div className="flex items-start justify-between gap-2 border-b border-white/10 pb-3">
@@ -310,13 +298,13 @@ export default function AprobacionesPage() {
                           <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
                             Descripción del Cambio / Release:
                           </span>
-                          <p className="text-xs text-slate-300 leading-relaxed bg-[#070D18] p-2.5 rounded-xl border border-white/10">
+                          <p className="text-xs text-slate-300 leading-relaxed bg-[#14161E] p-2.5 rounded-xl border border-white/10">
                             {v.descripcion}
                           </p>
                         </div>
 
                         {v.archivo_url && (
-                          <div className="text-[11px] font-mono text-slate-300 bg-[#070D18] px-2.5 py-1.5 rounded-xl border border-white/10 truncate flex items-center gap-1.5">
+                          <div className="text-[11px] font-mono text-slate-300 bg-[#14161E] px-2.5 py-1.5 rounded-xl border border-white/10 truncate flex items-center gap-1.5">
                             <ExternalLink className="w-3 h-3 text-slate-400 shrink-0" />
                             <a
                               href={v.archivo_url}
@@ -390,7 +378,7 @@ export default function AprobacionesPage() {
         {activeTab === 'cambios' && (
           <div className="space-y-4">
             {solicitudes.length === 0 ? (
-              <div className="bg-[#0C1527] rounded-3xl border border-white/10 p-12 text-center shadow-md space-y-3">
+              <div className="bg-[#1A1D25] rounded-3xl border border-white/10 p-12 text-center shadow-md space-y-3">
                 <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
                 <h3 className="font-black text-white text-base">
                   ¡No hay solicitudes de cambio (RFC) pendientes!
@@ -411,7 +399,7 @@ export default function AprobacionesPage() {
                 {solicitudes.map((rfc) => (
                   <div
                     key={rfc.id}
-                    className="bg-[#0C1527] rounded-3xl border border-white/10 border-l-4 border-l-amber-400 shadow-md hover:border-white/20 transition-all duration-200 p-6 flex flex-col justify-between group space-y-4"
+                    className="bg-[#1A1D25] rounded-3xl border border-white/10 border-l-4 border-l-amber-400 shadow-md hover:border-white/20 transition-all duration-200 p-6 flex flex-col justify-between group space-y-4"
                   >
                     <div className="space-y-3">
                       <div className="flex items-start justify-between gap-2 border-b border-white/10 pb-3">
@@ -439,7 +427,7 @@ export default function AprobacionesPage() {
                           <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
                             Motivo / Justificación:
                           </span>
-                          <p className="text-xs text-slate-300 leading-relaxed bg-[#070D18] p-2.5 rounded-xl border border-white/10">
+                          <p className="text-xs text-slate-300 leading-relaxed bg-[#14161E] p-2.5 rounded-xl border border-white/10">
                             {rfc.descripcion}
                           </p>
                         </div>

@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
+import useSWR from 'swr';
+import { fetcher } from '@/lib/fetcher';
 import Link from 'next/link';
 import AgendarReunionModal from '@/components/AgendarReunionModal';
 import {
@@ -83,7 +85,7 @@ export default function ReunionesPage() {
   const [usuarios, setUsuarios] = useState<UsuarioAux[]>([]);
   const [currentUser, setCurrentUser] = useState<{ id?: string; email?: string; nombreCompleto?: string; rol?: string } | null>(null);
   const [soloMisReuniones, setSoloMisReuniones] = useState(false);
-  const [loading, setLoading] = useState(true);
+
   const [search, setSearch] = useState('');
   const [tipoFiltro, setTipoFiltro] = useState<string>('TODAS');
   const [proyectoFiltro, setProyectoFiltro] = useState<string>('');
@@ -99,47 +101,49 @@ export default function ReunionesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [formFecha, setFormFecha] = useState('2026-11-03');
 
-  const loadData = async () => {
-    setLoading(true);
-    try {
-      const url = new URL('/api/reuniones', window.location.origin);
-      if (search) url.searchParams.set('search', search);
-      if (tipoFiltro !== 'TODAS') url.searchParams.set('tipo', tipoFiltro);
-      if (proyectoFiltro) url.searchParams.set('proyectoId', proyectoFiltro);
+  // SWR: Caché en memoria (Stale-While-Revalidate) para navegación instantánea (0ms)
+  const reunionesUrl = useMemo(() => {
+    const params = new URLSearchParams();
+    if (search.trim()) params.set('search', search.trim());
+    if (tipoFiltro !== 'TODAS') params.set('tipo', tipoFiltro);
+    if (proyectoFiltro) params.set('proyectoId', proyectoFiltro);
+    const q = params.toString();
+    return q ? `/api/reuniones?${q}` : '/api/reuniones';
+  }, [search, tipoFiltro, proyectoFiltro]);
 
-      const [resReuniones, resAux, resMe] = await Promise.all([
-        fetch(url.toString()),
-        fetch('/api/auxiliares'),
-        fetch('/api/auth/me'),
-      ]);
+  const { data: dataReuniones, mutate: mutateReuniones } = useSWR(reunionesUrl, fetcher, { revalidateOnFocus: false });
+  const { data: dataAux } = useSWR('/api/auxiliares', fetcher, { revalidateOnFocus: false });
+  const { data: dataMe } = useSWR('/api/auth/me', fetcher, { revalidateOnFocus: false });
 
-      const dataReuniones = await resReuniones.json();
-      const dataAux = await resAux.json();
-      const dataMe = await resMe.json();
-
-      if (dataReuniones.success) setReuniones(dataReuniones.data);
-      if (dataAux.success) {
-        setProyectos(dataAux.data.proyectos);
-        setUsuarios(dataAux.data.usuarios);
-      }
-      if (dataMe.success && dataMe.data?.user) {
-        setCurrentUser({
-          id: dataMe.data.user.userId || dataMe.data.user.id,
-          email: dataMe.data.user.email,
-          nombreCompleto: dataMe.data.user.nombreCompleto || dataMe.data.user.nombre,
-          rol: dataMe.data.user.rol,
-        });
-      }
-    } catch (err) {
-      console.error('Error al cargar reuniones:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const loading = !dataReuniones && reuniones.length === 0;
 
   useEffect(() => {
-    loadData();
-  }, [tipoFiltro, proyectoFiltro]);
+    if (dataReuniones?.success && Array.isArray(dataReuniones.data)) {
+      setReuniones(dataReuniones.data);
+    }
+  }, [dataReuniones]);
+
+  useEffect(() => {
+    if (dataAux?.success) {
+      if (Array.isArray(dataAux.data.proyectos)) setProyectos(dataAux.data.proyectos);
+      if (Array.isArray(dataAux.data.usuarios)) setUsuarios(dataAux.data.usuarios);
+    }
+  }, [dataAux]);
+
+  useEffect(() => {
+    if (dataMe?.success && dataMe.data?.user) {
+      setCurrentUser({
+        id: dataMe.data.user.userId || dataMe.data.user.id,
+        email: dataMe.data.user.email,
+        nombreCompleto: dataMe.data.user.nombreCompleto || dataMe.data.user.nombre,
+        rol: dataMe.data.user.rol,
+      });
+    }
+  }, [dataMe]);
+
+  const loadData = async () => {
+    await mutateReuniones();
+  };
 
   const isUserMeeting = (r: ReunionItem) => {
     if (!currentUser) return false;
@@ -888,6 +892,7 @@ export default function ReunionesPage() {
         onClose={() => setModalOpen(false)}
         onSuccess={(nuevaReu) => {
           setReuniones((prev) => [nuevaReu, ...prev]);
+          mutateReuniones();
         }}
         initialProyectoId={proyectoFiltro || (proyectos[0]?.id ?? '')}
         initialFecha={formFecha || '2026-11-03'}

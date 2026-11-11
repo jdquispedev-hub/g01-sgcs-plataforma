@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import useSWR, { mutate } from 'swr';
+import { fetcher } from '@/lib/fetcher';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -140,94 +142,95 @@ export default function DashboardPage() {
   const [tabModulo, setTabModulo] = useState<'OPERACION' | 'SUPERVISION'>('OPERACION');
   const [guiaModalOpen, setGuiaModalOpen] = useState(false);
 
+  // Caché SWR en memoria (Stale-While-Revalidate) para navegación instantánea (0ms)
+  const { data: dataMe, error: errorMe } = useSWR('/api/auth/me', fetcher, { revalidateOnFocus: false });
+  const { data: dataEcs } = useSWR('/api/ecs', fetcher, { revalidateOnFocus: false });
+  const { data: dataLb } = useSWR('/api/lineas-base', fetcher, { revalidateOnFocus: false });
+  const { data: dataRfc } = useSWR('/api/cambios', fetcher, { revalidateOnFocus: false });
+  const { data: dataBloqueos } = useSWR('/api/bitacora/bloqueos-activos', fetcher, { revalidateOnFocus: false });
+  const { data: dataAux, mutate: mutateAux } = useSWR('/api/auxiliares', fetcher, { revalidateOnFocus: false });
+  const { data: dataReu } = useSWR('/api/reuniones', fetcher, { revalidateOnFocus: false });
+
+  // Solo muestra pantalla de carga bloqueante la PRIMERA VEZ absoluta si no hay nada en caché
+  const isInitialLoading = (!dataMe && !errorMe) || !dataEcs || !dataAux;
+
   useEffect(() => {
-    async function loadDashboard() {
-      try {
-        const [resMe, resEcs, resLb, resRfc, resBloqueos, resAux, resReu] = await Promise.all([
-          fetch('/api/auth/me'),
-          fetch('/api/ecs'),
-          fetch('/api/lineas-base'),
-          fetch('/api/cambios'),
-          fetch('/api/bitacora/bloqueos-activos'),
-          fetch('/api/auxiliares'),
-          fetch('/api/reuniones'),
-        ]);
-
-        const dataMe = await resMe.json();
-        if (dataMe.success) {
-          setUser(dataMe.data.user);
-          if (dataMe.data.user.rol === 'SOLICITANTE') {
-            setVistaTab('PERSONAL');
-          } else {
-            setVistaTab('GENERAL');
-          }
+    if (dataMe) {
+      if (dataMe.success) {
+        setUser(dataMe.data.user);
+        if (dataMe.data.user.rol === 'SOLICITANTE') {
+          setVistaTab('PERSONAL');
         } else {
-          router.push('/login');
-          return;
+          setVistaTab('GENERAL');
         }
-
-        const dataEcs = await resEcs.json();
-        if (dataEcs.success && Array.isArray(dataEcs.data)) {
-          setEcsList(dataEcs.data);
-          setTotalEcs(dataEcs.data.length);
-          let pendientes = 0;
-          dataEcs.data.forEach((ecs: any) => {
-            if (Array.isArray(ecs.versiones)) {
-              ecs.versiones.forEach((v: any) => {
-                if (v.estado === 'PENDIENTE') pendientes++;
-              });
-            }
-          });
-          setVersionesPendientes(pendientes);
-        }
-
-        const dataLb = await resLb.json();
-        if (dataLb.success) {
-          setTotalLineasBase(dataLb.data.length);
-          const vigentes = dataLb.data.filter((lb: any) => lb.estado === 'VIGENTE').length;
-          setLineasVigentes(vigentes);
-        }
-
-        const dataRfc = await resRfc.json();
-        if (dataRfc.success) {
-          setTotalRfc(dataRfc.data.length);
-          const pendientes = dataRfc.data.filter(
-            (r: any) => r.estado === 'PENDIENTE_EVALUACION' || r.estado === 'EN_EVALUACION'
-          ).length;
-          setRfcPendientes(pendientes);
-        }
-
-        const dataBloqueos = await resBloqueos.json();
-        if (dataBloqueos.success) {
-          setBloqueosActivos(dataBloqueos.data);
-        }
-
-        const dataAux = await resAux.json();
-        if (dataAux.success) {
-          if (Array.isArray(dataAux.data.proyectos)) {
-            setProyectos(dataAux.data.proyectos);
-            if (dataAux.data.proyectos.length > 0) {
-              setSelectedProyectoId(dataAux.data.proyectos[0].id);
-            }
-          }
-          if (Array.isArray(dataAux.data.usuarios)) {
-            setUsuarios(dataAux.data.usuarios);
-          }
-        }
-
-        const dataReu = await resReu.json();
-        if (dataReu.success && Array.isArray(dataReu.data)) {
-          setReuniones(dataReu.data);
-        }
-      } catch {
+      } else {
         router.push('/login');
-      } finally {
-        setLoading(false);
       }
     }
+    if (errorMe) {
+      router.push('/login');
+    }
+  }, [dataMe, errorMe, router]);
 
-    loadDashboard();
-  }, [router]);
+  useEffect(() => {
+    if (dataEcs?.success && Array.isArray(dataEcs.data)) {
+      setEcsList(dataEcs.data);
+      setTotalEcs(dataEcs.data.length);
+      let pendientes = 0;
+      dataEcs.data.forEach((ecs: any) => {
+        if (Array.isArray(ecs.versiones)) {
+          ecs.versiones.forEach((v: any) => {
+            if (v.estado === 'PENDIENTE') pendientes++;
+          });
+        }
+      });
+      setVersionesPendientes(pendientes);
+    }
+  }, [dataEcs]);
+
+  useEffect(() => {
+    if (dataLb?.success && Array.isArray(dataLb.data)) {
+      setTotalLineasBase(dataLb.data.length);
+      const vigentes = dataLb.data.filter((lb: any) => lb.estado === 'VIGENTE').length;
+      setLineasVigentes(vigentes);
+    }
+  }, [dataLb]);
+
+  useEffect(() => {
+    if (dataRfc?.success && Array.isArray(dataRfc.data)) {
+      setTotalRfc(dataRfc.data.length);
+      const pendientes = dataRfc.data.filter(
+        (r: any) => r.estado === 'PENDIENTE_EVALUACION' || r.estado === 'EN_EVALUACION'
+      ).length;
+      setRfcPendientes(pendientes);
+    }
+  }, [dataRfc]);
+
+  useEffect(() => {
+    if (dataBloqueos?.success && Array.isArray(dataBloqueos.data)) {
+      setBloqueosActivos(dataBloqueos.data);
+    }
+  }, [dataBloqueos]);
+
+  useEffect(() => {
+    if (dataAux?.success) {
+      if (Array.isArray(dataAux.data.proyectos)) {
+        setProyectos(dataAux.data.proyectos);
+        if (dataAux.data.proyectos.length > 0 && !selectedProyectoId) {
+          setSelectedProyectoId(dataAux.data.proyectos[0].id);
+        }
+      }
+      if (Array.isArray(dataAux.data.usuarios)) {
+        setUsuarios(dataAux.data.usuarios);
+      }
+    }
+  }, [dataAux, selectedProyectoId]);
+
+  useEffect(() => {
+    if (dataReu?.success && Array.isArray(dataReu.data)) {
+      setReuniones(dataReu.data);
+    }
+  }, [dataReu]);
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
@@ -263,6 +266,7 @@ export default function DashboardPage() {
       const nuevo = data.data;
       setProyectos((prev) => [nuevo, ...prev]);
       setSelectedProyectoId(nuevo.id);
+      mutateAux();
       setCrearProyectoModalOpen(false);
       setNuevoProyCodigo('');
       setNuevoProyNombre('');
@@ -287,13 +291,13 @@ export default function DashboardPage() {
     }
   };
 
-  if (loading) {
+  if (isInitialLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-100 text-slate-800 gap-3 p-4">
-        <div className="w-14 h-14 rounded-2xl bg-upt-navy-900 text-upt-gold border border-slate-300 flex items-center justify-center shadow-lg animate-pulse">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#13151A] text-slate-200 gap-3 p-4">
+        <div className="w-14 h-14 rounded-2xl bg-[#1A1D25] text-upt-gold border border-white/10 flex items-center justify-center shadow-lg animate-pulse">
           <ShieldCheck className="w-8 h-8" />
         </div>
-        <p className="text-sm font-bold text-slate-700">Cargando plataforma SGCS...</p>
+        <p className="text-sm font-bold text-slate-300">Cargando plataforma SGCS...</p>
       </div>
     );
   }
