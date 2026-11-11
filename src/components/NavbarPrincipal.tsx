@@ -43,6 +43,7 @@ export interface NavbarUser {
 interface NavbarPrincipalProps {
   user?: NavbarUser | null;
   onLogout?: () => Promise<void> | void;
+  hideNavTabs?: boolean;
 }
 
 function getCoreNavItems(rubro?: string) {
@@ -123,7 +124,7 @@ function getSecondaryNavItems(rubro?: string) {
   ];
 }
 
-export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrincipalProps) {
+export default function NavbarPrincipal({ user: userProp, onLogout, hideNavTabs = true }: NavbarPrincipalProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -324,122 +325,124 @@ export default function NavbarPrincipal({ user: userProp, onLogout }: NavbarPrin
           </div>
         </div>
 
-        {/* NIVEL 2: Pestañas de Navegación Fluidas (Adaptable y con Scroll Suave en Laptops y Tablets) */}
-        <div className="bg-[#181B22] border-b border-white/10 shadow-sm backdrop-blur-md">
-          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-11 flex items-center justify-between">
-            
-            {/* Navegación de Pestañas con Scroll Horizontal Táctil Automático */}
-            <nav className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] py-1 w-full">
-              {coreNavItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
-                return (
+        {/* NIVEL 2: Pestañas de Navegación Fluidas (Opcional, desactivado por defecto para dar protagonismo al Sidebar Global) */}
+        {!hideNavTabs && (
+          <div className="bg-[#181B22] border-b border-white/10 shadow-sm backdrop-blur-md">
+            <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-11 flex items-center justify-between">
+              
+              {/* Navegación de Pestañas con Scroll Horizontal Táctil Automático */}
+              <nav className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] py-1 w-full">
+                {coreNavItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                        isActive
+                          ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold shadow-xs'
+                          : 'text-slate-300 hover:text-white hover:bg-white/10 border border-transparent font-medium'
+                      }`}
+                    >
+                      <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-slate-950 stroke-[2.5]' : 'text-slate-400'}`} />
+                      <span>{item.label}</span>
+                    </Link>
+                  );
+                })}
+
+                {/* Acceso para Administrador: Personal */}
+                {isAdmin && (
                   <Link
-                    key={item.href}
-                    href={item.href}
+                    href="/usuarios"
                     className={`px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
-                      isActive
+                      pathname.startsWith('/usuarios')
                         ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold shadow-xs'
                         : 'text-slate-300 hover:text-white hover:bg-white/10 border border-transparent font-medium'
                     }`}
                   >
-                    <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-slate-950 stroke-[2.5]' : 'text-slate-400'}`} />
-                    <span>{item.label}</span>
+                    <Users className={`w-3.5 h-3.5 shrink-0 ${pathname.startsWith('/usuarios') ? 'text-slate-950 stroke-[2.5]' : 'text-amber-400'}`} />
+                    <span>Personal</span>
                   </Link>
-                );
-              })}
-
-              {/* Acceso para Administrador: Personal */}
-              {isAdmin && (
-                <Link
-                  href="/usuarios"
-                  className={`px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
-                    pathname.startsWith('/usuarios')
-                      ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold shadow-xs'
-                      : 'text-slate-300 hover:text-white hover:bg-white/10 border border-transparent font-medium'
-                  }`}
-                >
-                  <Users className={`w-3.5 h-3.5 shrink-0 ${pathname.startsWith('/usuarios') ? 'text-slate-950 stroke-[2.5]' : 'text-amber-400'}`} />
-                  <span>Personal</span>
-                </Link>
-              )}
-
-              {/* Menú de Más Herramientas Técnicas */}
-              <div className="relative shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setDropdownHerramientas(!dropdownHerramientas)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1 whitespace-nowrap ${
-                    secondaryNavItems.some((s) => pathname.startsWith(s.href))
-                      ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold shadow-xs'
-                      : 'text-slate-300 hover:text-white hover:bg-white/10 border border-transparent'
-                  }`}
-                >
-                  <Sparkles className={`w-3.5 h-3.5 ${secondaryNavItems.some((s) => pathname.startsWith(s.href)) ? 'text-slate-950' : 'text-amber-400'}`} />
-                  <span>Herramientas</span>
-                  <ChevronDown className="w-3 h-3 text-slate-400" />
-                </button>
-
-                {dropdownHerramientas && (
-                  <>
-                    <div className="fixed inset-0 z-30" onClick={() => setDropdownHerramientas(false)} />
-                    <div className="absolute left-0 mt-1.5 w-52 bg-[#1A1D25] border border-white/15 rounded-xl shadow-2xl py-1.5 z-40 text-xs animate-in fade-in zoom-in-95 duration-100">
-                      {secondaryNavItems.map((item) => {
-                        const Icon = item.icon;
-                        const isActive = pathname.startsWith(item.href);
-                        return (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            onClick={() => setDropdownHerramientas(false)}
-                            className={`flex items-center gap-2.5 px-3 py-2 transition ${
-                              isActive
-                                ? 'bg-white/15 text-upt-gold font-bold'
-                                : 'text-slate-200 hover:bg-white/10 hover:text-white'
-                            }`}
-                          >
-                            <Icon className="w-3.5 h-3.5 text-amber-400" />
-                            <span>{item.fullLabel || item.label}</span>
-                          </Link>
-                        );
-                      })}
-
-                      {isAdmin && (
-                        <>
-                          <div className="my-1 border-t border-white/10" />
-                          <Link
-                            href="/auditoria"
-                            onClick={() => setDropdownHerramientas(false)}
-                            className={`flex items-center gap-2.5 px-3 py-2 transition ${
-                              pathname.startsWith('/auditoria')
-                                ? 'bg-white/15 text-upt-gold font-bold'
-                                : 'text-slate-200 hover:bg-white/10 hover:text-white'
-                            }`}
-                          >
-                            <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                            <span>Auditoría de Logs (RNF-10)</span>
-                          </Link>
-                          <Link
-                            href="/reportes"
-                            onClick={() => setDropdownHerramientas(false)}
-                            className={`flex items-center gap-2.5 px-3 py-2 transition ${
-                              pathname.startsWith('/reportes')
-                                ? 'bg-white/15 text-upt-gold font-bold'
-                                : 'text-slate-200 hover:bg-white/10 hover:text-white'
-                            }`}
-                          >
-                            <FileCheck2 className="w-3.5 h-3.5 text-amber-400" />
-                            <span>Reportes Oficiales</span>
-                          </Link>
-                        </>
-                      )}
-                    </div>
-                  </>
                 )}
-              </div>
-            </nav>
+
+                {/* Menú de Más Herramientas Técnicas */}
+                <div className="relative shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setDropdownHerramientas(!dropdownHerramientas)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1 whitespace-nowrap ${
+                      secondaryNavItems.some((s) => pathname.startsWith(s.href))
+                        ? 'bg-gradient-to-r from-upt-gold to-amber-400 text-slate-950 font-bold shadow-xs'
+                        : 'text-slate-300 hover:text-white hover:bg-white/10 border border-transparent'
+                    }`}
+                  >
+                    <Sparkles className={`w-3.5 h-3.5 ${secondaryNavItems.some((s) => pathname.startsWith(s.href)) ? 'text-slate-950' : 'text-amber-400'}`} />
+                    <span>Herramientas</span>
+                    <ChevronDown className="w-3 h-3 text-slate-400" />
+                  </button>
+
+                  {dropdownHerramientas && (
+                    <>
+                      <div className="fixed inset-0 z-30" onClick={() => setDropdownHerramientas(false)} />
+                      <div className="absolute left-0 mt-1.5 w-52 bg-[#1A1D25] border border-white/15 rounded-xl shadow-2xl py-1.5 z-40 text-xs animate-in fade-in zoom-in-95 duration-100">
+                        {secondaryNavItems.map((item) => {
+                          const Icon = item.icon;
+                          const isActive = pathname.startsWith(item.href);
+                          return (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              onClick={() => setDropdownHerramientas(false)}
+                              className={`flex items-center gap-2.5 px-3 py-2 transition ${
+                                isActive
+                                  ? 'bg-white/15 text-upt-gold font-bold'
+                                  : 'text-slate-200 hover:bg-white/10 hover:text-white'
+                              }`}
+                            >
+                              <Icon className="w-3.5 h-3.5 text-amber-400" />
+                              <span>{item.fullLabel || item.label}</span>
+                            </Link>
+                          );
+                        })}
+
+                        {isAdmin && (
+                          <>
+                            <div className="my-1 border-t border-white/10" />
+                            <Link
+                              href="/auditoria"
+                              onClick={() => setDropdownHerramientas(false)}
+                              className={`flex items-center gap-2.5 px-3 py-2 transition ${
+                                pathname.startsWith('/auditoria')
+                                  ? 'bg-white/15 text-upt-gold font-bold'
+                                  : 'text-slate-200 hover:bg-white/10 hover:text-white'
+                              }`}
+                            >
+                              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                              <span>Auditoría de Logs (RNF-10)</span>
+                            </Link>
+                            <Link
+                              href="/reportes"
+                              onClick={() => setDropdownHerramientas(false)}
+                              className={`flex items-center gap-2.5 px-3 py-2 transition ${
+                                pathname.startsWith('/reportes')
+                                  ? 'bg-white/15 text-upt-gold font-bold'
+                                  : 'text-slate-200 hover:bg-white/10 hover:text-white'
+                              }`}
+                            >
+                              <FileCheck2 className="w-3.5 h-3.5 text-amber-400" />
+                              <span>Reportes Oficiales</span>
+                            </Link>
+                          </>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </nav>
+            </div>
           </div>
-        </div>
+        )}
       </header>
 
       {/* Drawer Lateral Móvil */}
