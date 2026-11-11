@@ -176,7 +176,14 @@ export default function NuevaRfcPage() {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setErrorMsg(data.message || 'Error al registrar la solicitud de cambio');
+        const errorDetalle =
+          data.errors?.codigo?._errors?.[0] ||
+          data.errors?.descripcion?._errors?.[0] ||
+          data.errors?.justificacion?._errors?.[0] ||
+          data.errors?.ecs_id?._errors?.[0] ||
+          data.message ||
+          'Error al registrar la solicitud de cambio';
+        setErrorMsg(errorDetalle);
         setSubmitting(false);
         return;
       }

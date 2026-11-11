@@ -6,7 +6,7 @@ import { getSession } from '@/lib/auth';
 export const dynamic = 'force-dynamic';
 
 const crearProyectoSchema = z.object({
-  codigo: z.string().min(2, 'El código debe tener al menos 2 caracteres').max(50),
+  codigo: z.string().max(50).optional(),
   nombre: z.string().min(3, 'El nombre debe tener al menos 3 caracteres').max(200),
   cliente_nombre: z.string().min(2, 'El nombre del cliente es obligatorio').max(150),
   descripcion: z.string().optional(),
@@ -104,7 +104,20 @@ export async function POST(request: NextRequest) {
     }
 
     const { codigo, nombre, cliente_nombre } = validation.data;
-    const codigoUpper = codigo.trim().toUpperCase();
+    let codigoUpper = (codigo || '').trim().toUpperCase();
+    if (!codigoUpper) {
+      let countProyectos = await prisma.proyectoCaso.count({
+        where: { organizacion_id: session.organizacionId },
+      });
+      const year = new Date().getFullYear();
+      codigoUpper = `PRY-${year}-${String(countProyectos + 1).padStart(2, '0')}`;
+      while (await prisma.proyectoCaso.findUnique({
+        where: { organizacion_id_codigo: { organizacion_id: session.organizacionId, codigo: codigoUpper } },
+      })) {
+        countProyectos++;
+        codigoUpper = `PRY-${year}-${String(countProyectos + 1).padStart(2, '0')}`;
+      }
+    }
 
     // Validar código único por organización
     const existente = await prisma.proyectoCaso.findUnique({

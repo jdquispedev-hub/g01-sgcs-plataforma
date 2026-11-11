@@ -11,8 +11,8 @@ const crearRfcSchema = z.object({
   version_base_id: z.string().uuid('ID de versión base inválido'),
   codigo: z
     .string()
-    .min(3, 'El código debe tener al menos 3 caracteres')
-    .max(50, 'El código no puede superar 50 caracteres'),
+    .max(50, 'El código no puede superar 50 caracteres')
+    .optional(),
   descripcion: z
     .string()
     .min(5, 'La descripción técnica del cambio debe tener al menos 5 caracteres'),
@@ -160,7 +160,26 @@ export async function POST(request: NextRequest) {
     }
 
     const data = validation.data;
-    const codigoNormalizado = data.codigo.trim().toUpperCase();
+    
+    // Auto-generación de código correlativo si no viene en el payload (RF-11)
+    let codigoNormalizado = (data.codigo || '').trim().toUpperCase();
+    if (!codigoNormalizado) {
+      const currentYear = new Date().getFullYear();
+      let countTotal = await prisma.solicitudCambio.count({
+        where: {
+          ecs: {
+            proyecto: {
+              organizacion_id: session.organizacionId,
+            },
+          },
+        },
+      });
+      codigoNormalizado = `RFC-${currentYear}-${String(countTotal + 1).padStart(3, '0')}`;
+      while (await prisma.solicitudCambio.findUnique({ where: { codigo: codigoNormalizado } })) {
+        countTotal++;
+        codigoNormalizado = `RFC-${currentYear}-${String(countTotal + 1).padStart(3, '0')}`;
+      }
+    }
 
     // 1. Verificar que el ECS pertenezca a la organización
     const ecs = await prisma.ecs.findFirst({

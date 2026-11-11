@@ -154,7 +154,14 @@ export default function EcsPage() {
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        setFormError(data.message || 'Error al registrar el ECS');
+        const errDetail =
+          data.errors?.codigo?._errors?.[0] ||
+          data.errors?.nombre?._errors?.[0] ||
+          data.errors?.ubicacion?._errors?.[0] ||
+          data.errors?.responsable_id?._errors?.[0] ||
+          data.message ||
+          'Error al registrar el ECS';
+        setFormError(errDetail);
         setSaving(false);
         return;
       }

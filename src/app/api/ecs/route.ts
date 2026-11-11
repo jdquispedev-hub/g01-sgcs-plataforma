@@ -7,7 +7,7 @@ import { TipoEcs } from '@prisma/client';
 // Esquema de validación para registrar y actualizar ECS (RNF-05)
 const ecsSchema = z.object({
   proyecto_id: z.string().uuid('ID de proyecto inválido'),
-  codigo: z.string().min(2, 'El código debe tener al menos 2 caracteres').max(50),
+  codigo: z.string().max(50).optional(),
   nombre: z.string().min(3, 'El nombre debe tener al menos 3 caracteres').max(200),
   tipo: z.nativeEnum(TipoEcs, {
     errorMap: () => ({ message: 'Tipo de ECS inválido' }),
@@ -125,17 +125,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Auto-generación de código si no fue provisto
+    let codigoFinal = (data.codigo || '').trim().toUpperCase();
+    if (!codigoFinal) {
+      let countEcs = await prisma.ecs.count({
+        where: { proyecto_id: data.proyecto_id },
+      });
+      const prefix = data.tipo === 'DOCUMENTO' ? 'DOC' : data.tipo === 'DISENO' ? 'PLN' : 'ECS';
+      codigoFinal = `${prefix}-${proyecto.codigo}-${String(countEcs + 1).padStart(3, '0')}`;
+      while (await prisma.ecs.findFirst({ where: { proyecto_id: data.proyecto_id, codigo: codigoFinal } })) {
+        countEcs++;
+        codigoFinal = `${prefix}-${proyecto.codigo}-${String(countEcs + 1).padStart(3, '0')}`;
+      }
+    }
+
     // Verificar código único dentro del proyecto (RF-04)
     const existing = await prisma.ecs.findFirst({
       where: {
         proyecto_id: data.proyecto_id,
-        codigo: data.codigo.trim().toUpperCase(),
+        codigo: codigoFinal,
       },
     });
 
     if (existing) {
       return NextResponse.json(
-        { success: false, message: `Ya existe un ECS con el código "${data.codigo.toUpperCase()}" en este proyecto` },
+        { success: false, message: `Ya existe un ECS con el código "${codigoFinal}" en este proyecto` },
         { status: 409 }
       );
     }
@@ -145,7 +159,7 @@ export async function POST(request: NextRequest) {
       const ecsCreado = await tx.ecs.create({
         data: {
           proyecto_id: data.proyecto_id,
-          codigo: data.codigo.trim().toUpperCase(),
+          codigo: codigoFinal,
           nombre: data.nombre.trim(),
           tipo: data.tipo,
           descripcion: data.descripcion,
