@@ -28,7 +28,7 @@ import {
   Compass,
   Printer,
 } from 'lucide-react';
-import NavbarPrincipal from '@/components/NavbarPrincipal';
+import AppShell from '@/components/AppShell';
 
 interface SolicitudTrazabilidad {
   id: string;
@@ -137,8 +137,11 @@ export default function TrazabilidadPage() {
     try {
       const res = await fetch(`/api/trazabilidad?proyectoId=${proyectoId}`);
       const data = await res.json();
-      if (data.success) {
-        setProyectoActual(data.data);
+      if (data.success && data.data) {
+        const actual = Array.isArray(data.data)
+          ? (data.data.find((p: any) => p.id === proyectoId) || data.data[0] || null)
+          : data.data;
+        setProyectoActual(actual);
       }
     } catch (err) {
       console.error('Error al cargar matriz de trazabilidad:', err);
@@ -161,10 +164,7 @@ export default function TrazabilidadPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#13151A] text-slate-100 flex flex-col antialiased">
-      {/* Navbar Global Unificado */}
-      <NavbarPrincipal />
-
+    <AppShell>
       {/* Sub-header contextual */}
       <div className="bg-[#16181D] border-b border-white/10 print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -281,7 +281,7 @@ export default function TrazabilidadPage() {
         </div>
 
         {/* Indicadores de Salud de la Configuración */}
-        {proyectoActual && (
+        {proyectoActual && proyectoActual.metricas && (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {/* Métrica 1: ECS Registrados */}
             <div className="bg-[#1A1D25] p-4 sm:p-5 rounded-2xl border border-white/10 border-l-4 border-l-sky-500 shadow-md">
@@ -290,10 +290,10 @@ export default function TrazabilidadPage() {
               </span>
               <div className="mt-2 flex items-baseline justify-between">
                 <span className="text-xl sm:text-2xl font-bold text-white">
-                  {proyectoActual.metricas.total_ecs}
+                  {proyectoActual.metricas.total_ecs ?? 0}
                 </span>
                 <span className="text-xs font-semibold text-slate-400">
-                  {proyectoActual.metricas.total_versiones} versiones
+                  {proyectoActual.metricas.total_versiones ?? 0} versiones
                 </span>
               </div>
               <p className="text-[10px] text-slate-500 mt-1 truncate">Elementos de Configuración (ECS)</p>
@@ -306,10 +306,10 @@ export default function TrazabilidadPage() {
               </span>
               <div className="mt-2 flex items-baseline justify-between">
                 <span className="text-xl sm:text-2xl font-bold text-emerald-400">
-                  {proyectoActual.metricas.porcentaje_aprobacion}%
+                  {proyectoActual.metricas.porcentaje_aprobacion ?? 0}%
                 </span>
                 <span className="text-xs font-bold text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-md border border-emerald-500/30">
-                  {proyectoActual.metricas.ecs_con_aprobacion} / {proyectoActual.metricas.total_ecs}
+                  {proyectoActual.metricas.ecs_con_aprobacion ?? 0} / {proyectoActual.metricas.total_ecs ?? 0}
                 </span>
               </div>
               <p className="text-[10px] text-slate-500 mt-1 truncate">ECS con versión aprobada</p>
@@ -322,10 +322,10 @@ export default function TrazabilidadPage() {
               </span>
               <div className="mt-2 flex items-baseline justify-between">
                 <span className="text-xl sm:text-2xl font-bold text-amber-400">
-                  {proyectoActual.metricas.porcentaje_congelado}%
+                  {proyectoActual.metricas.porcentaje_congelado ?? 0}%
                 </span>
                 <span className="text-xs font-bold text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-md border border-amber-500/30">
-                  {proyectoActual.metricas.lineas_base_vigentes} vigentes
+                  {proyectoActual.metricas.lineas_base_vigentes ?? 0} vigentes
                 </span>
               </div>
               <p className="text-[10px] text-slate-500 mt-1 truncate">ECS congelados bajo control</p>
@@ -338,14 +338,14 @@ export default function TrazabilidadPage() {
               </span>
               <div className="mt-2 flex items-baseline justify-between">
                 <span className="text-xl sm:text-2xl font-bold text-white">
-                  {proyectoActual.metricas.rfcs_totales}
+                  {proyectoActual.metricas.rfcs_totales ?? 0}
                 </span>
                 <span className="text-xs font-bold text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-md border border-emerald-500/30">
-                  {proyectoActual.metricas.rfcs_implementadas} cerradas
+                  {proyectoActual.metricas.rfcs_implementadas ?? 0} cerradas
                 </span>
               </div>
               <p className="text-[10px] text-slate-500 mt-1 truncate">
-                {proyectoActual.metricas.rfcs_pendientes} pendientes de evaluación
+                {proyectoActual.metricas.rfcs_pendientes ?? 0} pendientes de evaluación
               </p>
             </div>
           </div>
@@ -617,6 +617,6 @@ export default function TrazabilidadPage() {
         )}
 
       </main>
-    </div>
+    </AppShell>
   );
 }
