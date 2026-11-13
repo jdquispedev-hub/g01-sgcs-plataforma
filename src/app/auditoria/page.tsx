@@ -71,7 +71,9 @@ export default function AuditoriaPage() {
     fetch('/api/auth/me')
       .then((res) => res.json())
       .then((data) => {
-        if (data.success) setCurrentUser(data.data);
+        if (data.success && data.data?.user) {
+          setCurrentUser(data.data.user);
+        }
       })
       .catch((err) => console.error(err));
   }, []);
@@ -132,7 +134,7 @@ export default function AuditoriaPage() {
   }
 
   return (
-    <AppShell>
+    <AppShell user={currentUser}>
       {/* Sub-header contextual */}
       <div className="bg-[#16181D] border-b border-white/10 h-16 flex items-center shrink-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between gap-3">
