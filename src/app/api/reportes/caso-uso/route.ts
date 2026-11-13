@@ -52,11 +52,11 @@ export async function GET(request: NextRequest) {
           include: {
             autor: { select: { nombre_completo: true } },
             aprobador: { select: { nombre_completo: true } },
-          },
-        },
-        lineas_base: {
-          include: {
-            linea_base: true,
+            lineas_base: {
+              include: {
+                linea_base: true,
+              },
+            },
           },
         },
       },

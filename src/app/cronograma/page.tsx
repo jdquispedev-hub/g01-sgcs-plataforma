@@ -27,6 +27,7 @@ import {
   Tag,
   ArrowUpRight,
   Sparkles,
+  X,
 } from 'lucide-react';
 import AppShell from '@/components/AppShell';
 import ModalCrearProyecto from '@/components/ModalCrearProyecto';
@@ -70,6 +71,7 @@ export default function CronogramaPage() {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'ETAPAS' | 'TIMELINE' | 'CANVAS'>('ETAPAS');
   const [modalCrearOpen, setModalCrearOpen] = useState(false);
+  const [asignandoId, setAsignandoId] = useState<string | null>(null);
   const handleAsignarUsuario = async (actividadId: string, responsableId: string) => {
     setAsignandoId(actividadId);
     try {
