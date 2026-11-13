@@ -908,61 +908,167 @@ export default function EcsPage() {
             )}
 
             <form onSubmit={handleCreateEcs} className="space-y-4">
-              {/* Plantillas Rápidas Estilo Notion */}
+              {/* Plantillas Rápidas Estilo Notion (Adaptadas al Rubro) */}
               <div className="bg-[#14161E] p-3 rounded-2xl border border-white/10 space-y-2">
                 <span className="text-[11px] font-bold text-slate-300 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Plantillas Rápidas (Un Clic):</span>
+                  <span>Plantillas Rápidas ({rubro === 'CONSTRUCCION' ? 'Obra Civil' : rubro === 'VETERINARIA' ? 'Clínica Veterinaria' : 'Software'}):</span>
                 </span>
                 <div className="flex flex-wrap gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setNombre('Especificación de Requerimientos del Sistema (SRS)');
-                      setTipo('DOCUMENTO');
-                      setDescripcion('Documento formal de requerimientos funcionales, no funcionales e interfaces de usuario conforme a IEEE 830.');
-                      generarCodigoSugerido();
-                    }}
-                    className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
-                  >
-                    📄 Req. IEEE
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setNombre('Módulo de Autenticación y Autorización RBAC');
-                      setTipo('CODIGO_FUENTE');
-                      setDescripcion('Componentes, middleware y endpoints con tokens JWT en cookies HttpOnly para control de roles.');
-                      generarCodigoSugerido();
-                    }}
-                    className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
-                  >
-                    💻 Módulo Código
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setNombre('Plano Estructural de Cimentación y Armaduras');
-                      setTipo('DISENO');
-                      setDescripcion('Plano técnico acotado con especificación de materiales y memoria de cálculo estructural.');
-                      generarCodigoSugerido();
-                    }}
-                    className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
-                  >
-                    📐 Plano / Diseño
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setNombre('Esquema Relacional y Migración Inicial DDL');
-                      setTipo('BASE_DATOS');
-                      setDescripcion('Modelo relacional normalizado con integridad referencial, índices y auditoría inmutable.');
-                      generarCodigoSugerido();
-                    }}
-                    className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
-                  >
-                    🗄️ Base de Datos
-                  </button>
+                  {rubro === 'CONSTRUCCION' ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNombre('Plano Estructural de Cimentación y Armaduras');
+                          setTipo('DISENO');
+                          setDescripcion('Plano técnico acotado con especificación de acero corrugado, zapatas y memoria de cálculo estructural.');
+                          generarCodigoSugerido();
+                        }}
+                        className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                      >
+                        📐 Plano Estructural
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNombre('Memoria de Cálculo y Sismorresistencia');
+                          setTipo('DOCUMENTO');
+                          setDescripcion('Informe técnico de cargas, análisis sísmico conforme a norma E.030 y especificaciones de concreto.');
+                          generarCodigoSugerido();
+                        }}
+                        className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                      >
+                        📄 Memoria de Cálculo
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNombre('Planilla de Metrados y Presupuesto de Obra');
+                          setTipo('BASE_DATOS');
+                          setDescripcion('Desglose de partidas, volúmenes de concreto, acero, acabados y cronograma valorizado de obra.');
+                          generarCodigoSugerido();
+                        }}
+                        className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                      >
+                        🏗️ Metrados y Partidas
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNombre('Protocolo de Calidad y Ensayo de Probetas');
+                          setTipo('CASO_PRUEBA');
+                          setDescripcion('Registro de ensayos de resistencia a la compresión de concreto f\'c=210 kg/cm2 y verificación en obra.');
+                          generarCodigoSugerido();
+                        }}
+                        className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                      >
+                        🧪 Control de Calidad
+                      </button>
+                    </>
+                  ) : rubro === 'VETERINARIA' ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNombre('Historia Clínica y Anamnesis Inicial');
+                          setTipo('DOCUMENTO');
+                          setDescripcion('Evaluación clínica completa del paciente, signos vitales, peso, temperatura y antecedentes.');
+                          generarCodigoSugerido();
+                        }}
+                        className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                      >
+                        🩺 Historia Clínica
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNombre('Resultados de Hemograma y Perfil Bioquímico');
+                          setTipo('CASO_PRUEBA');
+                          setDescripcion('Exámenes de laboratorio pre-quirúrgicos con valores hematológicos y evaluación hepática/renal.');
+                          generarCodigoSugerido();
+                        }}
+                        className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                      >
+                        🧪 Análisis Lab.
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNombre('Protocolo Anestésico y Consentimiento Quirúrgico');
+                          setTipo('DISENO');
+                          setDescripcion('Plan de dosificación anestésica, monitoreo intraoperatorio y consentimiento firmado por el tutor.');
+                          generarCodigoSugerido();
+                        }}
+                        className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                      >
+                        💉 Plan Quirúrgico
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNombre('Registro de Dosis y Evolución Postoperatoria');
+                          setTipo('BASE_DATOS');
+                          setDescripcion('Tabla de medicación, antibióticos, analgésicos y evolución de signos vitales en recuperación.');
+                          generarCodigoSugerido();
+                        }}
+                        className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                      >
+                        📋 Tratamiento
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNombre('Especificación de Requerimientos del Sistema (SRS)');
+                          setTipo('DOCUMENTO');
+                          setDescripcion('Documento formal de requerimientos funcionales, no funcionales e interfaces de usuario conforme a IEEE 830.');
+                          generarCodigoSugerido();
+                        }}
+                        className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                      >
+                        📄 Req. IEEE
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNombre('Módulo de Autenticación y Autorización RBAC');
+                          setTipo('CODIGO_FUENTE');
+                          setDescripcion('Componentes, middleware y endpoints con tokens JWT en cookies HttpOnly para control de roles.');
+                          generarCodigoSugerido();
+                        }}
+                        className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                      >
+                        💻 Módulo Código
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNombre('Diseño de Arquitectura y Prototipo UI/UX');
+                          setTipo('DISENO');
+                          setDescripcion('Diagramas de arquitectura en capas y prototipo interactivo de interfaces responsivas.');
+                          generarCodigoSugerido();
+                        }}
+                        className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                      >
+                        🎨 Diseño UI/UX
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNombre('Esquema Relacional y Migración Inicial DDL');
+                          setTipo('BASE_DATOS');
+                          setDescripcion('Modelo relacional normalizado con integridad referencial, índices y auditoría inmutable.');
+                          generarCodigoSugerido();
+                        }}
+                        className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                      >
+                        🗄️ Base de Datos
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
 
