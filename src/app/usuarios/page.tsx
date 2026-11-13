@@ -263,8 +263,8 @@ export default function UsuariosPage() {
   return (
     <AppShell user={currentUser}>
       {/* Sub-Header Mobile-First */}
-      <div className="bg-[#16181D] border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-[#16181D] border-b border-white/10 h-16 flex items-center shrink-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between gap-3">
           
           <div className="flex items-center gap-2.5 min-w-0">
             <Link
@@ -275,21 +275,16 @@ export default function UsuariosPage() {
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-bold text-sm sm:text-base text-white tracking-tight truncate">
-                  Gestión de Personal y Roles
-                </span>
-                <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold/20 text-upt-gold border border-upt-gold/30 font-bold uppercase tracking-wider shrink-0">
-                  {rubro === 'CONSTRUCCION' ? 'Obras Civiles' : rubro === 'SOFTWARE' ? 'Tecnología' : 'Salud Veterinaria'}
-                </span>
-              </div>
-              <p className="text-[10px] sm:text-[11px] text-slate-400 truncate">
-                Directorio institucional de colaboradores, cargos operativos y privilegios RBAC
+              <h1 className="text-base sm:text-lg font-bold text-white tracking-tight truncate">
+                Gestión de Personal y Roles
+              </h1>
+              <p className="text-xs text-slate-400 truncate">
+                Directorio de colaboradores, cargos operativos y privilegios RBAC
               </p>
             </div>
           </div>
 
-          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0 border-t border-white/10 sm:border-t-0">
+          <div className="flex items-center justify-end gap-2 shrink-0">
             <button
               onClick={() => setModalOpen(true)}
               className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition flex items-center gap-1.5 shrink-0 active:scale-95"

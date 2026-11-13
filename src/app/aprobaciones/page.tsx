@@ -182,8 +182,8 @@ export default function AprobacionesPage() {
   return (
     <AppShell user={user}>
       {/* Sub-Header de Dictamen Unificado (Nivel 3) */}
-      <div className="bg-[#16181D] border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-[#16181D] border-b border-white/10 h-16 flex items-center shrink-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <Link
               href="/dashboard"

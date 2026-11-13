@@ -279,8 +279,8 @@ export default function ReunionesPage() {
   return (
     <AppShell user={currentUser || undefined}>
       {/* Sub-Header de Reuniones y Acciones */}
-      <div className="bg-[#16181D] border-b border-white/10 print:hidden">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-[#16181D] border-b border-white/10 print:hidden h-16 flex items-center shrink-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <Link
               href="/dashboard"
@@ -290,21 +290,16 @@ export default function ReunionesPage() {
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-bold text-sm sm:text-base text-white tracking-tight truncate">
-                  Calendario de Reuniones y Acuerdos
-                </span>
-                <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 font-bold uppercase tracking-wider shrink-0">
-                  Paso 1: Comunicación
-                </span>
-              </div>
-              <p className="text-[10px] sm:text-[11px] text-slate-400 truncate">
+              <h1 className="text-base sm:text-lg font-bold text-white tracking-tight truncate">
+                Calendario de Reuniones y Acuerdos
+              </h1>
+              <p className="text-xs text-slate-400 truncate">
                 Agenda oficial: reuniones convocadas con minutas contractuales vinculadas
               </p>
             </div>
           </div>
 
-          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0 border-t border-white/10 sm:border-t-0">
+          <div className="flex items-center justify-end gap-2 shrink-0">
             {/* Toggle de Vista */}
             <div className="bg-[#13151A] p-1 rounded-xl border border-white/10 flex items-center gap-1">
               <button

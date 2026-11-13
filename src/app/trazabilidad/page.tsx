@@ -166,22 +166,21 @@ export default function TrazabilidadPage() {
   return (
     <AppShell>
       {/* Sub-header contextual */}
-      <div className="bg-[#16181D] border-b border-white/10 print:hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-              <Network className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-base sm:text-lg font-bold text-white tracking-tight">
-                  Matriz de Trazabilidad End-to-End
-                </h1>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 uppercase tracking-wider">
-                  RF-17 • ISO 10007
-                </span>
-              </div>
-              <p className="text-xs text-slate-400">
+      <div className="bg-[#16181D] border-b border-white/10 print:hidden h-16 flex items-center shrink-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <Link
+              href="/dashboard"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition border border-white/10"
+              title="Volver al Dashboard"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+            <div className="min-w-0">
+              <h1 className="text-base sm:text-lg font-bold text-white tracking-tight truncate">
+                Matriz de Trazabilidad End-to-End
+              </h1>
+              <p className="text-xs text-slate-400 truncate">
                 Cadena de custodia: Requerimiento ➔ ECS ➔ Versión ➔ Línea Base ➔ RFC
               </p>
             </div>

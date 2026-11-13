@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import useSWR from 'swr';
+import { fetcher } from '@/lib/fetcher';
+import { getTerminologia } from '@/lib/terminologia';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -48,6 +51,10 @@ interface ProyectoAux {
 }
 
 export default function BitacoraPage() {
+  const { data: dataMe } = useSWR('/api/auth/me', fetcher, { revalidateOnFocus: false });
+  const currentUser = dataMe?.success ? dataMe.data.user : null;
+  const terminologia = getTerminologia(currentUser?.rubro);
+
   const [reportes, setReportes] = useState<ReporteItem[]>([]);
   const [proyectos, setProyectos] = useState<ProyectoAux[]>([]);
   const [loading, setLoading] = useState(true);
@@ -144,30 +151,29 @@ export default function BitacoraPage() {
   const totalBloqueosActivos = reportes.filter((r) => r.tiene_bloqueo).length;
 
   return (
-    <AppShell>
+    <AppShell user={currentUser}>
       {/* Sub-header contextual */}
-      <div className="bg-[#16181D] border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-              <Activity className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-base sm:text-lg font-bold text-white tracking-tight">
-                  Bitácora Diaria de Campo
-                </h1>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 uppercase tracking-wider">
-                  Etapa 4 • Bloqueos
-                </span>
-              </div>
-              <p className="text-xs text-slate-400">
-                Reportes diarios de cuadrilla y alerta gerencial inmediata
+      <div className="bg-[#16181D] border-b border-white/10 h-16 flex items-center shrink-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <Link
+              href="/dashboard"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition border border-white/10"
+              title="Volver al Dashboard"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+            <div className="min-w-0">
+              <h1 className="text-base sm:text-lg font-bold text-white tracking-tight truncate">
+                {terminologia?.bitacoraLabel || 'Cuaderno de Obra / Bitácora Diaria'}
+              </h1>
+              <p className="text-xs text-slate-400 truncate">
+                {terminologia?.bitacoraSubtitulo || 'Reportes diarios de campo y alerta gerencial inmediata'}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setModalOpen(true)}
               className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-upt-gold to-amber-400 hover:brightness-110 text-slate-950 font-bold text-xs shadow-md transition flex items-center gap-1.5"

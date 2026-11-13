@@ -120,8 +120,8 @@ export default function LineasBasePage() {
   return (
     <AppShell user={currentUser || undefined}>
       {/* Sub-Header Mobile-First */}
-      <div className="bg-[#16181D] border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-[#16181D] border-b border-white/10 h-16 flex items-center shrink-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between gap-3">
           
           <div className="flex items-center gap-2.5 min-w-0">
             <Link
@@ -133,21 +133,16 @@ export default function LineasBasePage() {
             </Link>
             
             <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-bold text-sm sm:text-base text-white tracking-tight truncate">
-                  {terminologia.lineaBaseLabel}
-                </span>
-                <span className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-upt-gold/20 text-upt-gold border border-upt-gold/30 font-bold uppercase tracking-wider shrink-0">
-                  Paso 4: Congelamiento de Alcance
-                </span>
-              </div>
-              <p className="text-[10px] sm:text-[11px] text-slate-400 truncate">
+              <h1 className="text-base sm:text-lg font-bold text-white tracking-tight truncate">
+                {terminologia.lineaBaseLabel}
+              </h1>
+              <p className="text-xs text-slate-400 truncate">
                 {terminologia.lineaBaseSubtitulo}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0 border-t border-white/10 sm:border-t-0">
+          <div className="flex items-center justify-end gap-2 shrink-0">
             <Link
               href="/ecs"
               className="px-2.5 py-1.5 text-xs font-bold rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5 border border-white/10"
