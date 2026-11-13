@@ -36,6 +36,7 @@ import {
   Printer,
 } from 'lucide-react';
 import AppShell from '@/components/AppShell';
+import LifecycleStepper from '@/components/LifecycleStepper';
 
 interface ReunionItem {
   id: string;
@@ -347,6 +348,12 @@ export default function ReunionesPage() {
 
       {/* Main Content */}
       <main className={`max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6 ${selectedReunion ? 'print:hidden' : ''}`}>
+        
+        {/* Flujo Guiado de 5 Fases Estilo Notion */}
+        <LifecycleStepper
+          currentStep={1}
+          counts={{ reuniones: reuniones.length }}
+        />
         
         {/* Controles de Navegación del Calendario y Filtros */}
         <div className="bg-[#1A1D25] rounded-3xl p-4 sm:p-5 border border-white/10 shadow-xl space-y-4">

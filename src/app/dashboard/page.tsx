@@ -43,6 +43,7 @@ import {
 import GuiaFlujoModal from '@/components/GuiaFlujoModal';
 import AgendarReunionModal from '@/components/AgendarReunionModal';
 import AppShell from '@/components/AppShell';
+import LifecycleStepper from '@/components/LifecycleStepper';
 import { getTerminologia } from '@/lib/terminologia';
 
 interface UserData {
@@ -430,6 +431,17 @@ export default function DashboardPage() {
             </Link>
           </div>
         )}
+
+        {/* Flujo Guiado de 5 Fases del Ciclo de Vida (Notion-Style) */}
+        <LifecycleStepper
+          currentStep={1}
+          rubro={user?.rubro}
+          counts={{
+            reuniones: reuniones.length,
+            ecs: ecsList.length,
+            aprobacionesPendientes: bloqueosActivos.length,
+          }}
+        />
 
         {/* Selector de Modo de Vista (Segmented Control Estilo Linear / macOS) */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-[#1A1D25] p-2 rounded-2xl border border-white/10 shadow-sm">

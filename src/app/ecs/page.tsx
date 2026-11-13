@@ -5,7 +5,10 @@ import useSWR from 'swr';
 import { fetcher } from '@/lib/fetcher';
 import { getTerminologia } from '@/lib/terminologia';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import AppShell from '@/components/AppShell';
+import LifecycleStepper from '@/components/LifecycleStepper';
+import NotionSlideOver, { SlideOverItem } from '@/components/NotionSlideOver';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShieldCheck, 
@@ -37,6 +40,7 @@ import {
   GitPullRequest,
   LayoutGrid,
   List,
+  Eye,
 } from 'lucide-react';
 
 interface EcsItem {
@@ -58,6 +62,7 @@ interface AuxData {
 }
 
 export default function EcsPage() {
+  const router = useRouter();
   const [ecsList, setEcsList] = useState<EcsItem[]>([]);
   const [auxData, setAuxData] = useState<AuxData>({ proyectos: [], usuarios: [] });
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -68,6 +73,10 @@ export default function EcsPage() {
   const [tabEstado, setTabEstado] = useState<'TODOS' | 'PENDIENTE' | 'APROBADA'>('TODOS');
   const [vista, setVista] = useState<'CARDS' | 'LISTA'>('CARDS');
   const [mostrarOpcionesAvanzadas, setMostrarOpcionesAvanzadas] = useState(false);
+
+  // Slide-over estilo Notion
+  const [slideOverItem, setSlideOverItem] = useState<SlideOverItem | null>(null);
+  const [slideOverOpen, setSlideOverOpen] = useState(false);
 
   // Modal nuevo ECS
   const [modalOpen, setModalOpen] = useState(false);
@@ -299,6 +308,16 @@ export default function EcsPage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
+        
+        {/* Flujo Guiado de 5 Fases Estilo Notion */}
+        <LifecycleStepper
+          currentStep={2}
+          rubro={rubro}
+          counts={{
+            ecs: ecsList.length,
+            aprobacionesPendientes: ecsList.filter((e) => e.versiones[0]?.estado === 'PENDIENTE').length,
+          }}
+        />
         
         {/* Metric Strip Estilo Linear */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
@@ -651,6 +670,20 @@ export default function EcsPage() {
                         )}
                       </div>
 
+                      {/* Vista Rápida Slide-over */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSlideOverItem(item);
+                          setSlideOverOpen(true);
+                        }}
+                        className="px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-white/10 transition flex items-center gap-1 border border-white/5"
+                        title="Ficha rápida estilo Notion"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span className="hidden lg:inline text-[11px]">Ficha</span>
+                      </button>
+
                       {/* Botón Abrir */}
                       <Link
                         href={`/ecs/${item.id}`}
@@ -795,10 +828,21 @@ export default function EcsPage() {
                     </div>
 
                     {/* Footer con Enlace de Acción Rápida */}
-                    <div className="p-4 pt-0">
+                    <div className="p-4 pt-0 flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSlideOverItem(item);
+                          setSlideOverOpen(true);
+                        }}
+                        className="p-2.5 rounded-xl bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white border border-white/10 transition flex items-center justify-center shrink-0"
+                        title="Ver ficha lateral estilo Notion"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
                       <Link
                         href={`/ecs/${item.id}`}
-                        className={`w-full py-2.5 px-4 rounded-xl font-bold text-xs transition flex items-center justify-between group/btn shadow-xs active:scale-98 ${
+                        className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-xs transition flex items-center justify-between group/btn shadow-xs active:scale-98 ${
                           isMyEcs && !ultimaVersion
                             ? 'bg-sky-600 hover:bg-sky-500 text-white'
                             : 'bg-white/10 hover:bg-white/20 text-white border border-white/10'
@@ -864,6 +908,64 @@ export default function EcsPage() {
             )}
 
             <form onSubmit={handleCreateEcs} className="space-y-4">
+              {/* Plantillas Rápidas Estilo Notion */}
+              <div className="bg-[#14161E] p-3 rounded-2xl border border-white/10 space-y-2">
+                <span className="text-[11px] font-bold text-slate-300 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Plantillas Rápidas (Un Clic):</span>
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNombre('Especificación de Requerimientos del Sistema (SRS)');
+                      setTipo('DOCUMENTO');
+                      setDescripcion('Documento formal de requerimientos funcionales, no funcionales e interfaces de usuario conforme a IEEE 830.');
+                      generarCodigoSugerido();
+                    }}
+                    className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                  >
+                    📄 Req. IEEE
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNombre('Módulo de Autenticación y Autorización RBAC');
+                      setTipo('CODIGO_FUENTE');
+                      setDescripcion('Componentes, middleware y endpoints con tokens JWT en cookies HttpOnly para control de roles.');
+                      generarCodigoSugerido();
+                    }}
+                    className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                  >
+                    💻 Módulo Código
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNombre('Plano Estructural de Cimentación y Armaduras');
+                      setTipo('DISENO');
+                      setDescripcion('Plano técnico acotado con especificación de materiales y memoria de cálculo estructural.');
+                      generarCodigoSugerido();
+                    }}
+                    className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                  >
+                    📐 Plano / Diseño
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNombre('Esquema Relacional y Migración Inicial DDL');
+                      setTipo('BASE_DATOS');
+                      setDescripcion('Modelo relacional normalizado con integridad referencial, índices y auditoría inmutable.');
+                      generarCodigoSugerido();
+                    }}
+                    className="text-[11px] font-medium bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white px-2.5 py-1 rounded-lg border border-white/10 transition"
+                  >
+                    🗄️ Base de Datos
+                  </button>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* 1. Nombre del Entregable */}
                 <div className="sm:col-span-2">
@@ -1028,6 +1130,14 @@ export default function EcsPage() {
           </div>
         </div>
       )}
+
+      {/* Slide-over tipo Notion para ficha rápida e interactiva */}
+      <NotionSlideOver
+        item={slideOverItem}
+        isOpen={slideOverOpen}
+        onClose={() => setSlideOverOpen(false)}
+        onDictaminar={() => router.push('/aprobaciones')}
+      />
     </AppShell>
   );
 }

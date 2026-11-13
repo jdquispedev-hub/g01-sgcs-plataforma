@@ -28,6 +28,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import AppShell from '@/components/AppShell';
+import LifecycleStepper from '@/components/LifecycleStepper';
 
 interface LineaBaseItem {
   id: string;
@@ -176,6 +177,13 @@ export default function LineasBasePage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
+        
+        {/* Flujo Guiado de 5 Fases Estilo Notion */}
+        <LifecycleStepper
+          currentStep={4}
+          rubro={rubro}
+          counts={{ lineasBase: lineasBase.length }}
+        />
         
         {/* Banner Explicativo */}
         <div

@@ -30,6 +30,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import AppShell from '@/components/AppShell';
+import LifecycleStepper from '@/components/LifecycleStepper';
 
 interface SolicitudItem {
   id: string;
@@ -262,6 +263,11 @@ export default function CambiosPage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
+        {/* Flujo Guiado de 5 Fases Estilo Notion */}
+        <LifecycleStepper
+          currentStep={5}
+          counts={{ cambios: solicitudes.length }}
+        />
         
         {/* Banner Explicativo */}
         <div className="bg-[#1A1D25] rounded-2xl p-5 sm:p-6 text-white border border-white/10 relative overflow-hidden shadow-lg">

@@ -25,6 +25,7 @@ import {
   Lock,
 } from 'lucide-react';
 import AppShell from '@/components/AppShell';
+import LifecycleStepper from '@/components/LifecycleStepper';
 
 interface VersionPendiente {
   id: string;
@@ -218,6 +219,15 @@ export default function AprobacionesPage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full space-y-6">
+        {/* Flujo Guiado de 5 Fases Estilo Notion */}
+        <LifecycleStepper
+          currentStep={3}
+          counts={{
+            aprobacionesPendientes: versiones.length + solicitudes.length,
+            ecs: versiones.length,
+            cambios: solicitudes.length,
+          }}
+        />
         {/* Banner de Estado de Bandeja */}
         <div className="bg-[#1A1D25] rounded-3xl p-6 text-white shadow-xl border border-white/10 relative overflow-hidden">
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
