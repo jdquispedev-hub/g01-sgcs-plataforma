@@ -277,16 +277,21 @@ export default function AppSidebar({ user, onLogout }: AppSidebarProps) {
             {!collapsed && <span>Guía de Proceso</span>}
           </button>
 
-          {onLogout && (
-            <button
-              onClick={() => onLogout()}
-              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-rose-300 hover:bg-rose-500/10 transition"
-              title="Cerrar sesión"
-            >
-              <LogOut className="w-4 h-4 text-rose-400 shrink-0" />
-              {!collapsed && <span>Cerrar Sesión</span>}
-            </button>
-          )}
+          <button
+            onClick={async () => {
+              if (onLogout) {
+                await onLogout();
+              } else {
+                await fetch('/api/auth/logout', { method: 'POST' });
+              }
+              window.location.href = '/login';
+            }}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-rose-300 hover:bg-rose-500/10 transition"
+            title="Cerrar sesión"
+          >
+            <LogOut className="w-4 h-4 text-rose-400 shrink-0" />
+            {!collapsed && <span>Cerrar Sesión</span>}
+          </button>
         </div>
       </aside>
 

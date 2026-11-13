@@ -41,11 +41,9 @@ export default function LoginPage() {
         return;
       }
 
-      if (data.data?.user?.rol === 'SUPERADMIN') {
-        router.push('/superadmin');
-      } else {
-        router.push('/dashboard');
-      }
+      const searchParams = new URLSearchParams(window.location.search);
+      const callback = searchParams.get('callbackUrl') || (data.data?.user?.rol === 'SUPERADMIN' ? '/superadmin' : '/dashboard');
+      window.location.href = callback;
     } catch {
       setError('Error de conexión con el servidor de autenticación');
       setLoading(false);
