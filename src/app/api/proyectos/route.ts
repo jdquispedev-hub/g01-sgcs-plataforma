@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
+import { sembrarMetodologiaProyecto } from '@/lib/metodologias';
+import { MetodologiaProyecto } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,6 +11,9 @@ const crearProyectoSchema = z.object({
   codigo: z.string().max(50).optional(),
   nombre: z.string().min(3, 'El nombre debe tener al menos 3 caracteres').max(200),
   cliente_nombre: z.string().min(2, 'El nombre del cliente es obligatorio').max(150),
+  metodologia: z.enum(['RUP', 'SCRUM', 'CASCADA']).default('RUP'),
+  fecha_inicio: z.string().optional(),
+  fecha_estimada_fin: z.string().optional(),
   descripcion: z.string().optional(),
 });
 
@@ -35,6 +40,24 @@ export async function GET(request: NextRequest) {
             orderBy: { created_at: 'desc' },
           },
           reuniones: { orderBy: { fecha: 'desc' } },
+          etapas: {
+            orderBy: { orden: 'asc' },
+            include: {
+              actividades: {
+                include: {
+                  responsable: { select: { id: true, nombre_completo: true, email: true, cargo: true } },
+                  ecs: true,
+                },
+              },
+            },
+          },
+          actividades_cronograma: {
+            include: {
+              responsable: { select: { id: true, nombre_completo: true, email: true, cargo: true } },
+              ecs: true,
+            },
+            orderBy: { fecha_inicio: 'asc' },
+          },
           lineas_base: {
             include: {
               versiones: true,
@@ -63,6 +86,8 @@ export async function GET(request: NextRequest) {
             elementos_config: true,
             lineas_base: true,
             reuniones: true,
+            etapas: true,
+            actividades_cronograma: true,
           },
         },
       },
@@ -103,7 +128,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { codigo, nombre, cliente_nombre } = validation.data;
+    const { codigo, nombre, cliente_nombre, metodologia, fecha_inicio, fecha_estimada_fin } = validation.data;
     let codigoUpper = (codigo || '').trim().toUpperCase();
     if (!codigoUpper) {
       let countProyectos = await prisma.proyectoCaso.count({
@@ -136,15 +161,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const fInicio = fecha_inicio ? new Date(fecha_inicio) : new Date();
+    const fFin = fecha_estimada_fin ? new Date(fecha_estimada_fin) : null;
+
     const nuevoProyecto = await prisma.proyectoCaso.create({
       data: {
         organizacion_id: session.organizacionId,
         codigo: codigoUpper,
         nombre: nombre.trim(),
         cliente_nombre: cliente_nombre.trim(),
-        fecha_inicio: new Date(),
+        metodologia: (metodologia as MetodologiaProyecto) || 'RUP',
+        fecha_inicio: fInicio,
+        fecha_estimada_fin: fFin,
         estado: 'EN_EJECUCION',
       },
+    });
+
+    // Sembrar automáticamente las etapas y los ECS estándar de la metodología
+    await sembrarMetodologiaProyecto({
+      proyectoId: nuevoProyecto.id,
+      metodologia: nuevoProyecto.metodologia,
+      fechaInicio: fInicio,
+      fechaFin: fFin,
+      adminId: session.userId,
     });
 
     // Auditoría inmutable (RNF-10)

@@ -44,6 +44,8 @@ import GuiaFlujoModal from '@/components/GuiaFlujoModal';
 import AgendarReunionModal from '@/components/AgendarReunionModal';
 import AppShell from '@/components/AppShell';
 import LifecycleStepper from '@/components/LifecycleStepper';
+import ModalCrearProyecto from '@/components/ModalCrearProyecto';
+import BandejaAsignacionesUsuario from '@/components/BandejaAsignacionesUsuario';
 import { getTerminologia } from '@/lib/terminologia';
 
 interface UserData {
@@ -524,6 +526,9 @@ export default function DashboardPage() {
                 </Link>
               </div>
             </div>
+
+            {/* BANDEJA DE ASIGNACIONES (ACEPTAR / RECHAZAR ENTREGABLES) */}
+            <BandejaAsignacionesUsuario />
 
             {/* 3 KPIs Personales del Usuario */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -1699,106 +1704,16 @@ export default function DashboardPage() {
         currentUserId={user?.userId}
       />
 
-      {/* Modal Registrar Nuevo Proyecto / Obra Civil */}
-      {crearProyectoModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200 space-y-4 animate-in fade-in zoom-in-95 duration-150 my-6">
-            <div className="flex items-start justify-between border-b border-slate-200 pb-3">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-sky-200 bg-[#16181D] px-2.5 py-0.5 rounded-full inline-block mb-1">
-                  Nuevo(a) {terminologia.proyectoLabel}
-                </span>
-                <h3 className="text-lg font-bold text-slate-900">
-                  Registrar Nuevo(a) {terminologia.proyectoLabel}
-                </h3>
-              </div>
-              <button
-                onClick={() => setCrearProyectoModalOpen(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition"
-              >
-                ✕
-              </button>
-            </div>
-
-            {errorCrearProy && (
-              <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs font-semibold flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 shrink-0 text-red-600" />
-                <span>{errorCrearProy}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleCrearProyecto} className="space-y-3.5 text-xs">
-              <div>
-                <label className="font-semibold text-slate-800 block mb-1">
-                  Código Único ({terminologia.proyectoLabel}) *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={nuevoProyCodigo}
-                  onChange={(e) => setNuevoProyCodigo(e.target.value.toUpperCase())}
-                  placeholder={`Ej: ${terminologia.proyectoCodigoEjemplo}`}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:border-[#16181D] focus:bg-white bg-slate-50 transition outline-hidden"
-                />
-              </div>
-
-              <div>
-                <label className="font-semibold text-slate-800 block mb-1">
-                  Nombre Completo ({terminologia.proyectoLabel}) *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={nuevoProyNombre}
-                  onChange={(e) => setNuevoProyNombre(e.target.value)}
-                  placeholder={terminologia.proyectoPlaceholder}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-medium text-slate-900 focus:border-[#16181D] focus:bg-white bg-slate-50 transition outline-hidden"
-                />
-              </div>
-
-              <div>
-                <label className="font-semibold text-slate-800 block mb-1">
-                  {terminologia.clienteLabel} *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={nuevoProyCliente}
-                  onChange={(e) => setNuevoProyCliente(e.target.value)}
-                  placeholder={terminologia.clientePlaceholder}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-medium text-slate-900 focus:border-[#16181D] focus:bg-white bg-slate-50 transition outline-hidden"
-                />
-              </div>
-
-              <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setCrearProyectoModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  disabled={creandoProy}
-                  className="px-5 py-2 rounded-xl bg-[#16181D] hover:bg-[#133A66] text-white font-semibold transition shadow-xs active:scale-95 disabled:opacity-50 flex items-center gap-2"
-                >
-                  {creandoProy ? (
-                    <span>Registrando...</span>
-                  ) : (
-                    <>
-                      <Plus className="w-4 h-4" />
-                      <span>
-                        Crear {terminologia.proyectoLabel}
-                      </span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Modal Registrar Nuevo Proyecto / Metodología */}
+      <ModalCrearProyecto
+        isOpen={crearProyectoModalOpen}
+        onClose={() => setCrearProyectoModalOpen(false)}
+        onProyectoCreado={(nuevo) => {
+          setProyectos((prev) => [nuevo, ...prev]);
+          setSelectedProyectoId(nuevo.id);
+          mutateAux();
+        }}
+      />
     </AppShell>
   );
 }

@@ -12,6 +12,32 @@ generator client {
 // ENUMS
 // -------------------------------------------------------------
 
+enum MetodologiaProyecto {
+  RUP
+  SCRUM
+  CASCADA
+}
+
+enum EstadoAsignacion {
+  PENDIENTE_ACEPTACION
+  ACEPTADA
+  RECHAZADA
+  EN_PROGRESO
+  COMPLETADA
+}
+
+enum FaseMetodologia {
+  INICIO
+  ELABORACION
+  CONSTRUCCION
+  TRANSICION
+  SPRINT
+  ANALISIS
+  DISENO
+  PRUEBAS
+  DESPLIEGUE
+}
+
 enum RubroIndustria {
   SOFTWARE
   VETERINARIA
@@ -124,6 +150,7 @@ model Usuario {
   reportes_diarios       ReporteDiario[]    @relation("ReporteAutor")
   auditorias             AuditoriaLog[]     @relation("AuditoriaUsuario")
   reuniones_convocadas   ReunionProyecto[]  @relation("ReunionConvocante")
+  actividades_asignadas  ActividadCronograma[] @relation("ActividadesAsignadas")
 
   @@unique([organizacion_id, email])
   @@index([email])
@@ -135,18 +162,21 @@ model ProyectoCaso {
   organizacion_id    String
   codigo             String         @db.VarChar(50)
   nombre             String         @db.VarChar(200)
-  cliente_nombre     String         @db.VarChar(150)
-  fecha_inicio       DateTime       @db.Date
-  fecha_estimada_fin DateTime?      @db.Date
-  estado             EstadoProyecto @default(DIAGNOSTICO)
-  created_at         DateTime       @default(now())
-  updated_at         DateTime       @updatedAt
+  cliente_nombre     String              @db.VarChar(150)
+  metodologia        MetodologiaProyecto @default(RUP)
+  fecha_inicio       DateTime            @db.Date
+  fecha_estimada_fin DateTime?           @db.Date
+  estado             EstadoProyecto      @default(DIAGNOSTICO)
+  created_at         DateTime            @default(now())
+  updated_at         DateTime            @updatedAt
 
-  organizacion       Organizacion   @relation(fields: [organizacion_id], references: [id], onDelete: Cascade)
+  organizacion       Organizacion        @relation(fields: [organizacion_id], references: [id], onDelete: Cascade)
   elementos_config   Ecs[]
   lineas_base        LineaBase[]
   reportes_diarios   ReporteDiario[]
   reuniones          ReunionProyecto[]
+  etapas             EtapaProyecto[]
+  actividades_cronograma ActividadCronograma[]
 
   @@unique([organizacion_id, codigo])
   @@index([organizacion_id, estado])
@@ -163,9 +193,11 @@ model Ecs {
   ubicacion               String     @db.VarChar(500)
   responsable_id          String
   atributos_personalizados Json       @default("{}")
-  estado                  EstadoEcs  @default(ACTIVO)
-  created_at              DateTime   @default(now())
-  updated_at              DateTime   @updatedAt
+  codigo_caso_uso         String?     @db.VarChar(50)
+  etapa_sugerida          FaseMetodologia?
+  estado                  EstadoEcs   @default(ACTIVO)
+  created_at              DateTime    @default(now())
+  updated_at              DateTime    @updatedAt
 
   proyecto                ProyectoCaso @relation(fields: [proyecto_id], references: [id], onDelete: Cascade)
   responsable             Usuario      @relation("EcsResponsable", fields: [responsable_id], references: [id])
@@ -173,6 +205,7 @@ model Ecs {
   versiones               VersionEcs[]
   solicitudes_cambio      SolicitudCambio[]
   cambios_afectados       CambioEcsAfectado[]
+  actividades_cronograma  ActividadCronograma[] @relation("ActividadEcs")
 
   @@unique([proyecto_id, codigo])
   @@index([codigo])
@@ -245,6 +278,9 @@ model SolicitudCambio {
   version_resultante_id   String?
   descripcion             String          @db.Text
   justificacion           String          @db.Text
+  codigo_caso_uso         String?         @db.VarChar(50)
+  requerimiento_afectado  String?         @db.VarChar(100)
+  actividad_cronograma_id String?
   estado                  EstadoCambio    @default(PENDIENTE_EVALUACION)
   solicitante_id          String
   resolutor_id            String?
@@ -259,6 +295,7 @@ model SolicitudCambio {
   version_resultante      VersionEcs?     @relation("VersionResultante", fields: [version_resultante_id], references: [id], onDelete: SetNull)
   solicitante             Usuario         @relation("Solicitante", fields: [solicitante_id], references: [id])
   resolutor               Usuario?        @relation("Resolutor", fields: [resolutor_id], references: [id])
+  actividad_cronograma    ActividadCronograma? @relation(fields: [actividad_cronograma_id], references: [id], onDelete: SetNull)
 
   evaluacion              EvaluacionCambio?
   ecs_afectados           CambioEcsAfectado[]
@@ -352,4 +389,51 @@ model ReunionProyecto {
 
   @@index([proyecto_id, fecha])
   @@map("reuniones_proyecto")
+}
+
+model EtapaProyecto {
+  id           String          @id @default(uuid())
+  proyecto_id  String
+  nombre       String          @db.VarChar(100)
+  fase         FaseMetodologia @default(INICIO)
+  orden        Int             @default(1)
+  fecha_inicio DateTime?       @db.Date
+  fecha_fin    DateTime?       @db.Date
+  descripcion  String?         @db.Text
+  created_at   DateTime        @default(now())
+
+  proyecto     ProyectoCaso    @relation(fields: [proyecto_id], references: [id], onDelete: Cascade)
+  actividades  ActividadCronograma[]
+
+  @@index([proyecto_id, orden])
+  @@map("etapas_proyecto")
+}
+
+model ActividadCronograma {
+  id                String           @id @default(uuid())
+  proyecto_id       String
+  etapa_id          String?
+  titulo            String           @db.VarChar(200)
+  descripcion       String?          @db.Text
+  codigo_caso_uso   String?          @db.VarChar(50)
+  fecha_inicio      DateTime         @db.Date
+  fecha_fin         DateTime         @db.Date
+  estado_asignacion EstadoAsignacion @default(PENDIENTE_ACEPTACION)
+  responsable_id    String?
+  motivo_rechazo    String?          @db.Text
+  fecha_respuesta   DateTime?
+  ecs_id            String?
+  created_at        DateTime         @default(now())
+  updated_at        DateTime         @updatedAt
+
+  proyecto          ProyectoCaso     @relation(fields: [proyecto_id], references: [id], onDelete: Cascade)
+  etapa             EtapaProyecto?   @relation(fields: [etapa_id], references: [id], onDelete: SetNull)
+  responsable       Usuario?         @relation("ActividadesAsignadas", fields: [responsable_id], references: [id], onDelete: SetNull)
+  ecs               Ecs?             @relation("ActividadEcs", fields: [ecs_id], references: [id], onDelete: SetNull)
+  solicitudes_cambio SolicitudCambio[]
+
+  @@index([proyecto_id, fecha_inicio])
+  @@index([responsable_id, estado_asignacion])
+  @@index([codigo_caso_uso])
+  @@map("actividades_cronograma")
 }

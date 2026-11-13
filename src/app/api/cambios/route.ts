@@ -13,6 +13,10 @@ const crearRfcSchema = z.object({
     .string()
     .max(50, 'El código no puede superar 50 caracteres')
     .optional(),
+  actividad_cronograma_id: z.string().uuid().optional().nullable(),
+  codigo_caso_uso: z.string().max(50).optional().nullable(),
+  requerimiento_afectado: z.string().max(100).optional().nullable(),
+  ecs_afectados_ids: z.array(z.string().uuid()).optional(),
   descripcion: z
     .string()
     .min(5, 'La descripción técnica del cambio debe tener al menos 5 caracteres'),
@@ -114,6 +118,25 @@ export async function GET(request: NextRequest) {
             impacto: true,
             observaciones: true,
             created_at: true,
+          },
+        },
+        actividad_cronograma: {
+          select: {
+            id: true,
+            titulo: true,
+            codigo_caso_uso: true,
+          },
+        },
+        ecs_afectados: {
+          include: {
+            ecs: {
+              select: {
+                id: true,
+                codigo: true,
+                nombre: true,
+                tipo: true,
+              },
+            },
           },
         },
         _count: {
@@ -237,12 +260,32 @@ export async function POST(request: NextRequest) {
           codigo: codigoNormalizado,
           ecs_id: data.ecs_id,
           version_base_id: data.version_base_id,
+          actividad_cronograma_id: data.actividad_cronograma_id || null,
+          codigo_caso_uso: data.codigo_caso_uso?.trim().toUpperCase() || null,
+          requerimiento_afectado: data.requerimiento_afectado?.trim() || null,
           descripcion: data.descripcion.trim(),
           justificacion: data.justificacion.trim(),
           solicitante_id: session.userId,
           estado: EstadoCambio.PENDIENTE_EVALUACION,
         },
       });
+
+      // Si se especificaron ECS / Objetos afectados en la solicitud, asociarlos
+      if (data.ecs_afectados_ids && data.ecs_afectados_ids.length > 0) {
+        const afectadosData = data.ecs_afectados_ids
+          .filter((id) => id !== data.ecs_id) // Evitar duplicar el principal
+          .map((id) => ({
+            solicitud_id: rfc.id,
+            ecs_id: id,
+          }));
+
+        if (afectadosData.length > 0) {
+          await tx.cambioEcsAfectado.createMany({
+            data: afectadosData,
+            skipDuplicates: true,
+          });
+        }
+      }
 
       await tx.auditoriaLog.create({
         data: {

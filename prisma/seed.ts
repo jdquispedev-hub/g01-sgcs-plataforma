@@ -1,4 +1,4 @@
-import { PrismaClient, RubroIndustria, RolUsuario, TipoEcs, TipoReunion, EstadoCambio, NivelImpacto } from '@prisma/client';
+import { PrismaClient, RubroIndustria, RolUsuario, TipoEcs, TipoReunion, EstadoCambio, NivelImpacto, MetodologiaProyecto, FaseMetodologia, EstadoAsignacion } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -172,12 +172,14 @@ async function main() {
     },
     update: {
       cliente_nombre: 'Instituto Continental (Elena Ramos)',
+      metodologia: MetodologiaProyecto.RUP,
     },
     create: {
       organizacion_id: orgSoftware.id,
       codigo: 'PRY-CURSOS-01',
       nombre: 'Plataforma Web E-Learning y Pagos',
       cliente_nombre: 'Instituto Continental (Elena Ramos)',
+      metodologia: MetodologiaProyecto.RUP,
       fecha_inicio: new Date('2026-10-01'),
       fecha_estimada_fin: new Date('2026-11-20'),
       estado: 'EN_EJECUCION',
@@ -192,12 +194,15 @@ async function main() {
         codigo: 'PRY-APP-02',
       },
     },
-    update: {},
+    update: {
+      metodologia: MetodologiaProyecto.SCRUM,
+    },
     create: {
       organizacion_id: orgSoftware.id,
       codigo: 'PRY-APP-02',
       nombre: 'App Móvil de Estudiantes y Notificaciones Push',
       cliente_nombre: 'Corporación Educativa San Marcos',
+      metodologia: MetodologiaProyecto.SCRUM,
       fecha_inicio: new Date('2026-10-15'),
       fecha_estimada_fin: new Date('2026-12-10'),
       estado: 'EN_EJECUCION',

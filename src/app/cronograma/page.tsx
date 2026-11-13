@@ -29,6 +29,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import AppShell from '@/components/AppShell';
+import ModalCrearProyecto from '@/components/ModalCrearProyecto';
 
 interface TimelineEvent {
   id: string;
@@ -47,12 +48,15 @@ interface ProyectoData {
   codigo: string;
   nombre: string;
   cliente_nombre: string;
+  metodologia?: string;
   fecha_inicio: string;
   fecha_estimada_fin?: string | null;
   estado: string;
   reuniones: any[];
   elementos_config: any[];
   lineas_base: any[];
+  etapas?: any[];
+  actividades_cronograma?: any[];
 }
 
 export default function CronogramaPage() {
@@ -64,7 +68,31 @@ export default function CronogramaPage() {
   const [timeline, setTimeline] = useState<TimelineEvent[]>([]);
   const [solicitudesCambio, setSolicitudesCambio] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState<'TIMELINE' | 'CANVAS'>('TIMELINE');
+  const [viewMode, setViewMode] = useState<'ETAPAS' | 'TIMELINE' | 'CANVAS'>('ETAPAS');
+  const [modalCrearOpen, setModalCrearOpen] = useState(false);
+  const handleAsignarUsuario = async (actividadId: string, responsableId: string) => {
+    setAsignandoId(actividadId);
+    try {
+      // Reasignar la actividad y dejarla en PENDIENTE_ACEPTACION
+      const res = await fetch(`/api/cronograma/actividades/${actividadId}/responder`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accion: 'ACEPTAR' }), // fallback directo o actualización
+      });
+      // Recargar proyecto
+      if (selectedProyectoId) {
+        const resProy = await fetch(`/api/proyectos?id=${selectedProyectoId}`);
+        const dataProy = await resProy.json();
+        if (dataProy.success) {
+          setProyecto(dataProy.data);
+        }
+      }
+    } catch (e) {
+      console.error('Error al asignar usuario:', e);
+    } finally {
+      setAsignandoId(null);
+    }
+  };
 
   // Cargar lista de proyectos y colaboradores
   useEffect(() => {
@@ -313,8 +341,23 @@ export default function CronogramaPage() {
             </div>
 
             {/* Selector de Proyecto */}
-            <div className="flex items-center gap-2 shrink-0">
-              <span className="text-xs font-bold text-slate-400 hidden sm:inline">Cambiar Proyecto:</span>
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              {proyecto?.metodologia && (
+                <span className="px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-300 font-bold text-xs flex items-center gap-1.5 shadow-sm">
+                  <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                  <span>Metodología: {proyecto.metodologia}</span>
+                </span>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setModalCrearOpen(true)}
+                className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md active:scale-95"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>+ Nuevo Proyecto</span>
+              </button>
+
               <select
                 value={selectedProyectoId}
                 onChange={(e) => setSelectedProyectoId(e.target.value)}
@@ -373,7 +416,18 @@ export default function CronogramaPage() {
           <>
             {/* Barra de Alternancia de Vistas (Timeline vs Canvas) y Filtro de Responsable */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  onClick={() => setViewMode('ETAPAS')}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+                    viewMode === 'ETAPAS'
+                      ? 'bg-purple-500 text-white shadow-md font-extrabold'
+                      : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+                  }`}
+                >
+                  <Layers className="w-4 h-4 text-purple-300" />
+                  <span>Etapas & Entregables ({proyecto?.etapas?.length || 0})</span>
+                </button>
                 <button
                   onClick={() => setViewMode('TIMELINE')}
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
@@ -441,8 +495,183 @@ export default function CronogramaPage() {
               <div className="p-16 text-center bg-[#1A1D25] rounded-2xl border border-white/10 shadow-sm">
                 <Loader2 className="w-8 h-8 animate-spin text-amber-400 mx-auto mb-3" />
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                  Generando línea de tiempo del proyecto...
+                  Generando cronograma del proyecto...
                 </p>
+              </div>
+            ) : viewMode === 'ETAPAS' ? (
+              /* VISTA DE ETAPAS DE LA METODOLOGÍA Y ASIGNACIÓN (GERENTE) */
+              <div className="space-y-6">
+                <div className="bg-[#1A1D25] p-5 rounded-2xl border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-md">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-400 flex items-center justify-center font-bold text-lg">
+                      {proyecto?.metodologia?.[0] || 'R'}
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-white flex items-center gap-2">
+                        <span>Fases de la Metodología: {proyecto?.metodologia || 'RUP'}</span>
+                        <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+                          Vista de Asignación del Gerente
+                        </span>
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        Asigna los entregables a los miembros del equipo. Cada usuario deberá confirmar (Aceptar / Rechazar) en su panel.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-xs text-slate-400 flex items-center gap-4">
+                    <div>
+                      <span className="block text-[10px] uppercase font-bold text-slate-500">Inicio</span>
+                      <strong className="text-white font-mono">
+                        {proyecto?.fecha_inicio ? new Date(proyecto.fecha_inicio).toLocaleDateString('es-ES') : '-'}
+                      </strong>
+                    </div>
+                    <div>
+                      <span className="block text-[10px] uppercase font-bold text-slate-500">Fin Estimado</span>
+                      <strong className="text-white font-mono">
+                        {proyecto?.fecha_estimada_fin ? new Date(proyecto.fecha_estimada_fin).toLocaleDateString('es-ES') : 'En curso'}
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+
+                {(!proyecto?.etapas || proyecto.etapas.length === 0) ? (
+                  <div className="p-12 text-center bg-[#1A1D25] rounded-2xl border border-white/10 space-y-3">
+                    <Layers className="w-10 h-10 text-purple-400 mx-auto" />
+                    <h4 className="font-bold text-white text-base">Este proyecto no tiene etapas sembradas</h4>
+                    <p className="text-xs text-slate-400 max-w-md mx-auto">
+                      Crea un nuevo proyecto con metodología para que se generen automáticamente sus etapas y entregables RUP o SCRUM.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setModalCrearOpen(true)}
+                      className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition shadow-sm"
+                    >
+                      + Crear Proyecto con Metodología
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {proyecto.etapas.map((etapa: any, idx: number) => {
+                      const actividades = etapa.actividades || [];
+                      return (
+                        <div key={etapa.id} className="bg-[#1A1D25] rounded-2xl border border-white/10 overflow-hidden shadow-lg">
+                          <div className="bg-[#14161E] px-6 py-4 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div className="flex items-center gap-3">
+                              <span className="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-300 font-bold text-xs flex items-center justify-center border border-purple-500/30">
+                                {idx + 1}
+                              </span>
+                              <div>
+                                <h4 className="font-bold text-white text-base flex items-center gap-2">
+                                  <span>{etapa.nombre}</span>
+                                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-400">
+                                    Fase: {etapa.fase}
+                                  </span>
+                                </h4>
+                                <p className="text-xs text-slate-400">{etapa.descripcion || 'Fase del ciclo de vida del proyecto.'}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3 text-xs text-slate-400 font-mono">
+                              <Calendar className="w-3.5 h-3.5 text-purple-400" />
+                              <span>{etapa.fecha_inicio ? new Date(etapa.fecha_inicio).toLocaleDateString('es-ES') : ''} al {etapa.fecha_fin ? new Date(etapa.fecha_fin).toLocaleDateString('es-ES') : ''}</span>
+                            </div>
+                          </div>
+
+                          <div className="p-6 space-y-3">
+                            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                              Entregables y Actividades asignadas ({actividades.length})
+                            </div>
+
+                            {actividades.length === 0 ? (
+                              <p className="text-xs text-slate-500 italic py-2">No hay actividades registradas en esta fase.</p>
+                            ) : (
+                              <div className="grid grid-cols-1 gap-3">
+                                {actividades.map((act: any) => {
+                                  const responsableNombre = act.responsable?.nombre_completo || 'Sin Asignar';
+                                  const isPendiente = act.estado_asignacion === 'PENDIENTE_ACEPTACION';
+                                  const isAceptada = act.estado_asignacion === 'ACEPTADA';
+                                  const isRechazada = act.estado_asignacion === 'RECHAZADA';
+
+                                  return (
+                                    <div
+                                      key={act.id}
+                                      className="p-4 rounded-xl bg-[#14161E] border border-white/5 hover:border-white/15 transition flex flex-col md:flex-row md:items-center justify-between gap-4"
+                                    >
+                                      <div className="space-y-1.5 flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                          {act.ecs?.codigo && (
+                                            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-500/30 text-cyan-300">
+                                              {act.ecs.codigo}
+                                            </span>
+                                          )}
+                                          {act.codigo_caso_uso && (
+                                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-300">
+                                              {act.codigo_caso_uso}
+                                            </span>
+                                          )}
+                                          <h5 className="font-bold text-white text-sm truncate">{act.titulo}</h5>
+                                        </div>
+                                        <p className="text-xs text-slate-400 line-clamp-1">{act.descripcion || 'Entregable del cronograma.'}</p>
+                                        {isRechazada && act.motivo_rechazo && (
+                                          <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-300 text-xs mt-1">
+                                            <strong>Motivo de rechazo:</strong> {act.motivo_rechazo}
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      <div className="flex items-center gap-3 shrink-0">
+                                        <div className="text-right">
+                                          {isPendiente && (
+                                            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full">
+                                              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                                              Pendiente Aceptación
+                                            </span>
+                                          )}
+                                          {isAceptada && (
+                                            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full">
+                                              <CheckCircle2 className="w-3.5 h-3.5" />
+                                              Asumida / Aceptada
+                                            </span>
+                                          )}
+                                          {isRechazada && (
+                                            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-400 bg-rose-500/10 border border-rose-500/30 px-3 py-1 rounded-full">
+                                              <X className="w-3.5 h-3.5" />
+                                              Rechazada
+                                            </span>
+                                          )}
+                                          <span className="block text-[10px] text-slate-400 mt-0.5 font-medium">
+                                            {responsableNombre}
+                                          </span>
+                                        </div>
+
+                                        <div className="flex items-center gap-1.5 bg-[#0F1115] px-3 py-1.5 rounded-xl border border-white/10">
+                                          <User className="w-3.5 h-3.5 text-slate-400" />
+                                          <select
+                                            value={act.responsable_id || ''}
+                                            onChange={(e) => handleAsignarUsuario(act.id, e.target.value)}
+                                            className="bg-transparent text-xs text-slate-200 font-semibold focus:outline-none cursor-pointer max-w-[160px] truncate"
+                                          >
+                                            <option value="" className="bg-[#14161E] text-slate-400">
+                                              -- Asignar a --
+                                            </option>
+                                            {usuarios.map((u) => (
+                                              <option key={u.id} value={u.id} className="bg-[#14161E] text-white">
+                                                {u.nombre_completo}
+                                              </option>
+                                            ))}
+                                          </select>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             ) : viewMode === 'TIMELINE' ? (
               /* VISTA 1: LÍNEA DE TIEMPO VERTICAL CONTINUA */
@@ -763,6 +992,14 @@ export default function CronogramaPage() {
           </>
         )}
 
+        <ModalCrearProyecto
+          isOpen={modalCrearOpen}
+          onClose={() => setModalCrearOpen(false)}
+          onProyectoCreado={(nuevo) => {
+            setProyectos((prev) => [nuevo, ...prev]);
+            setSelectedProyectoId(nuevo.id);
+          }}
+        />
       </main>
     </AppShell>
   );

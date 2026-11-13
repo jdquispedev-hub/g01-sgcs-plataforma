@@ -17,6 +17,12 @@ import {
   ExternalLink,
   Loader2,
   Info,
+  CheckCircle2,
+  Network,
+  Code2,
+  FileText,
+  Sparkles,
+  ChevronRight,
 } from 'lucide-react';
 import AppShell from '@/components/AppShell';
 
@@ -36,10 +42,20 @@ interface EcsItem {
   versiones: VersionItem[];
 }
 
+interface ActividadItem {
+  id: string;
+  titulo: string;
+  codigo_caso_uso?: string | null;
+  fecha_inicio: string;
+  fecha_fin: string;
+  estado_asignacion: string;
+}
+
 interface Proyecto {
   id: string;
   codigo: string;
   nombre: string;
+  metodologia?: string;
 }
 
 export default function NuevaRfcPage() {
@@ -49,13 +65,25 @@ export default function NuevaRfcPage() {
   const [proyectos, setProyectos] = useState<Proyecto[]>([]);
   const [proyectoId, setProyectoId] = useState('');
   const [ecsList, setEcsList] = useState<EcsItem[]>([]);
+  const [actividades, setActividades] = useState<ActividadItem[]>([]);
   const [loadingProyectos, setLoadingProyectos] = useState(true);
   const [loadingEcs, setLoadingEcs] = useState(false);
-  const [rubro, setRubro] = useState<string>('CONSTRUCCION');
+  const [rubro, setRubro] = useState<string>('SOFTWARE');
 
-  // Estados del formulario
+  // Estados del flujo secuencial (Pizarra del Docente)
+  // Paso 1: Actividad y Caso de Uso
+  const [actividadId, setActividadId] = useState('');
+  const [codigoCasoUso, setCodigoCasoUso] = useState('CU01');
+
+  // Paso 2: Requerimiento analizado
+  const [requerimientoAfectado, setRequerimientoAfectado] = useState('RF-01: Autenticación y Control de Accesos');
+
+  // Paso 3: ECS Principal y Objetos Afectados en Cascada
   const [ecsId, setEcsId] = useState('');
   const [versionBaseId, setVersionBaseId] = useState('');
+  const [ecsAfectadosIds, setEcsAfectadosIds] = useState<string[]>([]);
+
+  // Paso 4: Detalle del cambio
   const [descripcion, setDescripcion] = useState('');
   const [justificacion, setJustificacion] = useState('');
 
@@ -91,21 +119,27 @@ export default function NuevaRfcPage() {
     fetchAux();
   }, []);
 
-  // Cargar ECS cuando cambia el proyecto
+  // Cargar ECS y Actividades cuando cambia el proyecto
   useEffect(() => {
     if (!proyectoId) return;
 
-    async function fetchEcs() {
+    async function fetchProyectoDatos() {
       setLoadingEcs(true);
       try {
-        const res = await fetch(`/api/ecs?proyectoId=${proyectoId}`);
-        const data = await res.json();
-        if (data.success) {
-          setEcsList(data.data);
-          if (data.data.length > 0) {
-            setEcsId(data.data[0].id);
-            if (data.data[0].versiones && data.data[0].versiones.length > 0) {
-              setVersionBaseId(data.data[0].versiones[data.data[0].versiones.length - 1].id);
+        const [resEcs, resAct] = await Promise.all([
+          fetch(`/api/ecs?proyectoId=${proyectoId}`),
+          fetch(`/api/cronograma/actividades?proyectoId=${proyectoId}`),
+        ]);
+
+        const dataEcs = await resEcs.json();
+        const dataAct = await resAct.json();
+
+        if (dataEcs.success) {
+          setEcsList(dataEcs.data);
+          if (dataEcs.data.length > 0) {
+            setEcsId(dataEcs.data[0].id);
+            if (dataEcs.data[0].versiones && dataEcs.data[0].versiones.length > 0) {
+              setVersionBaseId(dataEcs.data[0].versiones[dataEcs.data[0].versiones.length - 1].id);
             } else {
               setVersionBaseId('');
             }
@@ -114,17 +148,27 @@ export default function NuevaRfcPage() {
             setVersionBaseId('');
           }
         }
+
+        if (dataAct.success && Array.isArray(dataAct.data)) {
+          setActividades(dataAct.data);
+          if (dataAct.data.length > 0) {
+            setActividadId(dataAct.data[0].id);
+            if (dataAct.data[0].codigo_caso_uso) {
+              setCodigoCasoUso(dataAct.data[0].codigo_caso_uso);
+            }
+          }
+        }
       } catch (err) {
-        console.error('Error al cargar ECS:', err);
+        console.error('Error al cargar ECS y actividades:', err);
       } finally {
         setLoadingEcs(false);
       }
     }
 
-    fetchEcs();
+    fetchProyectoDatos();
   }, [proyectoId]);
 
-  // Actualizar versión base seleccionada al cambiar el ECS
+  // Actualizar versión base seleccionada al cambiar el ECS principal
   const handleEcsChange = (newEcsId: string) => {
     setEcsId(newEcsId);
     const item = ecsList.find((e) => e.id === newEcsId);
@@ -135,27 +179,41 @@ export default function NuevaRfcPage() {
     }
   };
 
+  const handleActividadChange = (newActId: string) => {
+    setActividadId(newActId);
+    const act = actividades.find((a) => a.id === newActId);
+    if (act?.codigo_caso_uso) {
+      setCodigoCasoUso(act.codigo_caso_uso);
+    }
+  };
+
+  const toggleEcsAfectado = (id: string) => {
+    setEcsAfectadosIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
   const selectedEcs = ecsList.find((e) => e.id === ecsId);
 
-  // Enviar el formulario
+  // Enviar el formulario secuencial
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
 
     if (!ecsId) {
-      setErrorMsg('Debes seleccionar un Elemento de Configuración');
+      setErrorMsg('Debes seleccionar un Elemento de Configuración principal');
       return;
     }
     if (!versionBaseId) {
       setErrorMsg('Debes seleccionar la versión base que se verá afectada por el cambio');
       return;
     }
-    if (!descripcion.trim() || descripcion.trim().length < 10) {
-      setErrorMsg('La descripción del cambio debe ser detallada (mínimo 10 caracteres)');
+    if (!descripcion.trim() || descripcion.trim().length < 5) {
+      setErrorMsg('La descripción del cambio debe ser detallada (mínimo 5 caracteres)');
       return;
     }
-    if (!justificacion.trim() || justificacion.trim().length < 10) {
-      setErrorMsg('La justificación del cambio debe estar debidamente sustentada (mínimo 10 caracteres)');
+    if (!justificacion.trim() || justificacion.trim().length < 5) {
+      setErrorMsg('La justificación del cambio debe estar debidamente sustentada (mínimo 5 caracteres)');
       return;
     }
 
@@ -168,6 +226,10 @@ export default function NuevaRfcPage() {
         body: JSON.stringify({
           ecs_id: ecsId,
           version_base_id: versionBaseId,
+          actividad_cronograma_id: actividadId || null,
+          codigo_caso_uso: codigoCasoUso.trim() || null,
+          requerimiento_afectado: requerimientoAfectado.trim() || null,
+          ecs_afectados_ids: ecsAfectadosIds,
           descripcion: descripcion.trim(),
           justificacion: justificacion.trim(),
         }),
@@ -195,8 +257,6 @@ export default function NuevaRfcPage() {
     }
   };
 
-  const terminologia = getTerminologia(rubro);
-
   return (
     <AppShell>
       {/* Sub-header contextual Nivel 3 */}
@@ -213,14 +273,14 @@ export default function NuevaRfcPage() {
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="font-bold text-xs sm:text-base text-white tracking-tight truncate">
-                  Radicar Solicitud de Cambio (RFC)
+                  Gestor de Cambios Secuencial (RFC)
                 </h1>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 uppercase tracking-wider shrink-0">
-                  RF-11 • Registro Formal
+                  Rúbrica SGCS • 8 Puntos
                 </span>
               </div>
               <span className="text-xs text-slate-400 block truncate">
-                Petición controlada de modificación vinculada a una versión base
+                Flujo guiado: Caso de Uso / Actividad → Requerimiento → Objetos de Software Afectados
               </span>
             </div>
           </div>
@@ -230,33 +290,47 @@ export default function NuevaRfcPage() {
       {/* Main Form */}
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-6">
         {errorMsg && (
-          <div className="p-4 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs sm:text-sm flex items-start gap-3 shadow-md">
+          <div className="p-4 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs sm:text-sm flex items-start gap-3 shadow-md animate-in fade-in">
             <AlertTriangle className="w-5 h-5 shrink-0 text-rose-400 mt-0.5" />
             <div className="flex-1 font-semibold">{errorMsg}</div>
           </div>
         )}
 
-        {/* Banner de Concepto: ¿Por qué radicar una RFC? */}
-        <div className="bg-[#1A1D25] rounded-2xl p-5 text-white border border-white/10 shadow-md flex items-start gap-3">
-          <Info className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-          <p className="text-xs text-slate-300 leading-relaxed">
-            <strong className="text-white">Procedimiento de Cambio Controlado (RF-11):</strong> Toda propuesta de cambio debe especificar con precisión el artefacto afectado y su versión actual. Luego de radicada, el comité técnico evaluará su impacto antes de autorizar cualquier trabajo.
-          </p>
+        {/* Banner Secuencial Explicativo del Docente */}
+        <div className="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/20 rounded-2xl p-5 text-white shadow-sm flex items-start gap-4">
+          <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/30">
+            <Network className="w-5 h-5" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-sm font-bold text-amber-300">
+              Protocolo Secuencial de Gestión de Cambios (Estándar SGCS)
+            </h3>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              La solicitud vincula el caso de uso analizado con su requerimiento y los objetos de software afectados (SRS, Arquitectura SAD, Código y Base de Datos), garantizando trazabilidad integral bidireccional.
+            </p>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Card 1: Selección del Artefacto y Versión Base */}
-          <div className="bg-[#1A1D25] p-6 sm:p-8 rounded-2xl border border-white/10 shadow-md space-y-6">
-            <div className="flex items-center gap-2 text-white font-bold text-base border-b border-white/10 pb-3">
-              <Layers className="w-5 h-5 text-amber-400" />
-              <span>1. {terminologia.ecsLabel} Afectado y Versión de Partida</span>
+          {/* PASO 1: Selección del Proyecto y Caso de Uso / Actividad */}
+          <div className="bg-[#1A1D25] p-6 sm:p-7 rounded-2xl border border-white/10 shadow-md space-y-5">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <div className="flex items-center gap-2.5 text-white font-bold text-sm sm:text-base">
+                <span className="w-6 h-6 rounded-full bg-amber-400 text-slate-950 text-xs font-black flex items-center justify-center">
+                  1
+                </span>
+                <span>Caso de Uso o Actividad del Cronograma</span>
+              </div>
+              <span className="text-[11px] font-semibold text-slate-400">
+                Punto de partida del análisis
+              </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Proyecto */}
               <div>
                 <label className="block text-xs font-bold text-slate-300 mb-1.5">
-                  {terminologia.proyectoLabel} <span className="text-amber-400">*</span>
+                  Proyecto <span className="text-amber-400">*</span>
                 </label>
                 {loadingProyectos ? (
                   <div className="h-10 bg-[#14161E] rounded-xl animate-pulse" />
@@ -264,33 +338,133 @@ export default function NuevaRfcPage() {
                   <select
                     value={proyectoId}
                     onChange={(e) => setProyectoId(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+                    className="w-full px-3.5 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
                   >
                     {proyectos.map((p) => (
                       <option key={p.id} value={p.id} className="bg-[#1A1D25] text-white">
-                        {p.codigo} — {p.nombre}
+                        {p.codigo} — {p.nombre} {p.metodologia ? `(${p.metodologia})` : ''}
                       </option>
                     ))}
                   </select>
                 )}
               </div>
 
-              {/* ECS Afectado */}
+              {/* Actividad Cronograma */}
               <div>
                 <label className="block text-xs font-bold text-slate-300 mb-1.5">
-                  {terminologia.ecsLabel} <span className="text-amber-400">*</span>
+                  Actividad del Cronograma
+                </label>
+                <select
+                  value={actividadId}
+                  onChange={(e) => handleActividadChange(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+                >
+                  <option value="">-- Sin actividad directa vinculada --</option>
+                  {actividades.map((a) => (
+                    <option key={a.id} value={a.id} className="bg-[#1A1D25] text-white">
+                      {a.codigo_caso_uso ? `[${a.codigo_caso_uso}] ` : ''}{a.titulo}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Código Caso de Uso */}
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                  Código de Caso de Uso (CU)
+                </label>
+                <input
+                  type="text"
+                  value={codigoCasoUso}
+                  onChange={(e) => setCodigoCasoUso(e.target.value.toUpperCase())}
+                  placeholder="Ej. CU01, CU02"
+                  className="w-full px-3.5 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-mono font-bold text-amber-300 uppercase focus:outline-none focus:border-amber-400/50 transition"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* PASO 2: Asignación del Requerimiento Afectado */}
+          <div className="bg-[#1A1D25] p-6 sm:p-7 rounded-2xl border border-white/10 shadow-md space-y-5">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <div className="flex items-center gap-2.5 text-white font-bold text-sm sm:text-base">
+                <span className="w-6 h-6 rounded-full bg-amber-400 text-slate-950 text-xs font-black flex items-center justify-center">
+                  2
+                </span>
+                <span>Requerimiento al que Pertenece el Cambio</span>
+              </div>
+              <span className="text-[11px] font-semibold text-amber-400/80">
+                Análisis Funcional
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                  Requerimiento del Sistema (SRS) <span className="text-amber-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={requerimientoAfectado}
+                  onChange={(e) => setRequerimientoAfectado(e.target.value)}
+                  placeholder="Ej. RF-01: Control de Acceso y Sesiones Seguras"
+                  className="w-full px-4 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
+                />
+              </div>
+
+              {/* Botones de sugerencia rápida */}
+              <div className="flex items-center gap-2 flex-wrap text-xs">
+                <span className="text-slate-400 text-[11px]">Sugerencias:</span>
+                {[
+                  'RF-01: Autenticación y Tokens JWT',
+                  'RF-02: Gestión de Entregables RUP/SCRUM',
+                  'RF-03: Handshake Aceptar/Rechazar Actividad',
+                  'RF-04: Reporte Matriz Trazabilidad CU01',
+                ].map((sug) => (
+                  <button
+                    key={sug}
+                    type="button"
+                    onClick={() => setRequerimientoAfectado(sug)}
+                    className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-[11px] border border-white/10 transition"
+                  >
+                    {sug.split(':')[0]}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* PASO 3: Selección del ECS Principal y Objetos Afectados */}
+          <div className="bg-[#1A1D25] p-6 sm:p-7 rounded-2xl border border-white/10 shadow-md space-y-5">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <div className="flex items-center gap-2.5 text-white font-bold text-sm sm:text-base">
+                <span className="w-6 h-6 rounded-full bg-amber-400 text-slate-950 text-xs font-black flex items-center justify-center">
+                  3
+                </span>
+                <span>Objetos de Software / ECS Afectados por el Cambio</span>
+              </div>
+              <span className="text-[11px] font-semibold text-slate-400">
+                Impacto en Cascada
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* ECS Principal */}
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                  Elemento de Configuración Principal <span className="text-amber-400">*</span>
                 </label>
                 {loadingEcs ? (
                   <div className="h-10 bg-[#14161E] rounded-xl animate-pulse" />
                 ) : ecsList.length === 0 ? (
                   <p className="text-xs text-amber-400 font-semibold p-2.5 bg-amber-500/10 rounded-xl border border-amber-500/20">
-                    Sin artefactos en este proyecto.
+                    Sin artefactos registrados en este proyecto.
                   </p>
                 ) : (
                   <select
                     value={ecsId}
                     onChange={(e) => handleEcsChange(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+                    className="w-full px-3.5 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
                   >
                     {ecsList.map((ecs) => (
                       <option key={ecs.id} value={ecs.id} className="bg-[#1A1D25] text-white">
@@ -310,7 +484,7 @@ export default function NuevaRfcPage() {
                   <select
                     value={versionBaseId}
                     onChange={(e) => setVersionBaseId(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-mono font-bold text-amber-300 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
+                    className="w-full px-3.5 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-mono font-bold text-amber-300 focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
                   >
                     {selectedEcs.versiones.map((v) => (
                       <option key={v.id} value={v.id} className="bg-[#1A1D25] text-white">
@@ -325,31 +499,82 @@ export default function NuevaRfcPage() {
                 )}
               </div>
             </div>
+
+            {/* Selector de Objetos Adicionales Afectados en Cascada */}
+            <div className="pt-3 border-t border-white/10 space-y-2">
+              <label className="block text-xs font-bold text-slate-300">
+                Objetos de Software Adicionales Impactados (Relación de Dependencias):
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 max-h-48 overflow-y-auto p-1">
+                {ecsList
+                  .filter((e) => e.id !== ecsId)
+                  .map((e) => {
+                    const isSelected = ecsAfectadosIds.includes(e.id);
+                    return (
+                      <button
+                        key={e.id}
+                        type="button"
+                        onClick={() => toggleEcsAfectado(e.id)}
+                        className={`p-2.5 rounded-xl border text-left flex items-start gap-2.5 transition ${
+                          isSelected
+                            ? 'bg-amber-500/15 border-amber-500/40 text-amber-200'
+                            : 'bg-[#14161E] border-white/10 text-slate-400 hover:text-white hover:border-white/20'
+                        }`}
+                      >
+                        <div
+                          className={`w-4 h-4 rounded mt-0.5 flex items-center justify-center border text-[10px] ${
+                            isSelected
+                              ? 'bg-amber-400 border-amber-400 text-slate-950 font-black'
+                              : 'border-white/20'
+                          }`}
+                        >
+                          {isSelected && '✓'}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-mono text-xs font-bold text-white truncate">{e.codigo}</p>
+                          <p className="text-[11px] truncate">{e.nombre}</p>
+                          <span className="text-[9px] uppercase px-1 py-0.2 rounded bg-white/10 text-slate-400 inline-block mt-0.5">
+                            {e.tipo}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+              </div>
+              <p className="text-[11px] text-slate-400">
+                Seleccionados: <strong className="text-amber-300">{ecsAfectadosIds.length}</strong> objetos adicionales impactados.
+              </p>
+            </div>
           </div>
 
-          {/* Card 2: Descripción y Justificación Técnica */}
-          <div className="bg-[#1A1D25] p-6 sm:p-8 rounded-2xl border border-white/10 shadow-md space-y-6">
-            <div className="flex items-center gap-2 text-white font-bold text-base border-b border-white/10 pb-3">
-              <FileCheck2 className="w-5 h-5 text-amber-400" />
-              <span>2. Alcance y Justificación del Cambio Solicitado</span>
+          {/* PASO 4: Alcance y Justificación Técnica */}
+          <div className="bg-[#1A1D25] p-6 sm:p-7 rounded-2xl border border-white/10 shadow-md space-y-5">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <div className="flex items-center gap-2.5 text-white font-bold text-sm sm:text-base">
+                <span className="w-6 h-6 rounded-full bg-amber-400 text-slate-950 text-xs font-black flex items-center justify-center">
+                  4
+                </span>
+                <span>Alcance y Justificación del Cambio Solicitado</span>
+              </div>
+              <span className="text-[11px] font-semibold text-slate-400">
+                Sustento del Comité
+              </span>
             </div>
 
-            <div className="space-y-5">
-              {/* Descripción */}
+            <div className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-300 mb-1.5">
                   Descripción Técnica Detallada del Cambio <span className="text-amber-400">*</span>
                 </label>
                 <textarea
-                  rows={4}
+                  rows={3}
                   value={descripcion}
                   onChange={(e) => setDescripcion(e.target.value)}
-                  placeholder={`Ej. ${terminologia.cambioEjemploDescripcion}`}
+                  placeholder="Describa el cambio solicitado en el caso de uso y en los objetos de software afectados..."
                   className="w-full px-4 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
                 />
               </div>
 
-              {/* Justificación */}
               <div>
                 <label className="block text-xs font-bold text-slate-300 mb-1.5">
                   Justificación Operativa / de Negocio <span className="text-amber-400">*</span>
@@ -358,7 +583,7 @@ export default function NuevaRfcPage() {
                   rows={3}
                   value={justificacion}
                   onChange={(e) => setJustificacion(e.target.value)}
-                  placeholder={`Ej. ${terminologia.cambioEjemploJustificacion}`}
+                  placeholder="Justifique por qué es indispensable efectuar esta modificación según el requerimiento..."
                   className="w-full px-4 py-2.5 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/50 transition"
                 />
               </div>
@@ -381,7 +606,7 @@ export default function NuevaRfcPage() {
               {submitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
-                  <span>Radicando Solicitud...</span>
+                  <span>Radicando Solicitud Secuencial...</span>
                 </>
               ) : (
                 <>

@@ -21,6 +21,7 @@ import {
   Filter,
 } from 'lucide-react';
 import AppShell from '@/components/AppShell';
+import ReporteTrazabilidadCasoUso from '@/components/ReporteTrazabilidadCasoUso';
 
 interface ReporteProyecto {
   id: string;
@@ -71,7 +72,19 @@ interface ReporteData {
 export default function ReportesPage() {
   const [data, setData] = useState<ReporteData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [tipoReporte, setTipoReporte] = useState<'CONSOLIDADO' | 'INVENTARIO_ECS' | 'LINEAS_BASE' | 'BALANCE_CAMBIOS'>('CONSOLIDADO');
+  const [tipoReporte, setTipoReporte] = useState<
+    'CONSOLIDADO' | 'INVENTARIO_ECS' | 'LINEAS_BASE' | 'BALANCE_CAMBIOS' | 'TRAZABILIDAD_CU'
+  >('CONSOLIDADO');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tipo = params.get('tipo');
+      if (tipo === 'TRAZABILIDAD_CU') {
+        setTipoReporte('TRAZABILIDAD_CU');
+      }
+    }
+  }, []);
 
   const loadReportData = async () => {
     setLoading(true);
@@ -186,6 +199,7 @@ export default function ReportesPage() {
               className="px-3.5 py-2 bg-[#14161E] border border-white/10 rounded-xl text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-amber-400/50 transition cursor-pointer"
             >
               <option value="CONSOLIDADO" className="bg-[#1A1D25]">Informe Consolidado Integral (CSA)</option>
+              <option value="TRAZABILIDAD_CU" className="bg-[#1A1D25]">⭐ Informe Detallado: Trazabilidad Caso de Uso (CU01 - 4 Pts)</option>
               <option value="INVENTARIO_ECS" className="bg-[#1A1D25]">Catálogo e Inventario de Artefactos</option>
               <option value="LINEAS_BASE" className="bg-[#1A1D25]">Historial de Líneas Base y Congelamientos</option>
               <option value="BALANCE_CAMBIOS" className="bg-[#1A1D25]">Balance de Solicitudes de Cambio (RFC)</option>
@@ -193,8 +207,10 @@ export default function ReportesPage() {
           </div>
         </div>
 
-        {/* Hoja de Reporte Formal */}
-        {loading ? (
+        {/* Vista Especial: Informe Detallado de Trazabilidad por Caso de Uso */}
+        {tipoReporte === 'TRAZABILIDAD_CU' ? (
+          <ReporteTrazabilidadCasoUso />
+        ) : loading ? (
           <div className="p-16 text-center bg-[#1A1D25] rounded-2xl border border-white/10 shadow-md print:hidden">
             <Loader2 className="w-8 h-8 animate-spin text-amber-400 mx-auto mb-3" />
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
