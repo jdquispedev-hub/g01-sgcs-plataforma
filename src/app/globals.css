@@ -2,9 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+:root,
+html.dark {
+  --sgcs-bg: #13151A;
+  --sgcs-surface: #181B22;
+  --sgcs-surface-2: #1F232D;
+  --sgcs-border: rgba(255, 255, 255, 0.1);
+  --sgcs-text: #f8fafc;
+  --sgcs-text-muted: #94a3b8;
   --background: #13151A;
   --foreground: #f8fafc;
+}
+
+html.light {
+  --sgcs-bg: #F4F5F7;
+  --sgcs-surface: #FFFFFF;
+  --sgcs-surface-2: #EBECF0;
+  --sgcs-border: #DFE1E6;
+  --sgcs-text: #172B4D;
+  --sgcs-text-muted: #5E6C84;
+  --background: #F4F5F7;
+  --foreground: #172B4D;
 }
 
 html,
@@ -14,7 +32,47 @@ body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: var(--sgcs-text);
+  background: var(--sgcs-bg);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Adaptación armónica del Tema Claro (Estilo Jira) para vistas existentes */
+html.light .bg-\[\#13151A\],
+html.light .bg-\[\#0F1115\],
+html.light .bg-\[\#111318\] {
+  background-color: #F4F5F7 !important;
+}
+
+html.light .bg-\[\#14161E\],
+html.light .bg-\[\#181B22\],
+html.light .bg-\[\#1A1D24\],
+html.light .bg-\[\#161922\] {
+  background-color: #FFFFFF !important;
+}
+
+html.light .border-white\/10,
+html.light .border-white\/5,
+html.light .border-white\/15 {
+  border-color: #DFE1E6 !important;
+}
+
+html.light .text-white,
+html.light .text-slate-100,
+html.light .text-slate-200 {
+  color: #172B4D !important;
+}
+
+html.light .text-slate-300,
+html.light .text-slate-400 {
+  color: #5E6C84 !important;
+}
+
+html.light .bg-white\/5 {
+  background-color: #F4F5F7 !important;
+}
+
+html.light .bg-white\/10 {
+  background-color: #EBECF0 !important;
 }
