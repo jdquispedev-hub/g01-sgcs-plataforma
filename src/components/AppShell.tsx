@@ -15,7 +15,8 @@ interface AppShellProps {
 export default function AppShell({ children, user, onLogout }: AppShellProps) {
   // Siempre sincronizar sesión para asegurar rubro, rol y navegación persistente en AppSidebar y Navbar
   const { data: dataMe } = useSWR('/api/auth/me', fetcher, { revalidateOnFocus: false });
-  const activeUser = user || (dataMe?.success && dataMe.data?.user ? dataMe.data.user : null);
+  const meUser = dataMe?.success && dataMe.data?.user ? dataMe.data.user : null;
+  const activeUser = user ? { ...meUser, ...user } : meUser;
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-[#13151A] text-slate-100 flex flex-col antialiased selection:bg-amber-400 selection:text-slate-950">

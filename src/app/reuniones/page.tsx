@@ -84,7 +84,7 @@ export default function ReunionesPage() {
   const [reuniones, setReuniones] = useState<ReunionItem[]>([]);
   const [proyectos, setProyectos] = useState<ProyectoAux[]>([]);
   const [usuarios, setUsuarios] = useState<UsuarioAux[]>([]);
-  const [currentUser, setCurrentUser] = useState<{ id?: string; email?: string; nombreCompleto?: string; rol?: string } | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ id?: string; email?: string; nombreCompleto?: string; rol?: string; rubro?: string; organizacionNombre?: string } | null>(null);
   const [soloMisReuniones, setSoloMisReuniones] = useState(false);
 
   const [search, setSearch] = useState('');
@@ -138,6 +138,8 @@ export default function ReunionesPage() {
         email: dataMe.data.user.email,
         nombreCompleto: dataMe.data.user.nombreCompleto || dataMe.data.user.nombre,
         rol: dataMe.data.user.rol,
+        rubro: dataMe.data.user.rubro,
+        organizacionNombre: dataMe.data.user.organizacionNombre,
       });
     }
   }, [dataMe]);
