@@ -27,8 +27,13 @@ import {
   Building2,
   FolderGit2,
   FileCheck2,
+  Search,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import GuiaFlujoModal from '@/components/GuiaFlujoModal';
+import CommandPalette from '@/components/CommandPalette';
+import { useSgcsTheme } from '@/components/ThemeProvider';
 
 export interface NavbarUser {
   userId?: string;
@@ -129,6 +134,8 @@ export default function NavbarPrincipal({ user: userProp, onLogout, hideNavTabs 
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [guiaModalOpen, setGuiaModalOpen] = useState(false);
+  const [commandOpen, setCommandOpen] = useState(false);
+  const { theme, toggleTheme } = useSgcsTheme();
   const [dropdownHerramientas, setDropdownHerramientas] = useState(false);
 
   // Cache instantáneo de sesión desde localStorage para 0ms al montar
@@ -268,7 +275,36 @@ export default function NavbarPrincipal({ user: userProp, onLogout, hideNavTabs 
             </div>
 
             {/* Lado Derecho: Acciones de Sesión y Perfil */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+              {/* Buscador Global Ctrl+K */}
+              <button
+                type="button"
+                onClick={() => setCommandOpen(true)}
+                className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs font-medium transition flex items-center gap-2 border border-white/10 active:scale-95"
+                title="Buscar o ejecutar comando (Ctrl + K)"
+              >
+                <Search className="w-3.5 h-3.5 text-amber-400" />
+                <span className="hidden md:inline text-slate-400">Buscar...</span>
+                <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[10px] font-mono rounded bg-black/20 border border-white/10 text-slate-400">
+                  Ctrl K
+                </kbd>
+              </button>
+
+              {/* Toggle Tema Dual (Claro Jira / Oscuro Linear) */}
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="p-1.5 sm:p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition border border-white/10 active:scale-95"
+                title={theme === 'dark' ? 'Cambiar a Tema Claro (estilo Jira)' : 'Cambiar a Tema Oscuro (Linear)'}
+                aria-label="Cambiar tema"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
+                ) : (
+                  <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-600" />
+                )}
+              </button>
+
               {/* Botón Guía Rápida */}
               <button
                 onClick={() => setGuiaModalOpen(true)}
@@ -581,6 +617,9 @@ export default function NavbarPrincipal({ user: userProp, onLogout, hideNavTabs 
 
       {/* Modal Guiado de 5 Pasos */}
       <GuiaFlujoModal isOpen={guiaModalOpen} onClose={() => setGuiaModalOpen(false)} rubro={user?.rubro} />
+
+      {/* Paleta de Comandos Global (Ctrl + K) */}
+      <CommandPalette open={commandOpen} onOpenChange={setCommandOpen} user={user} />
     </>
   );
 }
