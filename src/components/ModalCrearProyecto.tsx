@@ -21,13 +21,18 @@ interface ModalCrearProyectoProps {
   isOpen: boolean;
   onClose: () => void;
   onProyectoCreado: (nuevoProyecto: any) => void;
+  rubro?: string;
 }
 
 export default function ModalCrearProyecto({
   isOpen,
   onClose,
   onProyectoCreado,
+  rubro,
 }: ModalCrearProyectoProps) {
+  const isConstruccion = rubro === 'CONSTRUCCION';
+  const isVeterinaria = rubro === 'VETERINARIA';
+  const entidadLabel = isConstruccion ? 'Obra / Proyecto' : isVeterinaria ? 'Caso / Campaña' : 'Proyecto';
   const [paso, setPaso] = useState<1 | 2>(1);
 
   // Form states
@@ -98,7 +103,7 @@ export default function ModalCrearProyecto({
             </div>
             <h3 className="text-xl font-bold text-white flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-amber-400" />
-              Nuevo Proyecto & Cronograma Automático
+              {isConstruccion ? 'Nueva Obra / Proyecto' : isVeterinaria ? 'Nuevo Caso / Campaña' : 'Nuevo Proyecto'}
             </h3>
           </div>
           <button
@@ -122,14 +127,14 @@ export default function ModalCrearProyecto({
             <div className="space-y-4">
               <div>
                 <label className="font-semibold text-slate-200 block mb-1.5">
-                  Nombre del Proyecto *
+                  Nombre de {entidadLabel} *
                 </label>
                 <input
                   type="text"
                   required
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
-                  placeholder="Ej: Sistema de Gestión de Configuración de Software"
+                  placeholder={`Ingrese el nombre de ${entidadLabel.toLowerCase()}`}
                   className="w-full px-4 py-2.5 rounded-xl bg-[#0F1115] border border-white/10 text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-hidden transition"
                 />
               </div>
@@ -137,26 +142,26 @@ export default function ModalCrearProyecto({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="font-semibold text-slate-200 block mb-1.5">
-                    Cliente / Organización Patrocinadora *
+                    Cliente *
                   </label>
                   <input
                     type="text"
                     required
                     value={clienteNombre}
                     onChange={(e) => setClienteNombre(e.target.value)}
-                    placeholder="Ej: Universidad / Empresa Cliente"
+                    placeholder="Nombre del cliente o propietario"
                     className="w-full px-4 py-2.5 rounded-xl bg-[#0F1115] border border-white/10 text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-hidden transition"
                   />
                 </div>
                 <div>
                   <label className="font-semibold text-slate-200 block mb-1.5">
-                    Código del Proyecto (Opcional)
+                    Código (Opcional)
                   </label>
                   <input
                     type="text"
                     value={codigo}
                     onChange={(e) => setCodigo(e.target.value.toUpperCase())}
-                    placeholder="Ej: PRY-2026-01 (Auto si está vacío)"
+                    placeholder="Se autogenera si se deja vacío"
                     className="w-full px-4 py-2.5 rounded-xl bg-[#0F1115] border border-white/10 font-mono text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-hidden transition"
                   />
                 </div>
@@ -165,7 +170,7 @@ export default function ModalCrearProyecto({
               {/* Selector de Metodología */}
               <div>
                 <label className="font-semibold text-slate-200 block mb-2">
-                  Metodología de Desarrollo * (Genera etapas y ECS automáticamente)
+                  Metodología del Proyecto * (Genera fases limpias automáticamente)
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {/* Tarjeta RUP */}
@@ -185,9 +190,9 @@ export default function ModalCrearProyecto({
                         <CheckCircle2 className="w-4 h-4 text-purple-400" />
                       )}
                     </div>
-                    <div className="font-bold text-white text-sm">Rational Unified</div>
+                    <div className="font-bold text-white text-sm">Fases Estructuradas</div>
                     <p className="text-[11px] text-slate-400 mt-1">
-                      Fases: Inicio, Elaboración, Construcción, Transición.
+                      Inicio, Elaboración, Construcción y Transición.
                     </p>
                   </div>
 
@@ -210,7 +215,7 @@ export default function ModalCrearProyecto({
                     </div>
                     <div className="font-bold text-white text-sm">Ágil / Sprints</div>
                     <p className="text-[11px] text-slate-400 mt-1">
-                      Product Backlog, Sprint 1, Sprint 2 e Incrementos.
+                      Sprint 0, Sprint 1 y Sprint 2 por iteraciones.
                     </p>
                   </div>
 
@@ -233,7 +238,7 @@ export default function ModalCrearProyecto({
                     </div>
                     <div className="font-bold text-white text-sm">Secuencial Clásico</div>
                     <p className="text-[11px] text-slate-400 mt-1">
-                      Análisis, Diseño, Codificación y Pruebas.
+                      Análisis, Diseño, Ejecución y Verificación.
                     </p>
                   </div>
                 </div>
@@ -275,26 +280,26 @@ export default function ModalCrearProyecto({
               {/* Vista previa de lo que se autogenerará */}
               <div className="rounded-2xl bg-[#0F1115] border border-white/10 p-4 space-y-2.5">
                 <div className="flex items-center justify-between text-xs font-bold text-slate-300">
-                  <span>Etapas y Entregables que se sembrarán:</span>
+                  <span>Fases limpias que se crearán:</span>
                   <span className="text-emerald-400">Metodología {metodologia}</span>
                 </div>
                 {metodologia === 'RUP' && (
                   <ul className="text-xs text-slate-400 space-y-1.5">
                     <li className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-purple-400" />
-                      <strong className="text-slate-200">Inicio:</strong> ECS-SRS (Requisitos IEEE 830), Visión.
+                      <strong className="text-slate-200">Fase de Inicio:</strong> Visión, alcance inicial y acuerdos base.
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-purple-400" />
-                      <strong className="text-slate-200">Elaboración:</strong> ECS-SAD (Arquitectura 4+1), Base de Datos.
+                      <strong className="text-slate-200">Fase de Elaboración:</strong> Diseño estructural y planificación técnica.
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-purple-400" />
-                      <strong className="text-slate-200">Construcción:</strong> Código Backend, Frontend, Casos de Prueba.
+                      <strong className="text-slate-200">Fase de Construcción:</strong> Ejecución de entregables y calidad.
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-purple-400" />
-                      <strong className="text-slate-200">Transición:</strong> Manual de Usuario y Despliegue.
+                      <strong className="text-slate-200">Fase de Transición:</strong> Validación final y cierre.
                     </li>
                   </ul>
                 )}
@@ -302,15 +307,15 @@ export default function ModalCrearProyecto({
                   <ul className="text-xs text-slate-400 space-y-1.5">
                     <li className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-cyan-400" />
-                      <strong className="text-slate-200">Sprint 0:</strong> Product Backlog, Spike Arquitectónico.
+                      <strong className="text-slate-200">Sprint 0:</strong> Planificación inicial y alcance base.
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-cyan-400" />
-                      <strong className="text-slate-200">Sprint 1:</strong> Módulos Core, APIs y UI Base.
+                      <strong className="text-slate-200">Sprint 1:</strong> Ejecución principal de entregables.
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-cyan-400" />
-                      <strong className="text-slate-200">Sprint 2:</strong> Incremento Final, Testing y Release.
+                      <strong className="text-slate-200">Sprint 2:</strong> Integración, revisión y cierre.
                     </li>
                   </ul>
                 )}
@@ -318,15 +323,15 @@ export default function ModalCrearProyecto({
                   <ul className="text-xs text-slate-400 space-y-1.5">
                     <li className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-amber-400" />
-                      <strong className="text-slate-200">Análisis:</strong> SRS y especificaciones.
+                      <strong className="text-slate-200">Etapa 1:</strong> Análisis y levantamiento.
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-amber-400" />
-                      <strong className="text-slate-200">Diseño:</strong> SAD y Modelado Relacional.
+                      <strong className="text-slate-200">Etapa 2:</strong> Diseño y planificación.
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-amber-400" />
-                      <strong className="text-slate-200">Implementación:</strong> Código Fuente integral.
+                      <strong className="text-slate-200">Etapa 3:</strong> Ejecución e implementación.
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-amber-400" />
