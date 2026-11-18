@@ -406,7 +406,10 @@ export default function ClickUpWorkspace({
               </Link>
             </div>
           </div>
-          <ReporteTrazabilidadCasoUso />
+          <ReporteTrazabilidadCasoUso
+            proyectoId={selectedProyectoId}
+            rubro={user.rubro}
+          />
         </div>
       )}
 

@@ -339,12 +339,12 @@ export default function BandejaAsignacionesUsuario() {
                         </button>
                       </>
                     ) : isAceptada ? (
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full flex items-center gap-1.5">
                           <CheckCircle2 className="w-4 h-4" />
                           Trabajo Asumido
                         </span>
-                        {act.ecs?.id && (
+                        {act.ecs?.id ? (
                           <Link
                             href={`/ecs/${act.ecs.id}`}
                             className="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 text-xs font-bold transition flex items-center gap-1"
@@ -352,6 +352,23 @@ export default function BandejaAsignacionesUsuario() {
                             <span>Subir Versión</span>
                             <ArrowRight className="w-3.5 h-3.5" />
                           </Link>
+                        ) : (
+                          <>
+                            <Link
+                              href="/ecs"
+                              className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 text-xs font-bold transition flex items-center gap-1"
+                            >
+                              <span>Subir Entregable</span>
+                              <ArrowRight className="w-3.5 h-3.5" />
+                            </Link>
+                            <Link
+                              href="/bitacora"
+                              className="px-3 py-1.5 rounded-xl bg-amber-400/10 hover:bg-amber-400/20 text-amber-300 border border-amber-400/30 text-xs font-bold transition flex items-center gap-1"
+                            >
+                              <span>Reportar Avance</span>
+                              <ArrowRight className="w-3.5 h-3.5" />
+                            </Link>
+                          </>
                         )}
                       </div>
                     ) : (

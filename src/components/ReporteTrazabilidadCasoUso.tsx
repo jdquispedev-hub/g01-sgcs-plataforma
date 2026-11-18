@@ -29,6 +29,7 @@ interface ReporteData {
     nombre: string;
     cliente: string;
     metodologia: string;
+    rubro?: string;
     fecha_inicio: string;
     fecha_fin: string;
   };
@@ -44,17 +45,25 @@ interface ReporteData {
   gestion_cambios: any[];
 }
 
-export default function ReporteTrazabilidadCasoUso() {
+export default function ReporteTrazabilidadCasoUso({
+  proyectoId,
+  rubro,
+}: {
+  proyectoId?: string;
+  rubro?: string;
+} = {}) {
   const [casoUso, setCasoUso] = useState('CU01');
   const [data, setData] = useState<ReporteData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const cargarReporte = async (codigo: string) => {
+  const cargarReporte = async (codigo: string, pId?: string) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/reportes/caso-uso?codigo=${codigo}`);
+      const qs = new URLSearchParams({ codigo });
+      if (pId) qs.set('proyectoId', pId);
+      const res = await fetch(`/api/reportes/caso-uso?${qs.toString()}`);
       const json = await res.json();
       if (json.success) {
         setData(json.data);
@@ -69,8 +78,8 @@ export default function ReporteTrazabilidadCasoUso() {
   };
 
   useEffect(() => {
-    cargarReporte(casoUso);
-  }, [casoUso]);
+    cargarReporte(casoUso, proyectoId);
+  }, [casoUso, proyectoId]);
 
   if (loading && !data) {
     return (
@@ -99,6 +108,72 @@ export default function ReporteTrazabilidadCasoUso() {
   }
 
   const { proyecto, trazabilidad, cronograma_actividades, gestion_cambios, lista_casos_disponibles } = data;
+  const activeRubro = (rubro || proyecto.rubro || 'SOFTWARE').toUpperCase();
+  const isConstruccion = activeRubro === 'CONSTRUCCION';
+  const isVeterinaria = activeRubro === 'VETERINARIA';
+
+  const labels = isConstruccion
+    ? {
+        tituloReporte: 'Informe de Trazabilidad de Obra',
+        subtituloMapeo: 'Alcance y Licencias → Planos y Estructuras → Ejecución en Obra',
+        unidadLabel: 'Partida / Frente:',
+        vvSubtitulo: 'Control Técnico de Configuración de Obra y Entregables Constructivos',
+        cadenaSub: 'Alcance → Diseño / Planos → Ejecución en Obra',
+        col1Titulo: 'Alcance y Licencias',
+        col1Fase: 'Fase Inicio / Alcance',
+        col1FallbackCod: `DOC-ALC-${casoUso}`,
+        col1FallbackDesc: 'Memoria Descriptiva, Alcance y Licencias de Obra',
+        col2Titulo: 'Planos y Estructuras',
+        col2Fase: 'Fase Diseño / Planos',
+        col2FallbackCod: `PLN-EST-${casoUso}`,
+        col2FallbackDesc: 'Planos Estructurales, Arquitectónicos y Sanitarios',
+        col3Titulo: 'Ejecución en Obra',
+        col3Fase: 'Fase Ejecución / Campo',
+        col3FallbackCod: `OBR-EJE-${casoUso}`,
+        col3FallbackDesc: 'Partidas de Obra, Metrados y Supervisión de Campo',
+        col3FallbackBadge: '✓ Ejecutado / En Obra',
+      }
+    : isVeterinaria
+    ? {
+        tituloReporte: 'Informe de Trazabilidad Clínica',
+        subtituloMapeo: 'Anamnesis → Protocolo Clínico → Tratamiento y Evolución',
+        unidadLabel: 'Caso Clínico:',
+        vvSubtitulo: 'Control de Protocolos Médicos y Trazabilidad de Atención Veterinaria',
+        cadenaSub: 'Diagnóstico → Protocolo → Tratamiento',
+        col1Titulo: 'Anamnesis y Diagnóstico',
+        col1Fase: 'Evaluación Inicial',
+        col1FallbackCod: `FIC-DX-${casoUso}`,
+        col1FallbackDesc: 'Historia Clínica y Exámenes Pre-Quirúrgicos',
+        col2Titulo: 'Protocolo Clínico',
+        col2Fase: 'Planificación Médica',
+        col2FallbackCod: `PROT-MED-${casoUso}`,
+        col2FallbackDesc: 'Protocolo de Intervención y Dosis Autorizada',
+        col3Titulo: 'Tratamiento y Evolución',
+        col3Fase: 'Ejecución Clínica',
+        col3FallbackCod: `TRAT-EV-${casoUso}`,
+        col3FallbackDesc: 'Registro de Medicación y Evolución del Paciente',
+        col3FallbackBadge: '✓ Aplicado',
+      }
+    : {
+        tituloReporte: 'Informe de Trazabilidad por Caso de Uso',
+        subtituloMapeo: 'Requisitos (SRS) → Arquitectura (SAD) → Código / BD',
+        unidadLabel: 'Caso de Uso:',
+        vvSubtitulo: 'Validación y Verificación de Software (V&V) conforme al Ciclo de Vida de Configuración',
+        cadenaSub: 'Requisitos → Arquitectura → Implementación',
+        col1Titulo: 'Especificación SRS',
+        col1Fase: 'Fase Inicio / Requisitos',
+        col1FallbackCod: `ECS-SRS-${casoUso}`,
+        col1FallbackDesc: 'Documento de Requisitos de Software',
+        col2Titulo: 'Arquitectura SAD',
+        col2Fase: 'Fase Elaboración / Diseño',
+        col2FallbackCod: `ECS-SAD-${casoUso}`,
+        col2FallbackDesc: 'Documento de Arquitectura de Software',
+        col3Titulo: 'Implementación / Código',
+        col3Fase: 'Fase Construcción',
+        col3FallbackCod: `ECS-COD-${casoUso}`,
+        col3FallbackDesc: 'Módulo Backend, Frontend y Base de Datos',
+        col3FallbackBadge: '✓ Codificado',
+      };
 
   return (
     <div className="space-y-6">
@@ -110,20 +185,17 @@ export default function ReporteTrazabilidadCasoUso() {
           </div>
           <div>
             <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
-              <span>Informe de Trazabilidad por Caso de Uso</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                Rúbrica: 4 Pts
-              </span>
+              <span>{labels.tituloReporte}</span>
             </h2>
             <p className="text-xs text-slate-400">
-              Mapeo bidireccional: <strong className="text-amber-300">{casoUso}</strong> → Requisitos (SRS) → Arquitectura (SAD) → Código / BD
+              Mapeo bidireccional: <strong className="text-amber-300">{casoUso}</strong> → {labels.subtituloMapeo}
             </p>
           </div>
         </div>
 
-        {/* Selector de CU */}
+        {/* Selector de Unidad / Caso */}
         <div className="flex items-center gap-2">
-          <label className="text-xs font-bold text-slate-300">Caso de Uso:</label>
+          <label className="text-xs font-bold text-slate-300">{labels.unidadLabel}</label>
           <div className="flex items-center gap-1.5">
             {lista_casos_disponibles.map((cu) => (
               <button
@@ -158,15 +230,15 @@ export default function ReporteTrazabilidadCasoUso() {
               </span>
             </div>
             <h1 className="text-xl sm:text-2xl font-black text-white print:text-slate-950 tracking-tight">
-              Matriz de Trazabilidad Detallada — Caso de Uso {casoUso}
+              Matriz de Trazabilidad Detallada — {casoUso}
             </h1>
             <p className="text-xs text-slate-400 print:text-slate-600 mt-1">
-              Validación y Verificación de Software (V&V) conforme al Ciclo de Vida de Configuración
+              {labels.vvSubtitulo}
             </p>
           </div>
 
           <div className="text-left sm:text-right text-xs text-slate-300 print:text-slate-600 space-y-1 shrink-0 bg-[#14161E] print:bg-slate-50 p-3.5 rounded-xl border border-white/10 print:border-slate-200">
-            <p><strong>Caso de Uso Clave:</strong> <span className="font-mono text-amber-400 print:text-slate-950 font-bold">{casoUso}</span></p>
+            <p><strong>{labels.unidadLabel}</strong> <span className="font-mono text-amber-400 print:text-slate-950 font-bold">{casoUso}</span></p>
             <p><strong>Cliente / Obra:</strong> {proyecto.cliente || 'Interno'}</p>
             <p className="text-emerald-400 print:text-emerald-700 font-bold flex items-center sm:justify-end gap-1">
               <ShieldCheck className="w-3.5 h-3.5" /> Estado: Auditado y Trazable
@@ -182,26 +254,26 @@ export default function ReporteTrazabilidadCasoUso() {
               <span>1. Cadena de Transformación del Artefacto ({casoUso})</span>
             </h3>
             <span className="text-[11px] text-slate-400 print:text-slate-500">
-              Requisitos → Arquitectura → Implementación
+              {labels.cadenaSub}
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Columna 1: Requisitos (SRS) */}
+            {/* Columna 1 */}
             <div className="bg-[#14161E] print:bg-slate-50 p-4 rounded-xl border border-white/10 print:border-slate-300 space-y-3">
               <div className="flex items-center justify-between border-b border-white/10 print:border-slate-200 pb-2">
                 <span className="font-bold text-xs text-amber-300 print:text-slate-900 flex items-center gap-1.5">
-                  <FileText className="w-3.5 h-3.5" /> Especificación SRS
+                  <FileText className="w-3.5 h-3.5" /> {labels.col1Titulo}
                 </span>
                 <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/10 print:bg-slate-200 text-slate-300 print:text-slate-800">
-                  Fase Inicio / Requisitos
+                  {labels.col1Fase}
                 </span>
               </div>
 
               {trazabilidad.srs.length === 0 ? (
                 <div className="p-4 rounded-lg bg-white/5 print:bg-white text-center text-xs text-slate-400 print:text-slate-500">
-                  <p className="font-mono text-amber-400 font-bold">{`ECS-SRS-${casoUso}`}</p>
-                  <p className="mt-1">Documento de Requisitos de Software</p>
+                  <p className="font-mono text-amber-400 font-bold">{labels.col1FallbackCod}</p>
+                  <p className="mt-1">{labels.col1FallbackDesc}</p>
                   <span className="text-[10px] text-emerald-400 font-semibold block mt-1">✓ Especificado</span>
                 </div>
               ) : (
@@ -224,21 +296,21 @@ export default function ReporteTrazabilidadCasoUso() {
               )}
             </div>
 
-            {/* Columna 2: Arquitectura (SAD) */}
+            {/* Columna 2 */}
             <div className="bg-[#14161E] print:bg-slate-50 p-4 rounded-xl border border-white/10 print:border-slate-300 space-y-3">
               <div className="flex items-center justify-between border-b border-white/10 print:border-slate-200 pb-2">
                 <span className="font-bold text-xs text-sky-300 print:text-slate-900 flex items-center gap-1.5">
-                  <Boxes className="w-3.5 h-3.5" /> Arquitectura SAD
+                  <Boxes className="w-3.5 h-3.5" /> {labels.col2Titulo}
                 </span>
                 <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/10 print:bg-slate-200 text-slate-300 print:text-slate-800">
-                  Fase Elaboración / Diseño
+                  {labels.col2Fase}
                 </span>
               </div>
 
               {trazabilidad.sad.length === 0 ? (
                 <div className="p-4 rounded-lg bg-white/5 print:bg-white text-center text-xs text-slate-400 print:text-slate-500">
-                  <p className="font-mono text-sky-400 font-bold">{`ECS-SAD-${casoUso}`}</p>
-                  <p className="mt-1">Documento de Arquitectura de Software</p>
+                  <p className="font-mono text-sky-400 font-bold">{labels.col2FallbackCod}</p>
+                  <p className="mt-1">{labels.col2FallbackDesc}</p>
                   <span className="text-[10px] text-emerald-400 font-semibold block mt-1">✓ Diseñado</span>
                 </div>
               ) : (
@@ -261,22 +333,22 @@ export default function ReporteTrazabilidadCasoUso() {
               )}
             </div>
 
-            {/* Columna 3: Implementación y Código */}
+            {/* Columna 3 */}
             <div className="bg-[#14161E] print:bg-slate-50 p-4 rounded-xl border border-white/10 print:border-slate-300 space-y-3">
               <div className="flex items-center justify-between border-b border-white/10 print:border-slate-200 pb-2">
                 <span className="font-bold text-xs text-emerald-300 print:text-slate-900 flex items-center gap-1.5">
-                  <Code2 className="w-3.5 h-3.5" /> Implementación / Código
+                  <Code2 className="w-3.5 h-3.5" /> {labels.col3Titulo}
                 </span>
                 <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/10 print:bg-slate-200 text-slate-300 print:text-slate-800">
-                  Fase Construcción
+                  {labels.col3Fase}
                 </span>
               </div>
 
               {trazabilidad.implementacion.length === 0 ? (
                 <div className="p-4 rounded-lg bg-white/5 print:bg-white text-center text-xs text-slate-400 print:text-slate-500">
-                  <p className="font-mono text-emerald-400 font-bold">{`ECS-COD-${casoUso}`}</p>
-                  <p className="mt-1">Módulo Backend, Frontend y Base de Datos</p>
-                  <span className="text-[10px] text-emerald-400 font-semibold block mt-1">✓ Codificado</span>
+                  <p className="font-mono text-emerald-400 font-bold">{labels.col3FallbackCod}</p>
+                  <p className="mt-1">{labels.col3FallbackDesc}</p>
+                  <span className="text-[10px] text-emerald-400 font-semibold block mt-1">{labels.col3FallbackBadge}</span>
                 </div>
               ) : (
                 trazabilidad.implementacion.map((e) => (

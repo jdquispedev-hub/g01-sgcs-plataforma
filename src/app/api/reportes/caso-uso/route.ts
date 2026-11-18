@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
       where: whereProyecto,
       include: {
         etapas: { orderBy: { orden: 'asc' } },
+        organizacion: { select: { rubro: true, nombre: true } },
       },
     });
 
@@ -139,6 +140,7 @@ export async function GET(request: NextRequest) {
           nombre: proyecto.nombre,
           cliente: proyecto.cliente_nombre,
           metodologia: proyecto.metodologia,
+          rubro: proyecto.organizacion?.rubro || 'SOFTWARE',
           fecha_inicio: proyecto.fecha_inicio,
           fecha_fin: proyecto.fecha_estimada_fin,
         },
