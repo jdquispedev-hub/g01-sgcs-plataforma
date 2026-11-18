@@ -11,7 +11,7 @@ const crearProyectoSchema = z.object({
   codigo: z.string().max(50).optional(),
   nombre: z.string().min(3, 'El nombre debe tener al menos 3 caracteres').max(200),
   cliente_nombre: z.string().min(2, 'El nombre del cliente es obligatorio').max(150),
-  metodologia: z.enum(['RUP', 'SCRUM', 'CASCADA']).default('RUP'),
+  metodologia: z.enum(['RUP', 'SCRUM']).default('RUP'),
   fecha_inicio: z.string().optional(),
   fecha_estimada_fin: z.string().optional(),
   descripcion: z.string().optional(),

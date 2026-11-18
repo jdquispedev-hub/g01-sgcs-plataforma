@@ -9,7 +9,7 @@ export interface EtapaPlantilla {
   descripcion: string;
 }
 
-export const PLANTILLAS_METODOLOGIA: Record<MetodologiaProyecto, EtapaPlantilla[]> = {
+export const PLANTILLAS_METODOLOGIA: Partial<Record<MetodologiaProyecto, EtapaPlantilla[]>> = {
   RUP: [
     {
       nombre: 'Fase de Inicio',
@@ -63,36 +63,6 @@ export const PLANTILLAS_METODOLOGIA: Record<MetodologiaProyecto, EtapaPlantilla[
       descripcion: 'Validación integral, pruebas de aceptación y entrega final.',
     },
   ],
-  CASCADA: [
-    {
-      nombre: 'Etapa 1: Análisis y Levantamiento',
-      fase: 'ANALISIS',
-      orden: 1,
-      porcentajeDuracion: 0.20,
-      descripcion: 'Levantamiento y especificación formal de los requisitos y alcance.',
-    },
-    {
-      nombre: 'Etapa 2: Diseño y Planificación',
-      fase: 'DISENO',
-      orden: 2,
-      porcentajeDuracion: 0.20,
-      descripcion: 'Diseño técnico, planos o arquitectura previa a la ejecución.',
-    },
-    {
-      nombre: 'Etapa 3: Ejecución e Implementación',
-      fase: 'CONSTRUCCION',
-      orden: 3,
-      porcentajeDuracion: 0.35,
-      descripcion: 'Construcción o desarrollo de los entregables aprobados en el diseño.',
-    },
-    {
-      nombre: 'Etapa 4: Verificación y Entrega',
-      fase: 'PRUEBAS',
-      orden: 4,
-      porcentajeDuracion: 0.25,
-      descripcion: 'Control de calidad, conformidad final y cierre del proyecto.',
-    },
-  ],
 };
 
 /**
@@ -107,7 +77,7 @@ export async function sembrarMetodologiaProyecto(params: {
   adminId?: string;
 }) {
   const { proyectoId, metodologia, fechaInicio } = params;
-  const plantilla = PLANTILLAS_METODOLOGIA[metodologia] || PLANTILLAS_METODOLOGIA.RUP;
+  const plantilla = PLANTILLAS_METODOLOGIA[metodologia] ?? PLANTILLAS_METODOLOGIA.RUP ?? [];
 
   const fInicio = new Date(fechaInicio);
   // Si no se proporcionó fecha fin, proyectar a 90 días por defecto
