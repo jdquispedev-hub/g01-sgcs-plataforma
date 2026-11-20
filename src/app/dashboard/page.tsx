@@ -17,6 +17,7 @@ import AgendarReunionModal from '@/components/AgendarReunionModal';
 import AppShell from '@/components/AppShell';
 import ModalCrearProyecto from '@/components/ModalCrearProyecto';
 import ClickUpWorkspace from '@/components/workspace/ClickUpWorkspace';
+import { useActiveProject } from '@/components/ProjectContext';
 
 interface UserData {
   userId: string;
@@ -38,14 +39,6 @@ interface BloqueoActivo {
   usuario: { nombre_completo: string };
 }
 
-interface ProyectoItem {
-  id: string;
-  codigo: string;
-  nombre: string;
-  cliente_nombre?: string;
-  estado?: string;
-}
-
 interface UsuarioItem {
   id: string;
   nombre_completo: string;
@@ -54,8 +47,15 @@ interface UsuarioItem {
   cargo?: string | null;
 }
 
-export default function DashboardPage() {
-  const router = useRouter();
+function DashboardContent({ user }: { user: UserData | null }) {
+  const {
+    proyectos,
+    selectedProyectoId,
+    setSelectedProyectoId,
+    refreshProyectos,
+    isLoading: loadingProyectos,
+  } = useActiveProject();
+
   const [alertaRestringido, setAlertaRestringido] = useState(false);
   const [moduloRestringido, setModuloRestringido] = useState('');
 
@@ -69,41 +69,24 @@ export default function DashboardPage() {
     }
   }, []);
 
-  const [user, setUser] = useState<UserData | null>(null);
   const [totalEcs, setTotalEcs] = useState<number>(0);
   const [versionesPendientes, setVersionesPendientes] = useState<number>(0);
   const [lineasVigentes, setLineasVigentes] = useState<number>(0);
   const [rfcPendientes, setRfcPendientes] = useState<number>(0);
   const [bloqueosActivos, setBloqueosActivos] = useState<BloqueoActivo[]>([]);
 
-  const [proyectos, setProyectos] = useState<ProyectoItem[]>([]);
-  const [selectedProyectoId, setSelectedProyectoId] = useState<string>('');
   const [usuarios, setUsuarios] = useState<UsuarioItem[]>([]);
   const [agendarModalOpen, setAgendarModalOpen] = useState(false);
   const [crearProyectoModalOpen, setCrearProyectoModalOpen] = useState(false);
   const [guiaModalOpen, setGuiaModalOpen] = useState(false);
 
-  const { data: dataMe, error: errorMe } = useSWR('/api/auth/me', fetcher, { revalidateOnFocus: false });
   const { data: dataEcs } = useSWR('/api/ecs', fetcher, { revalidateOnFocus: false });
   const { data: dataLb } = useSWR('/api/lineas-base', fetcher, { revalidateOnFocus: false });
   const { data: dataRfc } = useSWR('/api/cambios', fetcher, { revalidateOnFocus: false });
   const { data: dataBloqueos } = useSWR('/api/bitacora/bloqueos-activos', fetcher, { revalidateOnFocus: false });
   const { data: dataAux, mutate: mutateAux } = useSWR('/api/auxiliares', fetcher, { revalidateOnFocus: false });
 
-  const isInitialLoading = (!dataMe && !errorMe) || !dataEcs || !dataAux;
-
-  useEffect(() => {
-    if (dataMe) {
-      if (dataMe.success) {
-        setUser(dataMe.data.user);
-      } else {
-        router.push('/login');
-      }
-    }
-    if (errorMe) {
-      router.push('/login');
-    }
-  }, [dataMe, errorMe, router]);
+  const isInitialLoading = !user || !dataEcs || !dataAux || (loadingProyectos && proyectos.length === 0);
 
   useEffect(() => {
     if (dataEcs?.success && Array.isArray(dataEcs.data)) {
@@ -143,27 +126,14 @@ export default function DashboardPage() {
   }, [dataBloqueos]);
 
   useEffect(() => {
-    if (dataAux?.success) {
-      if (Array.isArray(dataAux.data.proyectos)) {
-        setProyectos(dataAux.data.proyectos);
-        if (dataAux.data.proyectos.length > 0 && !selectedProyectoId) {
-          setSelectedProyectoId(dataAux.data.proyectos[0].id);
-        }
-      }
-      if (Array.isArray(dataAux.data.usuarios)) {
-        setUsuarios(dataAux.data.usuarios);
-      }
+    if (dataAux?.success && Array.isArray(dataAux.data.usuarios)) {
+      setUsuarios(dataAux.data.usuarios);
     }
-  }, [dataAux, selectedProyectoId]);
-
-  const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    window.location.href = '/login';
-  };
+  }, [dataAux]);
 
   return (
-    <AppShell user={user} onLogout={handleLogout}>
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4">
+    <>
+      <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4 space-y-3">
         {/* Banner de Alerta de Acceso Restringido */}
         {alertaRestringido && (
           <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl px-4 py-2.5 flex items-center justify-between gap-3">
@@ -205,8 +175,8 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Workspace Unificado ClickUp 3.0 + Jira */}
-        {isInitialLoading || !user ? (
+        {/* Router Visual por Metodología (RUP / SCRUM) */}
+        {isInitialLoading ? (
           <div className="py-16 flex items-center justify-center gap-2 text-xs text-slate-400">
             <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
             <span>Cargando espacio de trabajo SGCS...</span>
@@ -216,7 +186,6 @@ export default function DashboardPage() {
             user={user}
             proyectos={proyectos}
             selectedProyectoId={selectedProyectoId}
-            onSelectProyecto={setSelectedProyectoId}
             stats={{
               totalEcs,
               versionesPendientes,
@@ -252,12 +221,43 @@ export default function DashboardPage() {
         isOpen={crearProyectoModalOpen}
         onClose={() => setCrearProyectoModalOpen(false)}
         rubro={user?.rubro}
-        onProyectoCreado={(nuevo) => {
-          setProyectos((prev) => [nuevo, ...prev]);
+        onProyectoCreado={async (nuevo) => {
+          await refreshProyectos();
           setSelectedProyectoId(nuevo.id);
           mutateAux();
         }}
       />
+    </>
+  );
+}
+
+export default function DashboardPage() {
+  const router = useRouter();
+  const [user, setUser] = useState<UserData | null>(null);
+
+  const { data: dataMe, error: errorMe } = useSWR('/api/auth/me', fetcher, { revalidateOnFocus: false });
+
+  useEffect(() => {
+    if (dataMe) {
+      if (dataMe.success) {
+        setUser(dataMe.data.user);
+      } else {
+        router.push('/login');
+      }
+    }
+    if (errorMe) {
+      router.push('/login');
+    }
+  }, [dataMe, errorMe, router]);
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    window.location.href = '/login';
+  };
+
+  return (
+    <AppShell user={user} onLogout={handleLogout}>
+      <DashboardContent user={user} />
     </AppShell>
   );
 }
