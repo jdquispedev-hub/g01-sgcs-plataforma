@@ -25,6 +25,7 @@ import {
   Lock,
 } from 'lucide-react';
 import AppShell from '@/components/AppShell';
+import { useActiveProject } from '@/components/ProjectContext';
 import LifecycleStepper from '@/components/LifecycleStepper';
 
 interface VersionPendiente {
@@ -72,13 +73,17 @@ interface UserSession {
 
 export default function AprobacionesPage() {
   const router = useRouter();
+  const { selectedProyectoId } = useActiveProject();
   const [activeTab, setActiveTab] = useState<'versiones' | 'cambios'>('versiones');
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
+  const ecsUrl = selectedProyectoId ? `/api/ecs?proyectoId=${selectedProyectoId}` : '/api/ecs';
+  const cambiosUrl = selectedProyectoId ? `/api/cambios?proyectoId=${selectedProyectoId}` : '/api/cambios';
+
   // SWR: Caché en memoria (Stale-While-Revalidate) para navegación instantánea (0ms)
   const { data: dataMe, error: errorMe } = useSWR('/api/auth/me', fetcher, { revalidateOnFocus: false });
-  const { data: dataEcs, mutate: mutateEcs } = useSWR('/api/ecs', fetcher, { revalidateOnFocus: false });
-  const { data: dataCambios, mutate: mutateCambios } = useSWR('/api/cambios', fetcher, { revalidateOnFocus: false });
+  const { data: dataEcs, mutate: mutateEcs } = useSWR(ecsUrl, fetcher, { revalidateOnFocus: false });
+  const { data: dataCambios, mutate: mutateCambios } = useSWR(cambiosUrl, fetcher, { revalidateOnFocus: false });
 
   const user = dataMe?.success ? (dataMe.data.user as UserSession) : null;
   const isInitialLoading = (!dataMe && !errorMe) || (!dataEcs && !dataCambios);

@@ -29,6 +29,7 @@ import {
   Printer,
 } from 'lucide-react';
 import AppShell from '@/components/AppShell';
+import { useActiveProject } from '@/components/ProjectContext';
 
 interface SolicitudTrazabilidad {
   id: string;
@@ -103,8 +104,13 @@ interface ProyectoAux {
 }
 
 export default function TrazabilidadPage() {
+  const { selectedProyectoId } = useActiveProject();
   const [proyectos, setProyectos] = useState<ProyectoAux[]>([]);
   const [proyectoSeleccionadoId, setProyectoSeleccionadoId] = useState<string>('');
+
+  useEffect(() => {
+    if (selectedProyectoId) setProyectoSeleccionadoId(selectedProyectoId);
+  }, [selectedProyectoId]);
   const [proyectoActual, setProyectoActual] = useState<ProyectoTrazabilidad | null>(null);
   const [loading, setLoading] = useState(true);
   const [vistaModo, setVistaModo] = useState<'MAPA' | 'TABLA'>('MAPA');

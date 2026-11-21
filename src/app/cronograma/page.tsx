@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import AppShell from '@/components/AppShell';
 import ModalCrearProyecto from '@/components/ModalCrearProyecto';
+import { useActiveProject } from '@/components/ProjectContext';
 
 interface TimelineEvent {
   id: string;
@@ -61,8 +62,13 @@ interface ProyectoData {
 }
 
 export default function CronogramaPage() {
+  const { selectedProyectoId: globalProyectoId } = useActiveProject();
   const [proyectos, setProyectos] = useState<{ id: string; codigo: string; nombre: string }[]>([]);
   const [selectedProyectoId, setSelectedProyectoId] = useState<string>('');
+
+  useEffect(() => {
+    if (globalProyectoId) setSelectedProyectoId(globalProyectoId);
+  }, [globalProyectoId]);
   const [usuarios, setUsuarios] = useState<{ id: string; nombre_completo: string; cargo?: string | null }[]>([]);
   const [selectedResponsableId, setSelectedResponsableId] = useState<string>('');
   const [proyecto, setProyecto] = useState<ProyectoData | null>(null);

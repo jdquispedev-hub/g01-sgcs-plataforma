@@ -23,6 +23,7 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import AppShell from '@/components/AppShell';
+import { useActiveProject } from '@/components/ProjectContext';
 
 interface ReporteItem {
   id: string;
@@ -51,6 +52,7 @@ interface ProyectoAux {
 }
 
 export default function BitacoraPage() {
+  const { selectedProyectoId } = useActiveProject();
   const { data: dataMe } = useSWR('/api/auth/me', fetcher, { revalidateOnFocus: false });
   const currentUser = dataMe?.success ? dataMe.data.user : null;
   const terminologia = getTerminologia(currentUser?.rubro);
@@ -64,6 +66,13 @@ export default function BitacoraPage() {
 
   // Estados del formulario de nuevo reporte
   const [nuevoProyectoId, setNuevoProyectoId] = useState('');
+
+  useEffect(() => {
+    if (selectedProyectoId) {
+      setProyectoFiltro(selectedProyectoId);
+      setNuevoProyectoId(selectedProyectoId);
+    }
+  }, [selectedProyectoId]);
   const [resumen, setResumen] = useState('');
   const [tieneBloqueo, setTieneBloqueo] = useState(false);
   const [detalleBloqueo, setDetalleBloqueo] = useState('');

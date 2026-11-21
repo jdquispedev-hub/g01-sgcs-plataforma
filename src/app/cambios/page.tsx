@@ -30,6 +30,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import AppShell from '@/components/AppShell';
+import { useActiveProject } from '@/components/ProjectContext';
 import LifecycleStepper from '@/components/LifecycleStepper';
 
 interface SolicitudItem {
@@ -84,12 +85,17 @@ interface ProyectoAux {
 }
 
 export default function CambiosPage() {
+  const { selectedProyectoId } = useActiveProject();
   const [solicitudes, setSolicitudes] = useState<SolicitudItem[]>([]);
   const [proyectos, setProyectos] = useState<ProyectoAux[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [estadoFiltro, setEstadoFiltro] = useState('');
   const [proyectoFiltro, setProyectoFiltro] = useState('');
+
+  useEffect(() => {
+    if (selectedProyectoId) setProyectoFiltro(selectedProyectoId);
+  }, [selectedProyectoId]);
 
   const loadData = async () => {
     setLoading(true);

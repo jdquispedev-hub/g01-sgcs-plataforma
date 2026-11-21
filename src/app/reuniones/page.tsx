@@ -36,6 +36,7 @@ import {
   Printer,
 } from 'lucide-react';
 import AppShell from '@/components/AppShell';
+import { useActiveProject } from '@/components/ProjectContext';
 import LifecycleStepper from '@/components/LifecycleStepper';
 
 interface ReunionItem {
@@ -81,6 +82,7 @@ interface UsuarioAux {
 }
 
 export default function ReunionesPage() {
+  const { selectedProyectoId } = useActiveProject();
   const [reuniones, setReuniones] = useState<ReunionItem[]>([]);
   const [proyectos, setProyectos] = useState<ProyectoAux[]>([]);
   const [usuarios, setUsuarios] = useState<UsuarioAux[]>([]);
@@ -90,6 +92,10 @@ export default function ReunionesPage() {
   const [search, setSearch] = useState('');
   const [tipoFiltro, setTipoFiltro] = useState<string>('TODAS');
   const [proyectoFiltro, setProyectoFiltro] = useState<string>('');
+
+  useEffect(() => {
+    if (selectedProyectoId) setProyectoFiltro(selectedProyectoId);
+  }, [selectedProyectoId]);
   const [vistaModo, setVistaModo] = useState<'CALENDARIO' | 'LISTA'>('CALENDARIO');
 
   // Control de mes del calendario (Inicia en Noviembre 2026)

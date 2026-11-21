@@ -7,6 +7,7 @@ import { getTerminologia } from '@/lib/terminologia';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AppShell from '@/components/AppShell';
+import { useActiveProject } from '@/components/ProjectContext';
 import LifecycleStepper from '@/components/LifecycleStepper';
 import NotionSlideOver, { SlideOverItem } from '@/components/NotionSlideOver';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -102,14 +103,17 @@ export default function EcsPage() {
     }
   };
 
+  const { selectedProyectoId } = useActiveProject();
+
   // SWR: Caché en memoria para navegación instantánea (0ms)
   const ecsUrl = useMemo(() => {
     const params = new URLSearchParams();
+    if (selectedProyectoId) params.set('proyectoId', selectedProyectoId);
     if (search.trim()) params.set('search', search.trim());
     if (tipoFiltro) params.set('tipo', tipoFiltro);
     const q = params.toString();
     return q ? `/api/ecs?${q}` : '/api/ecs';
-  }, [search, tipoFiltro]);
+  }, [selectedProyectoId, search, tipoFiltro]);
 
   const { data: dataEcs, mutate: mutateEcs } = useSWR(ecsUrl, fetcher, { revalidateOnFocus: false });
   const { data: dataAux } = useSWR('/api/auxiliares', fetcher, { revalidateOnFocus: false });

@@ -28,6 +28,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import AppShell from '@/components/AppShell';
+import { useActiveProject } from '@/components/ProjectContext';
 import LifecycleStepper from '@/components/LifecycleStepper';
 
 interface LineaBaseItem {
@@ -65,8 +66,13 @@ export default function LineasBasePage() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [search, setSearch] = useState('');
   const [estadoFiltro, setEstadoFiltro] = useState('');
+  const { selectedProyectoId } = useActiveProject();
   const [proyectoFiltro, setProyectoFiltro] = useState('');
   const [rubro, setRubro] = useState<string>('CONSTRUCCION');
+
+  useEffect(() => {
+    if (selectedProyectoId) setProyectoFiltro(selectedProyectoId);
+  }, [selectedProyectoId]);
 
   // SWR: Caché en memoria para navegación instantánea (0ms)
   const lineasUrl = useMemo(() => {
